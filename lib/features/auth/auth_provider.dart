@@ -2,6 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/storage/secure_storage.dart';
 
+// ─── TEST MODE ───────────────────────────────────────────────────────────────
+// Any number in this set bypasses real Firebase OTP.
+// Enter OTP "000000" on the verify screen to log in instantly.
+const _testNumbers = {'9999999999', '1234567890'};
+const _testOtp = '000000';
+const _testJwt = 'test_jwt_token';
+const _testRefresh = 'test_refresh_token';
+// ─────────────────────────────────────────────────────────────────────────────
+
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(
     apiClient: ref.watch(apiClientProvider),
@@ -12,9 +21,9 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthState {
   final bool isLoading;
   final String? error;
-  
+
   AuthState({this.isLoading = false, this.error});
-  
+
   AuthState copyWith({bool? isLoading, String? error, bool clearError = false}) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
@@ -26,16 +35,21 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final ApiClient apiClient;
   final SecureStorage storage;
-  
+
   AuthNotifier({required this.apiClient, required this.storage}) : super(AuthState());
-  
+
   String? _phoneNumber;
   String? get phoneNumber => _phoneNumber;
-  
+
+  bool get _isTestNumber => _testNumbers.contains(_phoneNumber?.replaceAll(' ', ''));
+
   Future<bool> checkSession() async {
     final refreshToken = await storage.getRefreshToken();
     if (refreshToken == null) return false;
-    
+
+    // Test mode: treat the test tokens as always valid
+    if (refreshToken == _testRefresh) return true;
+
     try {
       final res = await apiClient.dio.post('/refresh_session', data: {'refresh_token': refreshToken});
       if (res.statusCode == 200 || res.statusCode == 201) {
@@ -49,17 +63,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
     return false;
   }
-  
+
   Future<bool> sendOtp(String phone) async {
     state = state.copyWith(isLoading: true, clearError: true);
+    final cleaned = phone.replaceAll(' ', '');
+
+    if (cleaned.isEmpty || cleaned.length < 10) {
+      state = state.copyWith(isLoading: false, error: 'Enter a valid 10-digit number');
+      return false;
+    }
+
+    _phoneNumber = cleaned;
+
+    if (_testNumbers.contains(cleaned)) {
+      // Skip Firebase, go straight through
+      await Future.delayed(const Duration(milliseconds: 400));
+      state = state.copyWith(isLoading: false);
+      return true;
+    }
+
     try {
-      // Mock Firebase Auth SDK integration
+      // Real Firebase Auth SDK call goes here
       await Future.delayed(const Duration(seconds: 1));
-      if (phone.isEmpty || phone.length < 10) {
-        state = state.copyWith(isLoading: false, error: 'Invalid phone number');
-        return false;
-      }
-      _phoneNumber = phone;
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
@@ -67,39 +92,40 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
   }
-  
+
   Future<bool> verifyOtp(String otp) async {
     state = state.copyWith(isLoading: true, clearError: true);
+
+    if (otp.length < 6) {
+      state = state.copyWith(isLoading: false, error: 'Incorrect code, try again');
+      return false;
+    }
+
+    // ── TEST MODE bypass ──
+    if (_isTestNumber && otp == _testOtp) {
+      await storage.saveTokens(token: _testJwt, refreshToken: _testRefresh);
+      state = state.copyWith(isLoading: false);
+      return true;
+    }
+
     try {
-      // Mock Firebase ID token retrieval
-      await Future.delayed(const Duration(seconds: 1));
-      if (otp.length < 6) {
-         state = state.copyWith(isLoading: false, error: 'Incorrect code, try again');
-         return false;
-      }
-      
-      final String mockIdToken = 'mock_firebase_id_token';
-      
-      // Call backend verify_and_create_session
+      const String mockIdToken = 'mock_firebase_id_token';
+
       final res = await apiClient.dio.post('/verify_and_create_session', data: {
         'id_token': mockIdToken,
         'phone': _phoneNumber,
       });
-      
+
       final token = res.data['token'];
       final refreshToken = res.data['refresh_token'];
-      
       await storage.saveTokens(token: token, refreshToken: refreshToken);
-      
-      // Register device token
+
       try {
         await apiClient.dio.post('/register_device_token', data: {
           'device_token': 'mock_device_token_for_push',
         });
-      } catch (_) {
-        // Ignore device token errors for now
-      }
-      
+      } catch (_) {}
+
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {

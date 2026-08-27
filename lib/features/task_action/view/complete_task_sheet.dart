@@ -26,6 +26,14 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(taskActionProvider);
+    
+    ref.listen<AsyncValue<void>>(taskActionProvider, (previous, next) {
+      if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to complete task: ${next.error}')));
+      } else if (!next.isLoading && previous?.isLoading == true) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task completed successfully!')));
+      }
+    });
 
     return Container(
       decoration: const BoxDecoration(

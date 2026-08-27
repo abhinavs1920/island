@@ -46,16 +46,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
         // context.push('/chat/latest');
         break;
       case 2:
-        // Earnings — placeholder
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Earnings coming soon')),
-        );
+        context.push('/earnings');
         break;
       case 3:
-        // Profile — placeholder
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile coming soon')),
-        );
+        context.push('/profile');
         break;
     }
   }

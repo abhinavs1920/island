@@ -215,7 +215,17 @@ class ChatScreen extends ConsumerWidget {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           icon: const Icon(Icons.send, color: Colors.white, size: 16),
-                          onPressed: () {},
+                          onPressed: () async {
+                            final text = textController.text;
+                            if (text.isNotEmpty) {
+                              textController.clear();
+                              try {
+                                await ref.read(chatActionProvider).sendMessage(taskId, text);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send message')));
+                              }
+                            }
+                          },
                         ),
                       ),
                     ],

@@ -19,6 +19,14 @@ class CancelTaskSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(taskActionProvider);
+    
+    ref.listen<AsyncValue<void>>(taskActionProvider, (previous, next) {
+      if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to cancel task: ${next.error}')));
+      } else if (!next.isLoading && previous?.isLoading == true) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task cancelled successfully!')));
+      }
+    });
 
     return Container(
       decoration: const BoxDecoration(

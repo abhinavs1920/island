@@ -10,21 +10,36 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _fadeAnim;
+
   @override
   void initState() {
     super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeIn);
+    _animController.forward();
     _checkSession();
   }
 
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   Future<void> _checkSession() async {
-    await Future.delayed(const Duration(seconds: 1)); // Show splash for a bit
-    
+    await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    
+
     final hasSession = await ref.read(authProvider.notifier).checkSession();
     if (!mounted) return;
-    
+
     if (hasSession) {
       context.go('/home');
     } else {
@@ -36,53 +51,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF003EC7),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.local_shipping,
+      body: FadeTransition(
+        opacity: _fadeAnim,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/logo.png',
+                width: 120,
+                height: 120,
+                filterQuality: FilterQuality.high,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Flikk',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
                   color: Colors.white,
-                  size: 64,
+                  letterSpacing: -0.72,
+                  height: 1.2,
                 ),
-                const SizedBox(width: 12),
-                const Text(
-                  'RiderGo',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    letterSpacing: -0.64,
-                    height: 1.25,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const SizedBox(
-              width: 48,
-              height: 48,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 4,
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'INITIALIZING SYSTEM',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.white.withOpacity(0.8),
-                letterSpacing: 0.7,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

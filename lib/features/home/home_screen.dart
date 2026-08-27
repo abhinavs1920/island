@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'home_controller.dart';
 import 'gig_card.dart';
 
@@ -11,6 +12,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -32,32 +35,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     }
   }
 
+  void _onNavTap(int index) {
+    setState(() => _selectedIndex = index);
+    switch (index) {
+      case 0:
+        // Tasks — already here
+        break;
+      case 1:
+        // Chat — navigate to last active task chat if any
+        // context.push('/chat/latest');
+        break;
+      case 2:
+        // Earnings — placeholder
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Earnings coming soon')),
+        );
+        break;
+      case 3:
+        // Profile — placeholder
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile coming soon')),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isOnline = ref.watch(isOnlineProvider);
     final gigsAsync = ref.watch(gigsProvider);
 
     return Scaffold(
-      backgroundColor: isOnline ? const Color(0xFFFBF8FF) : const Color(0xFFE1E1EF), // greyed out for offline
+      backgroundColor: isOnline ? const Color(0xFFFBF8FF) : const Color(0xFFE1E1EF),
       appBar: AppBar(
         backgroundColor: const Color(0xFFFBF8FF),
         elevation: 0,
+        automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: const Color(0xFFC3C5D9),
-            height: 1.0,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF003EC7)),
-          onPressed: () {},
+          child: Container(color: const Color(0xFFC3C5D9), height: 1.0),
         ),
         title: const Text(
-          'TaskRunner',
+          'Flikk',
           style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: FontWeight.w800,
             color: Color(0xFF003EC7),
           ),
@@ -68,11 +90,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             child: Center(
               child: Text(
                 isOnline ? 'Online' : 'Offline',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF003EC7),
+                  color: isOnline ? const Color(0xFF10B981) : const Color(0xFF737688),
                 ),
               ),
             ),
@@ -112,20 +134,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                           onChanged: (val) {
                             ref.read(isOnlineProvider.notifier).toggle(val);
                           },
-                          activeColor: const Color(0xFF10B981),
-                          activeTrackColor: Colors.white,
-                          inactiveThumbColor: Colors.grey.shade400,
-                          inactiveTrackColor: Colors.white,
+                          activeColor: Colors.white,
+                          activeTrackColor: const Color(0xFF059669),
+                          inactiveThumbColor: Colors.white,
+                          inactiveTrackColor: Colors.grey.shade500,
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      isOnline ? "You're online — looking for gigs nearby" : "You're offline — go online to find gigs",
+                      isOnline
+                          ? "You're online — looking for gigs nearby"
+                          : "You're offline — go online to find gigs",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -141,18 +165,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                             'Scanning your area...',
                             style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
                         ],
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),
               const SizedBox(height: 32),
-              
+
               if (isOnline) ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,21 +206,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 gigsAsync.when(
                   data: (gigs) {
-                    if (gigs.isEmpty) {
-                      return _buildEmptyState();
-                    }
+                    if (gigs.isEmpty) return _buildEmptyState();
                     return Column(
-                      children: gigs.map((gig) => GigCard(
-                        gig: gig,
-                        onTap: () {},
-                      )).toList(),
+                      children: gigs
+                          .map((gig) => GigCard(
+                                gig: gig,
+                                onTap: () => context.push('/task/${gig.id}'),
+                              ))
+                          .toList(),
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, stack) => Center(child: Text('Error: $err')),
+                  loading: () => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  error: (err, _) => Center(
+                    child: Text('Error: $err', style: const TextStyle(color: Color(0xFFBA1A1A))),
+                  ),
                 ),
               ],
             ],
@@ -239,52 +268,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   }
 
   Widget _buildBottomNav() {
+    final items = [
+      {'icon': Icons.assignment_outlined, 'activeIcon': Icons.assignment, 'label': 'Tasks'},
+      {'icon': Icons.chat_bubble_outline, 'activeIcon': Icons.chat_bubble, 'label': 'Chat'},
+      {'icon': Icons.payments_outlined, 'activeIcon': Icons.payments, 'label': 'Earnings'},
+      {'icon': Icons.person_outline, 'activeIcon': Icons.person, 'label': 'Profile'},
+    ];
+
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFFFBF8FF),
-        border: Border(
-          top: BorderSide(color: Color(0xFFC3C5D9), width: 1.0),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFFC3C5D9), width: 1.0)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.assignment, 'Tasks', true),
-          _buildNavItem(Icons.chat_bubble_outline, 'Chat', false),
-          _buildNavItem(Icons.payments_outlined, 'Earnings', false),
-          _buildNavItem(Icons.person_outline, 'Profile', false),
-        ],
+        children: List.generate(items.length, (index) {
+          final isActive = _selectedIndex == index;
+          final item = items[index];
+          return GestureDetector(
+            onTap: () => _onNavTap(index),
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isActive ? const Color(0xFF0052FF) : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      isActive ? item['activeIcon'] as IconData : item['icon'] as IconData,
+                      color: isActive ? Colors.white : const Color(0xFF434656),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item['label'] as String,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: isActive ? const Color(0xFF0052FF) : const Color(0xFF434656),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
       ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF0052FF) : Colors.transparent, // primary-container (actually it was 0052FF in the html but for text it uses #0038b6.. wait, let's just use what makes sense)
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Icon(
-            icon,
-            color: isActive ? Colors.white : const Color(0xFF434656), // on-surface-variant
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: isActive ? const Color(0xFF0052FF) : const Color(0xFF434656),
-          ),
-        ),
-      ],
     );
   }
 }

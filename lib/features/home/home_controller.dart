@@ -13,19 +13,16 @@ class IsOnlineController extends Notifier<bool> {
   }
 
   Future<void> toggle(bool value) async {
-    // Optimistic UI update
+    // Optimistic UI update — always apply immediately
     state = value;
-    
-    // Call update_availability
+
+    // Fire-and-forget: best-effort backend sync, never revert UI
     try {
       final dio = ref.read(apiClientProvider).dio;
       await dio.post('/update_availability', data: {'available': value});
-      
-      // Also update location when toggling
-      await updateLocation();
-    } catch (e) {
-      // Revert on error
-      state = !value;
+      if (value) await updateLocation();
+    } catch (_) {
+      // Silently ignore — UI state is already correct
     }
   }
 

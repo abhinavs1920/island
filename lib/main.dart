@@ -17,7 +17,7 @@ class RiderApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
-      title: 'RiderGo',
+      title: 'Flikk',
       theme: AppTheme.lightTheme,
       routerConfig: router,
     );

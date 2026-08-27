@@ -28,7 +28,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
   void _submit() async {
     final success = await ref.read(authProvider.notifier).sendOtp(_phoneController.text);
     if (success && mounted) {
-      context.go('/otp');
+      context.push('/otp');
     }
   }
 
@@ -107,7 +107,6 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                               color: Color(0xFF191B25),
                             ),
                           ),
-                          Icon(Icons.arrow_drop_down, color: Color(0xFF434656)),
                         ],
                       ),
                     ),

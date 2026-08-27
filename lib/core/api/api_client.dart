@@ -15,7 +15,7 @@ class ApiClient {
   late Dio _dio;
 
   ApiClient(this._storage, this._router) {
-    const baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'http://10.0.2.2:8000');
+    const baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'http://20.119.84.223');
     _dio = Dio(BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),

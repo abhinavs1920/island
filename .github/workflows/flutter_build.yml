@@ -1,0 +1,46 @@
+name: Flutter Build & Init
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Initialize Flutter Project (if empty)
+        run: |
+          if [ ! -f pubspec.yaml ]; then
+            echo "Project not initialized. Running flutter create..."
+            flutter create --project-name island .
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "Initialize Flutter project via CI"
+            git push
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK (Split per ABI)
+        run: flutter build apk --split-per-abi
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apks
+          path: build/app/outputs/flutter-apk/*-release.apk

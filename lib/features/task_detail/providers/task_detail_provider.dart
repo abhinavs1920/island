@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 import '../../../core/api/api_client.dart';
 
 final taskDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, taskId) async {
   final apiClient = ref.read(apiClientProvider).dio;
-  final response = await apiClient.get('/get_task_details?task_id=$taskId');
+  final response = await apiClient.get('/tasks/$taskId');
   return response.data;
 });
 
@@ -19,9 +20,16 @@ class AcceptTaskNotifier extends StateNotifier<AsyncValue<bool>> {
     state = const AsyncValue.loading();
     try {
       final apiClient = ref.read(apiClientProvider).dio;
-      final response = await apiClient.post('/accept_task', data: {'task_id': taskId});
+      await apiClient.post('/tasks/$taskId/accept');
       state = const AsyncValue.data(true);
-      return response.data['status'] as String; 
+      return 'matched';
+    } on DioException catch (e, st) {
+      if (e.response?.statusCode == 409) {
+        state = AsyncValue.error(e, st);
+        return 'race_lost';
+      }
+      state = AsyncValue.error(e, st);
+      return 'error';
     } catch (e, st) {
       state = AsyncValue.error(e, st);
       return 'error';

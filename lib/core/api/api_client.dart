@@ -15,8 +15,9 @@ class ApiClient {
   late Dio _dio;
 
   ApiClient(this._storage, this._router) {
+    const baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'http://10.0.2.2:8000');
     _dio = Dio(BaseOptions(
-      baseUrl: 'https://api.example.com', // Replace with actual backend URL
+      baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     ));
@@ -36,7 +37,7 @@ class ApiClient {
           if (refreshToken != null) {
             try {
               final response = await Dio().post(
-                'https://api.example.com/refresh_session',
+                '$baseUrl/auth/refresh',
                 data: {'refresh_token': refreshToken},
               );
               final newToken = response.data['token'];

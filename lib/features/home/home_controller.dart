@@ -19,7 +19,7 @@ class IsOnlineController extends Notifier<bool> {
     // Fire-and-forget: best-effort backend sync, never revert UI
     try {
       final dio = ref.read(apiClientProvider).dio;
-      await dio.post('/update_availability', data: {'available': value});
+      await dio.put('/auth/rider/availability', data: {'is_available': value});
       if (value) await updateLocation();
     } catch (_) {
       // Silently ignore — UI state is already correct
@@ -29,7 +29,7 @@ class IsOnlineController extends Notifier<bool> {
   Future<void> updateLocation() async {
     try {
       final dio = ref.read(apiClientProvider).dio;
-      await dio.post('/update_location', data: {'lat': 0.0, 'lng': 0.0});
+      await dio.put('/auth/rider/location', data: {'lat': 0.0, 'lng': 0.0});
     } catch (e) {
       // ignore
     }
@@ -50,8 +50,11 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     
     try {
       final dio = ref.read(apiClientProvider).dio;
-      final response = await dio.get('/get_nearby_tasks');
-      final data = response.data['tasks'] as List? ?? [];
+      final response = await dio.get('/tasks/available?lat=0.0&lng=0.0&radius_km=10.0&limit=50');
+      final responseData = response.data;
+      final data = (responseData is Map && responseData.containsKey('tasks')
+          ? responseData['tasks'] as List?
+          : responseData as List?) ?? [];
       return data.map((e) => Gig.fromJson(e)).toList();
     } catch (e) {
       // Return mock data for demonstration if backend fails

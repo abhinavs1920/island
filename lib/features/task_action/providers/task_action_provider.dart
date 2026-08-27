@@ -9,7 +9,10 @@ class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
     try {
       final apiClient = ref.read(apiClientProvider).dio;
-      await apiClient.post('/complete_task', data: {'task_id': taskId});
+      await apiClient.post('/tasks/$taskId/complete', data: {
+        'rating': 5,
+        'rating_note': 'Great job',
+      });
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -20,7 +23,9 @@ class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
     try {
       final apiClient = ref.read(apiClientProvider).dio;
-      await apiClient.post('/cancel_task', data: {'task_id': taskId});
+      await apiClient.post('/tasks/$taskId/cancel', data: {
+        'reason': 'User requested',
+      });
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

@@ -51,10 +51,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (refreshToken == _testRefresh) return true;
 
     try {
-      final res = await apiClient.dio.post('/refresh_session', data: {'refresh_token': refreshToken});
+      final res = await apiClient.dio.post('/auth/refresh', data: {'refresh_token': refreshToken});
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final token = res.data['token'];
-        final newRefresh = res.data['refresh_token'];
+        final token = res.data['access_token'];
+        final newRefresh = res.data['refresh_token'] ?? refreshToken;
         await storage.saveTokens(token: token, refreshToken: newRefresh);
         return true;
       }
@@ -111,20 +111,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       const String mockIdToken = 'mock_firebase_id_token';
 
-      final res = await apiClient.dio.post('/verify_and_create_session', data: {
-        'id_token': mockIdToken,
-        'phone': _phoneNumber,
+      final res = await apiClient.dio.post('/auth/verify', data: {
+        'firebase_id_token': mockIdToken,
+        'role': 'rider',
+        'name': 'Rider',
+        'device_name': 'Unknown',
+        'fcm_token': 'mock_device_token_for_push',
+        'platform': 'android',
+        'os_version': '1.0',
+        'app_version': '1.0.0',
       });
 
-      final token = res.data['token'];
+      final token = res.data['access_token'];
       final refreshToken = res.data['refresh_token'];
       await storage.saveTokens(token: token, refreshToken: refreshToken);
-
-      try {
-        await apiClient.dio.post('/register_device_token', data: {
-          'device_token': 'mock_device_token_for_push',
-        });
-      } catch (_) {}
 
       state = state.copyWith(isLoading: false);
       return true;

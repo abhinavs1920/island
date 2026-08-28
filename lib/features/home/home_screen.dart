@@ -311,17 +311,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     .toList(),
               );
             },
-                  loading: () => _buildLoadingSkeletons(),
-                  error: (err, _) => Center(
-                    child: Text('Error: $err', style: const TextStyle(color: Color(0xFFBA1A1A))),
-                  ),
-                ),
-              ],
-            ],
+            loading: () => _buildLoadingSkeletons(),
+            error: (err, _) => Center(
+              child: Text('Error: $err', style: const TextStyle(color: Color(0xFFBA1A1A))),
+            ),
           ),
-        ),
+        ],
       ),
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 

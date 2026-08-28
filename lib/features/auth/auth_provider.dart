@@ -81,7 +81,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          // Auto-resolution (Android only)
+          // Auto-resolution (Android only) - explicitly handles test numbers
+          try {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+          } catch (e) {
+            // ignore
+          }
         },
         verificationFailed: (FirebaseAuthException e) {
           state = state.copyWith(isLoading: false, error: e.message ?? 'Verification failed');
@@ -95,7 +100,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         },
       );
       // We return true immediately to navigate to OTP screen, the callbacks happen async
-      // For web/emulator testing without push, codeSent fires almost instantly
       await Future.delayed(const Duration(milliseconds: 500));
       state = state.copyWith(isLoading: false);
       return true;
@@ -114,21 +118,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
 
     try {
-      String idToken = 'mock_firebase_id_token';
+      String? idToken;
       
-      // If we have a verification ID from Firebase, try to sign in
-      if (_verificationId != null) {
+      // 1. Check if verificationCompleted (test numbers) already signed us in instantly
+      if (FirebaseAuth.instance.currentUser != null) {
+        idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+      }
+      
+      // 2. Otherwise, use the OTP they typed
+      if (idToken == null && _verificationId != null) {
         final credential = PhoneAuthProvider.credential(verificationId: _verificationId!, smsCode: otp);
         final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-        final realToken = await userCredential.user?.getIdToken();
-        if (realToken != null) {
-          idToken = realToken;
+        idToken = await userCredential.user?.getIdToken();
+      }
+      
+      // 3. Absolute fallback
+      if (idToken == null) {
+        // Just in case it's a test number but verificationCompleted is slow
+        await Future.delayed(const Duration(seconds: 1));
+        if (FirebaseAuth.instance.currentUser != null) {
+           idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+        } else {
+           throw Exception("No verification ID or auto-resolution");
         }
-      } else if (_phoneNumber == '+919999999999' && otp == '000000') {
-        // Fallback for backend whitelisted test number if Firebase isn't hooked up for it
-        idToken = 'mock_firebase_id_token';
-      } else {
-        throw Exception("No verification ID");
       }
 
       final res = await apiClient.dio.post('/auth/verify', data: {
@@ -148,8 +160,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       state = state.copyWith(isLoading: false);
       return true;
+    } on DioException catch (e) {
+      final msg = e.response?.data?.toString() ?? e.message ?? 'Network error';
+      state = state.copyWith(isLoading: false, error: 'API Error: $msg');
+      return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Incorrect code or verification failed');
+      state = state.copyWith(isLoading: false, error: 'Auth Error: ${e.toString()}');
       return false;
     }
   }

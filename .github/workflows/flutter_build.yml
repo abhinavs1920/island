@@ -48,8 +48,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK (Split per ABI)
-        run: flutter build apk --split-per-abi
+      - name: Build APK (Fast ARM64 only)
+        run: flutter build apk --target-platform android-arm64
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4

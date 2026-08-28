@@ -131,7 +131,9 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                               fontWeight: FontWeight.w800,
                               color: Color(0xFF191B25),
                             ),
+                            autofocus: index == 0,
                             decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(vertical: 8),
                               counterText: "",
                               filled: true,
                               fillColor: authState.error != null

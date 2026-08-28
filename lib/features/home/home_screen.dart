@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'home_controller.dart';
 import 'gig_card.dart';
+import 'gig_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -304,7 +305,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               if (gigs.isEmpty) return _buildEmptyState();
               return Column(
                 children: gigs
-                    .map((gig) => GigCard(
+                    .map<Widget>((gig) => GigCard(
                           gig: gig,
                           onTap: () => context.push('/task/${gig.id}'),
                         ))

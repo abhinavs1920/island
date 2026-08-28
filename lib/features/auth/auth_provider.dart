@@ -101,12 +101,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
 
-    // ── TEST MODE bypass ──
-    if (_isTestNumber && otp == _testOtp) {
-      await storage.saveTokens(token: _testJwt, refreshToken: _testRefresh);
-      state = state.copyWith(isLoading: false);
-      return true;
-    }
 
     try {
       const String mockIdToken = 'mock_firebase_id_token';

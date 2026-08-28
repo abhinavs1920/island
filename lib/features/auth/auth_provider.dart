@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dio/dio.dart';
@@ -77,33 +78,42 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
 
     _phoneNumber = '+91$cleaned';
+    
+    final completer = Completer<bool>();
 
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          // Auto-resolution (Android only) - explicitly handles test numbers
           try {
             await FirebaseAuth.instance.signInWithCredential(credential);
+            if (!completer.isCompleted) completer.complete(true);
           } catch (e) {
             // ignore
           }
         },
         verificationFailed: (FirebaseAuthException e) {
-          state = state.copyWith(isLoading: false, error: e.message ?? 'Verification failed');
+          state = state.copyWith(isLoading: false, error: 'Firebase Error: ${e.message}');
+          if (!completer.isCompleted) completer.complete(false);
         },
         codeSent: (String verificationId, int? resendToken) {
           _verificationId = verificationId;
           state = state.copyWith(isLoading: false);
+          if (!completer.isCompleted) completer.complete(true);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           _verificationId = verificationId;
         },
       );
-      // We return true immediately to navigate to OTP screen, the callbacks happen async
-      await Future.delayed(const Duration(milliseconds: 500));
-      state = state.copyWith(isLoading: false);
-      return true;
+      
+      // Wait for one of the callbacks to trigger (with a fallback timeout of 10s just in case)
+      return await completer.future.timeout(
+        const Duration(seconds: 15), 
+        onTimeout: () {
+          state = state.copyWith(isLoading: false, error: 'Firebase timeout. Please try again.');
+          return false;
+        }
+      );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
       return false;

@@ -6,7 +6,7 @@ import 'core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(); // Uncomment when firebase is setup
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: RiderApp()));
 }
 

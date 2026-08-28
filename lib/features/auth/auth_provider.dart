@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/api/api_client.dart';
 import '../../core/storage/secure_storage.dart';
 
@@ -35,6 +36,7 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final ApiClient apiClient;
   final SecureStorage storage;
+  String? _verificationId;
 
   AuthNotifier({required this.apiClient, required this.storage}) : super(AuthState());
 
@@ -73,18 +75,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
 
-    _phoneNumber = cleaned;
-
-    if (_testNumbers.contains(cleaned)) {
-      // Skip Firebase, go straight through
-      await Future.delayed(const Duration(milliseconds: 400));
-      state = state.copyWith(isLoading: false);
-      return true;
-    }
+    _phoneNumber = '+91$cleaned';
 
     try {
-      // Real Firebase Auth SDK call goes here
-      await Future.delayed(const Duration(seconds: 1));
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: _phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Auto-resolution (Android only)
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          state = state.copyWith(isLoading: false, error: e.message ?? 'Verification failed');
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          _verificationId = verificationId;
+          state = state.copyWith(isLoading: false);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+        },
+      );
+      // We return true immediately to navigate to OTP screen, the callbacks happen async
+      // For web/emulator testing without push, codeSent fires almost instantly
+      await Future.delayed(const Duration(milliseconds: 500));
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
@@ -101,12 +113,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
 
-
     try {
-      const String mockIdToken = 'mock_firebase_id_token';
+      String idToken = 'mock_firebase_id_token';
+      
+      // If we have a verification ID from Firebase, try to sign in
+      if (_verificationId != null) {
+        final credential = PhoneAuthProvider.credential(verificationId: _verificationId!, smsCode: otp);
+        final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        final realToken = await userCredential.user?.getIdToken();
+        if (realToken != null) {
+          idToken = realToken;
+        }
+      } else if (_phoneNumber == '+919999999999' && otp == '000000') {
+        // Fallback for backend whitelisted test number if Firebase isn't hooked up for it
+        idToken = 'mock_firebase_id_token';
+      } else {
+        throw Exception("No verification ID");
+      }
 
       final res = await apiClient.dio.post('/auth/verify', data: {
-        'firebase_id_token': mockIdToken,
+        'firebase_id_token': idToken,
         'role': 'rider',
         'name': 'Rider',
         'device_name': 'Unknown',
@@ -123,7 +149,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Incorrect code, try again');
+      state = state.copyWith(isLoading: false, error: 'Incorrect code or verification failed');
       return false;
     }
   }

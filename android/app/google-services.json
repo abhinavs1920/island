@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "22015550725",
+    "project_id": "flikk-874a3",
+    "storage_bucket": "flikk-874a3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22015550725:android:b41bdb48f5f578fb45036c",
+        "android_client_info": {
+          "package_name": "com.flikk.island"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU4MMTnhwxrdS-95PjpNo1PdFFbMtqHxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

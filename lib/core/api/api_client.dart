@@ -50,10 +50,10 @@ class ApiClient {
               return handler.resolve(cloneReq);
             } catch (_) {
               await _storage.clearTokens();
-              _router.go('/phone');
+              _router.go('/session-expired');
             }
           } else {
-            _router.go('/phone');
+            _router.go('/session-expired');
           }
         }
         return handler.next(e);

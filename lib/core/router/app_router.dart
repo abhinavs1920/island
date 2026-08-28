@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/splash_screen.dart';
+import '../../features/auth/session_expired_screen.dart';
 import '../../features/auth/phone_entry_screen.dart';
 import '../../features/auth/otp_verify_screen.dart';
 import '../../features/home/home_screen.dart';
@@ -14,6 +15,7 @@ import '../../features/permissions/view/location_permission_screen.dart';
 import '../../features/permissions/view/notification_permission_screen.dart';
 import '../error/view/system_error_screen.dart';
 import '../../features/earnings/view/earnings_screen.dart';
+import '../../features/profile/view/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -22,6 +24,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/session-expired',
+        builder: (context, state) => const SessionExpiredScreen(),
       ),
       GoRoute(
         path: '/phone',
@@ -72,6 +78,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/earnings',
         builder: (context, state) => const EarningsScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/error',

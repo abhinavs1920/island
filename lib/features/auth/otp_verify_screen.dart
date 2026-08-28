@@ -102,7 +102,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                         children: [
                           const TextSpan(text: 'We sent a 6-digit code to\n'),
                           TextSpan(
-                            text: phone.isNotEmpty ? '+91 $phone' : '+91 000 000 0000',
+                            text: phone.isNotEmpty ? phone : '+91 000 000 0000',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,

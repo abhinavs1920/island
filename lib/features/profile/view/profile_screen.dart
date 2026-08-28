@@ -227,7 +227,7 @@ class ProfileScreen extends ConsumerWidget {
                 _buildListTile(
                   icon: Icons.settings,
                   title: 'Settings',
-                  onTap: () {},
+                  onTap: () => context.push('/settings'),
                 ),
                 const Divider(height: 1, color: Color(0xFFE1E1E1)),
                 _buildListTile(

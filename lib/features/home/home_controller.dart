@@ -57,37 +57,7 @@ class GigsController extends AsyncNotifier<List<Gig>> {
           : responseData as List?) ?? [];
       return data.map((e) => Gig.fromJson(e)).toList();
     } catch (e) {
-      // Return mock data for demonstration if backend fails
-      return [
-        Gig(
-          id: '1',
-          title: 'Heavy Furniture Moving',
-          price: 85,
-          description: 'Downtown Office to Storage Unit',
-          distance: '1.2 mi',
-          duration: '~2 hrs',
-          icon: 'local_shipping',
-          tags: ['Heavy'],
-        ),
-        Gig(
-          id: '2',
-          title: 'Groceries Delivery',
-          price: 22,
-          description: 'Whole Foods to Elm Street',
-          distance: '0.5 mi',
-          duration: '~30 mins',
-          icon: 'shopping_basket',
-        ),
-        Gig(
-          id: '3',
-          title: 'Post-Event Cleanup',
-          price: 120,
-          description: 'City Park Pavilion',
-          distance: '3.4 mi',
-          duration: '~4 hrs',
-          icon: 'cleaning_services',
-        ),
-      ];
+      throw Exception('Failed to load tasks: $e');
     }
   }
 }

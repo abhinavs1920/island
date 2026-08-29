@@ -54,7 +54,7 @@ class SystemErrorScreen extends StatelessWidget {
                 Text(
                   errorMessage ??
                       'We couldn\'t process your request. Please check your connection and try again.',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,

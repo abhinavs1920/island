@@ -77,92 +77,104 @@ class ChatScreen extends ConsumerWidget {
       body: Column(
         children: [
           Expanded(
-            child: messagesAsync.when(
-              data: (messages) => ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final msg = messages[index];
-                  final isMe = msg['sender_id'] == 'me'; // example logic
-                  
-                  if (!isMe) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 32,
-                            height: 32,
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
-                          ),
-                          Flexible(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
+            child: Builder(
+              builder: (context) {
+                if (messagesAsync.isLoading && messagesAsync.messages.isEmpty) {
+                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary));
+                }
+                if (messagesAsync.error != null && messagesAsync.messages.isEmpty) {
+                  return Center(child: Text('Error loading chat: ${messagesAsync.error}'));
+                }
+                
+                final messages = messagesAsync.messages;
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    final isMe = msg['sender_id'] == 'me'; // example logic
+                    
+                    if (!isMe) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceContainer,
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(12),
-                                  bottomLeft: Radius.circular(12),
-                                  bottomRight: Radius.circular(12),
-                                  topLeft: Radius.circular(2),
-                                ),
-                                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                                color: Theme.of(context).colorScheme.secondaryContainer,
+                                shape: BoxShape.circle,
                               ),
-                              child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                              child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
                             ),
-                          ),
-                          const SizedBox(width: 48), // limit width
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(width: 48), // limit width
-                          Flexible(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  bottomLeft: Radius.circular(12),
-                                  bottomRight: Radius.circular(12),
-                                  topRight: Radius.circular(2),
+                            Flexible(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surfaceContainer,
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(12),
+                                    bottomLeft: Radius.circular(12),
+                                    bottomRight: Radius.circular(12),
+                                    topLeft: Radius.circular(2),
+                                  ),
+                                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                                 ),
+                                child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                               ),
-                              child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-              loading: () => Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
-              error: (e, st) => Center(child: Text('Error loading chat: $e')),
+                            const SizedBox(width: 48), // limit width
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(width: 48), // limit width
+                            Flexible(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    bottomLeft: Radius.circular(12),
+                                    bottomRight: Radius.circular(12),
+                                    topRight: Radius.circular(2),
+                                  ),
+                                ),
+                                child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
             ),
           ),
           
           // Fixed Footer
           Container(
             color: Theme.of(context).colorScheme.surface,
-            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
             ),
-            child: Column(
+            child: SafeArea(
+              bottom: true,
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
               children: [
                 Row(
                   children: [
@@ -256,6 +268,8 @@ class ChatScreen extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+              ),
             ),
           ),
         ],

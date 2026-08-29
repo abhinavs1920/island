@@ -6,10 +6,18 @@ import 'core/router/app_router.dart';
 
 import 'core/utils/remote_logger.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   RemoteLogger.init();
   await Firebase.initializeApp();
+  
+  await Supabase.initialize(
+    url: const String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://placeholder.supabase.co'),
+    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'placeholder_anon_key'),
+  );
+
   runApp(const ProviderScope(child: RiderApp()));
 }
 

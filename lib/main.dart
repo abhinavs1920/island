@@ -4,8 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 
+import 'core/utils/remote_logger.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  RemoteLogger.init();
   await Firebase.initializeApp();
   runApp(const ProviderScope(child: RiderApp()));
 }

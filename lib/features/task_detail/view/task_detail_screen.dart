@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/task_detail_provider.dart';
 
 class TaskDetailScreen extends ConsumerWidget {
@@ -241,9 +242,9 @@ class TaskDetailScreen extends ConsumerWidget {
                       final status = await ref.read(acceptTaskProvider.notifier).acceptTask(taskId);
                       if (!context.mounted) return;
                       if (status == 'matched') {
-                        Navigator.pushNamed(context, '/matched_confirmation');
+                        context.push('/matched/$taskId');
                       } else if (status == 'race_lost') {
-                        Navigator.pushNamed(context, '/race_lost');
+                        context.push('/race_lost');
                       } else if (status == 'error') {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error accepting task')));
                       }

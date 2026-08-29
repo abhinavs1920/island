@@ -44,7 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
         break;
       case 1:
         // Chat — navigate to last active task chat if any
-        // context.push('/chat/latest');
+        context.push('/chat/latest');
         break;
       case 2:
         context.push('/earnings');

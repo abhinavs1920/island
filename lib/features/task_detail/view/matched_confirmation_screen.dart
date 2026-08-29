@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MatchedConfirmationScreen extends StatelessWidget {
-  const MatchedConfirmationScreen({Key? key}) : super(key: key);
+  final String taskId;
+  const MatchedConfirmationScreen({Key? key, required this.taskId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -143,8 +145,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to chat
-                    Navigator.pushReplacementNamed(context, '/chat');
+                    context.pushReplacement('/chat/$taskId');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF003EC7),

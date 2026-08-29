@@ -10,6 +10,39 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (taskId == 'empty' || taskId == 'latest') {
+      return Scaffold(
+        backgroundColor: const Color(0xFFFBF8FF),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFFBF8FF),
+          elevation: 0,
+          title: const Text('Chat', style: TextStyle(color: Color(0xFF191B25), fontSize: 20, fontWeight: FontWeight.w700)),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1.0),
+            child: Container(color: const Color(0xFFC3C5D9), height: 1.0),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.chat_bubble_outline, size: 64, color: Color(0xFF737688)),
+              SizedBox(height: 16),
+              Text(
+                'No active chat',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF191B25)),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Accept a task to start chatting.',
+                style: TextStyle(fontSize: 16, color: Color(0xFF434656)),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final messagesAsync = ref.watch(chatMessagesProvider(taskId));
     final textController = TextEditingController();
 

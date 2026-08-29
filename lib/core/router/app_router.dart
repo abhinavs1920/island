@@ -53,8 +53,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const RaceLostScreen(),
       ),
       GoRoute(
-        path: '/matched',
-        builder: (context, state) => const MatchedConfirmationScreen(),
+        path: '/matched/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return MatchedConfirmationScreen(taskId: id);
+        },
       ),
       GoRoute(
         path: '/chat/:id',

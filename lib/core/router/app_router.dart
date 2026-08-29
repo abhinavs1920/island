@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/scaffold_with_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/splash_screen.dart';
@@ -37,9 +38,31 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/otp',
         builder: (context, state) => const OtpVerifyScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
+      ShellRoute(
+        builder: (context, state, child) {
+          return ScaffoldWithNavBar(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: '/chat/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return ChatScreen(taskId: id);
+            },
+          ),
+          GoRoute(
+            path: '/profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
+          GoRoute(
+            path: '/earnings',
+            builder: (context, state) => const EarningsScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/task/:id',
@@ -60,27 +83,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/chat/:id',
-        builder: (context, state) {
-          final id = state.pathParameters['id']!;
-          return ChatScreen(taskId: id);
-        },
-      ),
-      GoRoute(
         path: '/permission/location',
         builder: (context, state) => const LocationPermissionScreen(),
       ),
       GoRoute(
         path: '/permission/notification',
         builder: (context, state) => const NotificationPermissionScreen(),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const ProfileScreen(),
-      ),
-      GoRoute(
-        path: '/earnings',
-        builder: (context, state) => const EarningsScreen(),
       ),
       GoRoute(
         path: '/settings',

@@ -13,8 +13,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
-  int _selectedIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -33,25 +31,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
       if (ref.read(isOnlineProvider)) {
         ref.read(isOnlineProvider.notifier).updateLocation();
       }
-    }
-  }
-
-  void _onNavTap(int index) {
-    setState(() => _selectedIndex = index);
-    switch (index) {
-      case 0:
-        // Tasks — already here
-        break;
-      case 1:
-        // Chat — navigate to last active task chat if any
-        context.push('/chat/latest');
-        break;
-      case 2:
-        context.push('/earnings');
-        break;
-      case 3:
-        context.push('/profile');
-        break;
     }
   }
 
@@ -113,7 +92,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
       body: SafeArea(
         child: isOnline ? _buildOnlineBody(gigsAsync) : _buildOfflineBody(),
       ),
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
@@ -521,63 +499,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNav() {
-    final items = [
-      {'icon': Icons.assignment_outlined, 'activeIcon': Icons.assignment, 'label': 'Tasks'},
-      {'icon': Icons.chat_bubble_outline, 'activeIcon': Icons.chat_bubble, 'label': 'Chat'},
-      {'icon': Icons.payments_outlined, 'activeIcon': Icons.payments, 'label': 'Earnings'},
-      {'icon': Icons.person_outline, 'activeIcon': Icons.person, 'label': 'Profile'},
-    ];
-
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFBF8FF),
-        border: Border(top: BorderSide(color: Color(0xFFC3C5D9), width: 1.0)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          final isActive = _selectedIndex == index;
-          final item = items[index];
-          return GestureDetector(
-            onTap: () => _onNavTap(index),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isActive ? const Color(0xFF0052FF) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      isActive ? item['activeIcon'] as IconData : item['icon'] as IconData,
-                      color: isActive ? Colors.white : const Color(0xFF434656),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item['label'] as String,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: isActive ? const Color(0xFF0052FF) : const Color(0xFF434656),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
       ),
     );
   }

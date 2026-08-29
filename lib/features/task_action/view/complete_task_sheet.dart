@@ -136,8 +136,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-                    elevation: 0,
-                  ),
+                    ),
                   onPressed: state.isLoading ? null : () async {
                     await ref.read(taskActionProvider.notifier).completeTask(widget.taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {

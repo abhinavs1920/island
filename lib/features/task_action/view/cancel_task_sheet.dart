@@ -99,8 +99,7 @@ class CancelTaskSheet extends ConsumerWidget {
                     backgroundColor: Theme.of(context).colorScheme.error, // error
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
+                    ),
                   onPressed: state.isLoading ? null : () async {
                     await ref.read(taskActionProvider.notifier).cancelTask(taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {

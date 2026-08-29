@@ -14,9 +14,7 @@ class ChatScreen extends ConsumerWidget {
       return Scaffold(
         
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          elevation: 0,
-          title: Text('Chat', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+          title: const Text('Chat'),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(1.0),
             child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
@@ -49,13 +47,7 @@ class ChatScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary),
-          onPressed: () => Navigator.maybePop(context),
-        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -198,8 +190,7 @@ class ChatScreen extends ConsumerWidget {
                             backgroundColor: Theme.of(context).colorScheme.secondary, // Complete green
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            elevation: 0,
-                          ),
+                            ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

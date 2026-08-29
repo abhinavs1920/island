@@ -51,20 +51,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            if (context.canPop()) context.pop();
-          },
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
-        ),
-        title: Text(
-          'TaskRunner',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
+        title: const Text('Flikk'),
         centerTitle: true,
       ),
       body: SafeArea(

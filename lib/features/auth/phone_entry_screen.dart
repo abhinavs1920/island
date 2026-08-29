@@ -37,20 +37,16 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flikk'),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
-              // Back button
-              IconButton(
-                onPressed: () {
-                  if (context.canPop()) context.pop();
-                },
-                icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
-              ),
               const SizedBox(height: 24),
               Text(
                 'Enter your phone number',

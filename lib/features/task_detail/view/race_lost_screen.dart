@@ -70,8 +70,7 @@ class RaceLostScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
+                    ),
                   child: Text(
                     'See other gigs nearby',
                     style: Theme.of(context).textTheme.labelLarge!,

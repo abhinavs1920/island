@@ -48,7 +48,6 @@ class AppTheme {
       textTheme: textTheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: surface,
-        elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
         iconTheme: IconThemeData(color: primary),
@@ -61,7 +60,6 @@ class AppTheme {
           foregroundColor: Colors.white,
           disabledForegroundColor: onSurfaceVariant,
           minimumSize: const Size.fromHeight(56),
-          elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),

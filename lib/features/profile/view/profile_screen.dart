@@ -13,10 +13,8 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
         title: Text(
-          'TaskRunner',
+          'Flikk',
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
             fontSize: 24,
             color: Theme.of(context).colorScheme.primary,

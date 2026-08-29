@@ -11,18 +11,7 @@ class EarningsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Earnings',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
+        title: const Text('Earnings'),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
@@ -87,8 +76,7 @@ class _EmptyEarningsView extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  elevation: 0,
-                ),
+                  ),
                 child: Text(
                   'Find Gigs',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.5),

@@ -14,22 +14,8 @@ class TaskDetailScreen extends ConsumerWidget {
     final acceptTaskState = ref.watch(acceptTaskProvider);
 
     return Scaffold(
-            appBar: AppBar(
-                elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurfaceVariant), // on-surface-variant
-          onPressed: () => Navigator.maybePop(context),
-        ),
-        title: Text(
-          'TaskRunner',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary, // primary
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Inter',
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Flikk'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -248,8 +234,7 @@ class TaskDetailScreen extends ConsumerWidget {
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      elevation: 0,
-                    ),
+                      ),
                     child: acceptTaskState.isLoading
                       ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : Row(

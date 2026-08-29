@@ -8,7 +8,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface, // background/surface
+      // background/surface
       body: Stack(
         children: [
           // Background decorative element

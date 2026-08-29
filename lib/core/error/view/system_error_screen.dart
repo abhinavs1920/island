@@ -15,7 +15,6 @@ class SystemErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -76,8 +75,7 @@ class SystemErrorScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        elevation: 0,
-                      ),
+                        ),
                       child: Text(
                         'Retry',
                         style: TextStyle(

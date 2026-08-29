@@ -207,7 +207,6 @@ class TaskDetailScreen extends ConsumerWidget {
               right: 0,
               bottom: 0,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface, // surface
                   border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
@@ -215,9 +214,14 @@ class TaskDetailScreen extends ConsumerWidget {
                     BoxShadow(color: Color(0x1A000000), offset: Offset(0, -4), blurRadius: 6),
                   ],
                 ),
-                child: SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
+                child: SafeArea(
+                  bottom: true,
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: SizedBox(
+                      height: 56,
+                      child: ElevatedButton(
                     onPressed: acceptTaskState.isLoading ? null : () async {
                       final status = await ref.read(acceptTaskProvider.notifier).acceptTask(taskId);
                       if (!context.mounted) return;
@@ -242,7 +246,7 @@ class TaskDetailScreen extends ConsumerWidget {
                           children: [
                             Text(
                               'Accept this gig',
-                              style: Theme.of(context).textTheme.labelLarge!,
+                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                             ),
                             SizedBox(width: 8),
                             Icon(Icons.check_circle, size: 20),
@@ -250,6 +254,8 @@ class TaskDetailScreen extends ConsumerWidget {
                         ),
                   ),
                 ),
+              ),
+            ),
               ),
             ),
           ],

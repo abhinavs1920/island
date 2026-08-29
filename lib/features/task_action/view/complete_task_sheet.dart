@@ -148,7 +148,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Submit and finish', style: Theme.of(context).textTheme.labelLarge!),
+                          Text('Submit and finish', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white)),
                           SizedBox(width: 8),
                           Icon(Icons.check_circle, size: 20),
                         ],

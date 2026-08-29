@@ -120,7 +120,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 16),
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20 + MediaQuery.paddingOf(context).bottom, top: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
@@ -150,7 +150,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
                       SizedBox(width: 4),
                       Text(
                         'Open chat',
-                        style: Theme.of(context).textTheme.labelLarge!,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                       ),
                     ],
                   ),

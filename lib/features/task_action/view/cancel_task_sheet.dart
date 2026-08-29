@@ -113,7 +113,7 @@ class CancelTaskSheet extends ConsumerWidget {
                         children: [
                           Icon(Icons.cancel, size: 20),
                           SizedBox(width: 8),
-                          Text('Confirm cancel', style: Theme.of(context).textTheme.labelLarge!),
+                          Text('Confirm cancel', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white)),
                         ],
                       ),
                 ),

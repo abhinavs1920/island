@@ -59,9 +59,10 @@ class RaceLostScreen extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              color: Theme.of(context).colorScheme.surface,
+            child: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                color: Theme.of(context).colorScheme.surface,
               child: SizedBox(
                 height: 56,
                 child: ElevatedButton(
@@ -73,10 +74,11 @@ class RaceLostScreen extends StatelessWidget {
                     ),
                   child: Text(
                     'See other gigs nearby',
-                    style: Theme.of(context).textTheme.labelLarge!,
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                   ),
                 ),
               ),
+            ),
             ),
           ),
         ],

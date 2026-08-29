@@ -80,23 +80,32 @@ class AuthNotifier extends StateNotifier<AuthState> {
     _phoneNumber = '+91$cleaned';
     
     final completer = Completer<bool>();
+    String debugTrace = "1. Started sendOtp for $_phoneNumber\n";
 
     try {
+      debugTrace += "2. Calling Firebase verifyPhoneNumber...\n";
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
+          debugTrace += "3. verificationCompleted triggered!\n";
           try {
+            debugTrace += "4. Attempting signInWithCredential...\n";
             await FirebaseAuth.instance.signInWithCredential(credential);
+            debugTrace += "5. signInWithCredential succeeded!\n";
             if (!completer.isCompleted) completer.complete(true);
           } catch (e) {
-            // ignore
+            debugTrace += "X. signInWithCredential failed: $e\n";
+            state = state.copyWith(isLoading: false, error: debugTrace);
+            if (!completer.isCompleted) completer.complete(false);
           }
         },
         verificationFailed: (FirebaseAuthException e) {
-          state = state.copyWith(isLoading: false, error: 'Firebase Error: ${e.message}');
+          debugTrace += "X. verificationFailed triggered!\n   Code: ${e.code}\n   Message: ${e.message}\n";
+          state = state.copyWith(isLoading: false, error: debugTrace);
           if (!completer.isCompleted) completer.complete(false);
         },
         codeSent: (String verificationId, int? resendToken) {
+          debugTrace += "3. codeSent triggered! verificationId received.\n";
           _verificationId = verificationId;
           state = state.copyWith(isLoading: false);
           if (!completer.isCompleted) completer.complete(true);
@@ -106,16 +115,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         },
       );
       
-      // Wait for one of the callbacks to trigger (with a fallback timeout of 10s just in case)
       return await completer.future.timeout(
         const Duration(seconds: 15), 
         onTimeout: () {
-          state = state.copyWith(isLoading: false, error: 'Firebase timeout. Please try again.');
+          debugTrace += "X. Timed out waiting for Firebase callbacks.\n";
+          state = state.copyWith(isLoading: false, error: debugTrace);
           return false;
         }
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      debugTrace += "X. Outer try-catch failed: $e\n";
+      state = state.copyWith(isLoading: false, error: debugTrace);
       return false;
     }
   }
@@ -128,31 +138,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return false;
     }
 
+    String debugTrace = "1. Started verifyOtp\n";
     try {
       String? idToken;
       
-      // 1. Check if verificationCompleted (test numbers) already signed us in instantly
+      debugTrace += "2. Checking currentUser...\n";
       if (FirebaseAuth.instance.currentUser != null) {
+        debugTrace += "3. currentUser found! Getting token...\n";
         idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
       }
       
-      // 2. Otherwise, use the OTP they typed
       if (idToken == null && _verificationId != null) {
+        debugTrace += "3. No currentUser. Using verificationId...\n";
         final credential = PhoneAuthProvider.credential(verificationId: _verificationId!, smsCode: otp);
+        debugTrace += "4. Attempting signInWithCredential...\n";
         final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        debugTrace += "5. signIn succeeded! Getting token...\n";
         idToken = await userCredential.user?.getIdToken();
       }
       
-      // 3. Absolute fallback
       if (idToken == null) {
-        // Just in case it's a test number but verificationCompleted is slow
+        debugTrace += "3. No currentUser AND no verificationId! Waiting 1s...\n";
         await Future.delayed(const Duration(seconds: 1));
         if (FirebaseAuth.instance.currentUser != null) {
+           debugTrace += "4. currentUser appeared! Getting token...\n";
            idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
         } else {
            throw Exception("No verification ID or auto-resolution");
         }
       }
+      debugTrace += "6. Token acquired! Sending to backend...\n";
 
       final res = await apiClient.dio.post('/auth/verify', data: {
         'firebase_id_token': idToken,
@@ -172,11 +187,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(isLoading: false);
       return true;
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Network error';
-      state = state.copyWith(isLoading: false, error: 'API Error: $msg');
+      debugTrace += "X. DioException: ${e.response?.data ?? e.message}\n";
+      state = state.copyWith(isLoading: false, error: debugTrace);
       return false;
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Auth Error: ${e.toString()}');
+      debugTrace += "X. Auth Error: ${e.toString()}\n";
+      state = state.copyWith(isLoading: false, error: debugTrace);
       return false;
     }
   }

@@ -50,11 +50,11 @@ class _EmptyEarningsView extends StatelessWidget {
               Container(
                 width: 120,
                 height: 120,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceVariant,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.account_balance_wallet,
                     size: 64,

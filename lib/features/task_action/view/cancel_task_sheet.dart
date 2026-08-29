@@ -82,9 +82,9 @@ class CancelTaskSheet extends ConsumerWidget {
               // Chips
               Row(
                 children: [
-                  _buildChip('Requester unreachable'),
+                  _buildChip(context, 'Requester unreachable'),
                   SizedBox(width: 8),
-                  _buildChip('Changed my mind'),
+                  _buildChip(context, 'Changed my mind'),
                 ],
               ),
               SizedBox(height: 16),
@@ -138,7 +138,7 @@ class CancelTaskSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildChip(String label) {
+  Widget _buildChip(BuildContext context, String label) {
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),

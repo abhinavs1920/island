@@ -104,15 +104,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 Container(
                   width: 128,
                   height: 128,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceVariant,
                     shape: BoxShape.circle,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(Icons.directions_walk, size: 64, color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   top: -48,
                   child: Icon(Icons.arrow_upward, size: 40, color: Theme.of(context).colorScheme.primary),
                 ),
@@ -181,7 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                         color: Colors.white.withOpacity(0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(Icons.radar, color: Colors.white, size: 24),
                       ),
                     ),
@@ -418,11 +418,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
           Container(
             width: 96,
             height: 96,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceVariant,
               shape: BoxShape.circle,
             ),
-            child: const Center(
+            child: Center(
               child: Icon(Icons.inbox_outlined, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),

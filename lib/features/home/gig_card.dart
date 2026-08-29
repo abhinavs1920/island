@@ -7,29 +7,29 @@ class GigCard extends StatelessWidget {
 
   const GigCard({Key? key, required this.gig, required this.onTap}) : super(key: key);
 
-  Color _getIconBackgroundColor() {
+  Color _getIconBackgroundColor(BuildContext context) {
     switch (gig.icon) {
       case 'local_shipping':
-        return const Color(0xFFDDE1FF); // primary-container
+        return Theme.of(context).colorScheme.primaryContainer; // primary-container
       case 'shopping_basket':
-        return const Color(0xFFE5E2E1); // secondary-container
+        return Theme.of(context).colorScheme.secondaryContainer; // secondary-container
       case 'cleaning_services':
-        return const Color(0xFFDBEAFE);
+        return Theme.of(context).colorScheme.tertiaryContainer;
       default:
-        return const Color(0xFFDDE1FF);
+        return Theme.of(context).colorScheme.primaryContainer;
     }
   }
 
-  Color _getIconColor() {
+  Color _getIconColor(BuildContext context) {
     switch (gig.icon) {
       case 'local_shipping':
-        return const Color(0xFFDFE3FF); // on-primary-container
+        return Theme.of(context).colorScheme.onPrimaryContainer; // on-primary-container
       case 'shopping_basket':
-        return const Color(0xFF656464); // on-secondary-container
+        return Theme.of(context).colorScheme.onSecondaryContainer; // on-secondary-container
       case 'cleaning_services':
-        return const Color(0xFF1E40AF);
+        return Theme.of(context).colorScheme.onTertiaryContainer;
       default:
-        return const Color(0xFFDFE3FF);
+        return Theme.of(context).colorScheme.onPrimaryContainer;
     }
   }
 
@@ -53,8 +53,8 @@ class GigCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFC3C5D9)), // outline-variant
+          color: Theme.of(context).colorScheme.surface,
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -72,7 +72,7 @@ class GigCard extends StatelessWidget {
               // Highlight bar
               Container(
                 width: 4,
-                color: const Color(0xFF003EC7), // primary
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -84,12 +84,12 @@ class GigCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: _getIconBackgroundColor(),
+                          color: _getIconBackgroundColor(context),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           _getIconData(),
-                          color: _getIconColor(),
+                          color: _getIconColor(context),
                           size: 32,
                         ),
                       ),
@@ -104,22 +104,16 @@ class GigCard extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     gig.title,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                       height: 1.4,
-                                      color: Color(0xFF191B25),
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                                   ),
                                 ),
                                 Text(
                                   '\$${gig.price.toInt()}',
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF003EC7),
+                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ],
@@ -127,24 +121,22 @@ class GigCard extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               gig.description,
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16,
-                                color: Color(0xFF434656),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                _buildTag(Icons.directions_walk_outlined, gig.distance),
-                                _buildTag(Icons.schedule_outlined, gig.duration),
-                                ...gig.tags.map((t) => _buildAlertTag(t)),
-                              ],
-                            ),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _buildTag(context, Icons.directions_walk_outlined, gig.distance),
+                                    _buildTag(context, Icons.schedule_outlined, gig.duration),
+                                    ...gig.tags.map((t) => _buildAlertTag(context, t)),
+                                  ],
+                                ),
                           ],
                         ),
                       ),
@@ -159,25 +151,23 @@ class GigCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTag(IconData icon, String text) {
+  Widget _buildTag(BuildContext context, IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFE7E7F5),
+        color: Theme.of(context).colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: const Color(0xFF191B25)),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.onSurface),
           const SizedBox(width: 4),
           Text(
             text,
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF191B25),
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontSize: 12, // Since 12 is smaller than normal labelLarge 14
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -185,26 +175,24 @@ class GigCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAlertTag(String text) {
+  Widget _buildAlertTag(BuildContext context, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEE2E2),
-        border: Border.all(color: const Color(0xFFF87171)),
+        color: Theme.of(context).colorScheme.errorContainer, // Using errorContainer roughly matches 0xFFFEE2E2
+        border: Border.all(color: Theme.of(context).colorScheme.error), // matching 0xFFF87171 to error
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.fitness_center_outlined, size: 14, color: Color(0xFF991B1B)),
+          Icon(Icons.fitness_center_outlined, size: 14, color: Theme.of(context).colorScheme.onErrorContainer),
           const SizedBox(width: 4),
           Text(
             text,
-            style: const TextStyle(
-              fontFamily: 'Inter',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF991B1B),
+              color: Theme.of(context).colorScheme.onErrorContainer,
             ),
           ),
         ],

@@ -12,17 +12,14 @@ class ProfileScreen extends ConsumerWidget {
     final profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF), // surface color
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'TaskRunner',
-          style: TextStyle(
-            fontFamily: 'Inter',
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
             fontSize: 24,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF003EC7),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         actions: [
@@ -33,16 +30,13 @@ class ProfileScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    color: profile.isAvailable ? const Color(0xFFE8F5E9) : const Color(0xFFF5F5F5),
+                    color: profile.isAvailable ? Theme.of(context).colorScheme.surfaceVariant : Theme.of(context).colorScheme.surfaceVariant,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
                     profile.isAvailable ? 'Online' : 'Offline',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: profile.isAvailable ? const Color(0xFF00C853) : const Color(0xFF737688),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: profile.isAvailable ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.outline,
                     ),
                   ),
                 ),
@@ -56,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
         data: (profile) => _buildBody(context, ref, profile),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(
-          child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
+          child: Text('Error: $err', style: TextStyle(color: Theme.of(context).colorScheme.error)),
         ),
       ),
     );
@@ -71,9 +65,9 @@ class ProfileScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE1E1E1)),
+              border: Border.all(color: Theme.of(context).colorScheme.surfaceVariant),
             ),
             child: Column(
               children: [
@@ -82,55 +76,45 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       radius: 48,
-                      backgroundColor: const Color(0xFFE1E1EF),
+                      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
                       child: Icon(Icons.person, size: 48, color: Colors.grey.shade400),
                     ),
                     if (profile.isAvailable)
                       Container(
                         padding: const EdgeInsets.all(2),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.check_circle, color: Color(0xFF00C853), size: 24),
+                        child: Icon(Icons.check_circle, color: Theme.of(context).colorScheme.secondary, size: 24),
                       ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Text(
                   profile.name,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF191B25),
-                  ),
+                  style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.star, color: Color(0xFFFFC107), size: 20),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
                       '4.8 Rating',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF737688),
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('•', style: TextStyle(color: Color(0xFF737688))),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('•', style: TextStyle(color: Theme.of(context).colorScheme.outline)),
                     ),
                     Text(
                       '124 Gigs Completed',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        color: Color(0xFF737688),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
                   ],
@@ -147,29 +131,24 @@ class ProfileScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0052FF),
+                    color: Theme.of(context).colorScheme.primary, // Using primary for 0xFF0052FF
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     children: [
-                      const Icon(Icons.account_balance_wallet, color: Colors.white),
+                      Icon(Icons.account_balance_wallet, color: Theme.of(context).colorScheme.onPrimary),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'This Week',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          color: Colors.white70,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '\$${profile.earnings.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                     ],
@@ -181,30 +160,25 @@ class ProfileScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE1E1E1)),
+                    border: Border.all(color: Theme.of(context).colorScheme.surfaceVariant), // or outlineVariant
                   ),
                   child: Column(
                     children: [
-                      const Icon(Icons.trending_up, color: Color(0xFF003EC7)),
+                      Icon(Icons.trending_up, color: Theme.of(context).colorScheme.primary),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'Response Rate',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          color: Color(0xFF737688),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         '98%',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF003EC7),
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ],
@@ -215,28 +189,30 @@ class ProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // Settings List
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE1E1E1)),
+              border: Border.all(color: Theme.of(context).colorScheme.surfaceVariant),
             ),
             child: Column(
               children: [
                 _buildListTile(
+                  context,
                   icon: Icons.settings,
                   title: 'Settings',
                   onTap: () => context.push('/settings'),
                 ),
-                const Divider(height: 1, color: Color(0xFFE1E1E1)),
+                Divider(height: 1, color: Theme.of(context).colorScheme.surfaceVariant),
                 _buildListTile(
+                  context,
                   icon: Icons.help_outline,
                   title: 'Help/Support',
                   onTap: () {},
                 ),
-                const Divider(height: 1, color: Color(0xFFE1E1E1)),
+                Divider(height: 1, color: Theme.of(context).colorScheme.surfaceVariant),
                 _buildListTile(
+                  context,
                   icon: Icons.logout,
                   title: 'Log out',
                   isDestructive: true,
@@ -255,7 +231,8 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildListTile(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -269,22 +246,20 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             Icon(
               icon,
-              color: isDestructive ? const Color(0xFFBA1A1A) : const Color(0xFF737688),
+              color: isDestructive ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.outline,
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: isDestructive ? FontWeight.w700 : FontWeight.w400,
-                  color: isDestructive ? const Color(0xFFBA1A1A) : const Color(0xFF191B25),
+                  color: isDestructive ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
             if (!isDestructive)
-              const Icon(Icons.chevron_right, color: Color(0xFF737688)),
+              Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
           ],
         ),
       ),

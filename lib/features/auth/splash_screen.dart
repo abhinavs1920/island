@@ -50,7 +50,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF003EC7),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: FadeTransition(
         opacity: _fadeAnim,
         child: Center(
@@ -64,14 +64,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 filterQuality: FilterQuality.high,
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Flikk',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: -0.72,
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
                   height: 1.2,
                 ),
               ),

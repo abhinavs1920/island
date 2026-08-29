@@ -40,22 +40,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     final gigsAsync = ref.watch(gigsProvider);
 
     return Scaffold(
-      backgroundColor: isOnline ? const Color(0xFFFBF8FF) : const Color(0xFFE1E1EF),
+      backgroundColor: isOnline ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.surfaceVariant,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: const Color(0xFFC3C5D9), height: 1.0),
+          child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
         ),
-        title: const Text(
+        title: Text(
           'Flikk',
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF003EC7),
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+            fontSize: 28, // Using displayLarge style but adjusting size if needed, or maybe just displayLarge
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         actions: [
@@ -65,11 +63,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               children: [
                 Text(
                   isOnline ? 'ONLINE' : 'OFFLINE',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isOnline ? const Color(0xFF10B981) : const Color(0xFF434656),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: isOnline ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -79,9 +74,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     ref.read(isOnlineProvider.notifier).toggle(val);
                   },
                   activeColor: Colors.white,
-                  activeTrackColor: const Color(0xFF10B981),
+                  activeTrackColor: Theme.of(context).colorScheme.secondary,
                   inactiveThumbColor: Colors.white,
-                  inactiveTrackColor: const Color(0xFFE2E1ED),
+                  inactiveTrackColor: Theme.of(context).colorScheme.surfaceVariant,
                   trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
                 ),
               ],
@@ -110,37 +105,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                   width: 128,
                   height: 128,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFF3F2FE),
+                    color: Theme.of(context).colorScheme.surfaceVariant,
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: Icon(Icons.directions_walk, size: 64, color: Color(0xFFC4C5D7)),
+                    child: Icon(Icons.directions_walk, size: 64, color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                 ),
                 const Positioned(
                   top: -48,
-                  child: Icon(Icons.arrow_upward, size: 40, color: Color(0xFF002B92)),
+                  child: Icon(Icons.arrow_upward, size: 40, color: Theme.of(context).colorScheme.primary),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Ready to work?',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A1B23),
-              ),
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Go online to see gigs nearby and start earning.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 16,
-                color: Color(0xFF434656),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 32),
@@ -149,17 +137,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 ref.read(isOnlineProvider.notifier).toggle(true);
               },
               icon: const Icon(Icons.power_settings_new, color: Colors.white),
-              label: const Text(
+              label: Text(
                 'Go Online',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF002B92),
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -181,9 +164,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
         children: [
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF10B981),
+              color: Theme.of(context).colorScheme.secondary,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFC4C5D7)),
+              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             ),
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -206,21 +189,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "You're online",
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: Colors.white,
                             ),
                           ),
                           Text(
                             'Looking for gigs nearby...',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.white70,
                             ),
                           ),
@@ -253,25 +231,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Available Gigs',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF191B25),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               TextButton.icon(
                 onPressed: () {},
-                icon: const Icon(Icons.filter_list, size: 16, color: Color(0xFF003EC7)),
-                label: const Text(
+                icon: Icon(Icons.filter_list, size: 16, color: Theme.of(context).colorScheme.primary),
+                label: Text(
                   'Filter',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF003EC7),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -292,7 +264,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             },
             loading: () => _buildLoadingSkeletons(),
             error: (err, _) => Center(
-              child: Text('Error: $err', style: const TextStyle(color: Color(0xFFBA1A1A))),
+              child: Text('Error: $err', style: TextStyle(color: Theme.of(context).colorScheme.error)),
             ),
           ),
         ],
@@ -308,9 +280,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
           margin: const EdgeInsets.only(bottom: 16),
           height: 128,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFC4C5D7)),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0A000000),
@@ -327,9 +299,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 bottom: 0,
                 width: 4,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE2E1ED),
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh, // Using surfaceContainerHigh or keeping 0xFFE2E1ED if desired. I'll just use a surface color
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(12),
                       bottomLeft: Radius.circular(12),
                     ),
@@ -347,8 +319,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE2E1ED),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerHigh,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -362,7 +334,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                                 height: 20,
                                 width: index == 0 ? 200 : (index == 1 ? 160 : 220),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFE2E1ED),
+                                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
@@ -371,7 +343,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                                 height: 16,
                                 width: index == 0 ? 120 : (index == 1 ? 100 : 140),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFE2E1ED),
+                                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
@@ -383,7 +355,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                           width: index == 1 ? 56 : (index == 2 ? 80 : 64),
                           height: 24,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE2E1ED),
+                            color: Theme.of(context).colorScheme.surfaceContainerHigh,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -395,7 +367,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                           height: 24,
                           width: 80,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE2E1ED),
+                            color: Theme.of(context).colorScheme.surfaceContainerHigh,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -405,7 +377,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                             height: 24,
                             width: 64,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE2E1ED),
+                              color: Theme.of(context).colorScheme.surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -416,7 +388,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                             height: 24,
                             width: 64,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE2E1ED),
+                              color: Theme.of(context).colorScheme.surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -437,9 +409,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F2FE),
+        color: Theme.of(context).colorScheme.surfaceVariant, // Maybe surfaceContainer or just keep if specific
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFC4C5D7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
@@ -447,52 +419,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             width: 96,
             height: 96,
             decoration: const BoxDecoration(
-              color: Color(0xFFE2E1ED),
+              color: Theme.of(context).colorScheme.surfaceVariant,
               shape: BoxShape.circle,
             ),
             child: const Center(
-              child: Icon(Icons.inbox_outlined, size: 48, color: Color(0xFF747686)),
+              child: Icon(Icons.inbox_outlined, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             'No gigs nearby right now',
-            style: TextStyle(
-              fontFamily: 'Inter',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1B23),
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             "Keep this screen open. We'll notify you with a loud alert the moment a new task posts in your area.",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              color: Color(0xFF434656),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 32),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF002B92).withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.sync, size: 16, color: Color(0xFF002B92)),
-                SizedBox(width: 8),
+              children: [
+                Icon(Icons.sync, size: 16, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
                 Text(
                   'Auto-refreshing active',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF002B92),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],

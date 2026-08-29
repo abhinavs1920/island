@@ -31,15 +31,15 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
       if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to complete task: ${next.error}')));
       } else if (!next.isLoading && previous?.isLoading == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task completed successfully!')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task completed successfully!')));
       }
     });
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFBF8FF), // surface
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface, // surface
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)), // md says rounded-t-xl which is 12px
-        border: Border(top: BorderSide(color: Color(0xFFC3C5D9)), left: BorderSide(color: Color(0xFFC3C5D9)), right: BorderSide(color: Color(0xFFC3C5D9))),
+        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant), left: BorderSide(color: Theme.of(context).colorScheme.outlineVariant), right: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
       ),
       child: SafeArea(
         child: Padding(
@@ -58,28 +58,24 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFC3C5D9), // outline-variant
+                  color: Theme.of(context).colorScheme.outlineVariant, // outline-variant
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
               
-              const Text(
+              Text(
                 'Task Completed',
-                style: TextStyle(
-                  color: Color(0xFF191B25),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 'How was your experience with Alex?',
                 style: TextStyle(
-                  color: Color(0xFF434656), // on-surface-variant
+                  color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               
               // Stars
               Row(
@@ -90,7 +86,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     padding: const EdgeInsets.all(8),
                     icon: Icon(
                       Icons.star,
-                      color: index < _rating ? const Color(0xFFEAB308) : const Color(0xFFC3C5D9),
+                      color: index < _rating ? Color(0xFFEAB308) : Theme.of(context).colorScheme.outlineVariant,
                     ),
                     onPressed: () {
                       setState(() {
@@ -100,40 +96,35 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                   );
                 }),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               
               // Feedback
               Align(
                 alignment: Alignment.centerLeft,
-                child: const Text(
+                child: Text(
                   'Additional Feedback (Optional)',
-                  style: TextStyle(
-                    color: Color(0xFF434656),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.7,
-                  ),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               TextField(
                 maxLines: 4,
                 decoration: InputDecoration(
                   hintText: 'Leave a note about the drop-off...',
-                  hintStyle: TextStyle(color: const Color(0xFF434656).withOpacity(0.5)),
-                  fillColor: const Color(0xFFFFFFFF),
+                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                  fillColor: Theme.of(context).colorScheme.surface,
                   filled: true,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFC3C5D9)),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF003EC7)),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               
               // Actions
               SizedBox(
@@ -141,10 +132,10 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                 height: 56,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF166534), // success
+                    backgroundColor: Theme.of(context).colorScheme.secondary, // success
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    side: const BorderSide(color: Color(0xFF14532D)),
+                    side: BorderSide(color: Theme.of(context).colorScheme.secondary),
                     elevation: 0,
                   ),
                   onPressed: state.isLoading ? null : () async {
@@ -154,27 +145,27 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     }
                   },
                   child: state.isLoading 
-                    ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('Submit and finish', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                        children: [
+                          Text('Submit and finish', style: Theme.of(context).textTheme.labelLarge!),
                           SizedBox(width: 8),
                           Icon(Icons.check_circle, size: 20),
                         ],
                       ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: TextButton(
                   onPressed: state.isLoading ? null : () => Navigator.pop(context),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF003EC7), // primary
+                    foregroundColor: Theme.of(context).colorScheme.primary, // primary
                   ),
-                  child: const Text('Skip rating', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                  child: Text('Skip rating', style: Theme.of(context).textTheme.labelLarge!),
                 ),
               ),
             ],

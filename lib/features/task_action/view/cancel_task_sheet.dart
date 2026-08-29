@@ -24,15 +24,15 @@ class CancelTaskSheet extends ConsumerWidget {
       if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to cancel task: ${next.error}')));
       } else if (!next.isLoading && previous?.isLoading == true) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task cancelled successfully!')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task cancelled successfully!')));
       }
     });
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFBF8FF), // surface
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface, // surface
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border(top: BorderSide(color: Color(0xFFC3C5D9))),
+        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
       ),
       child: SafeArea(
         child: Padding(
@@ -46,7 +46,7 @@ class CancelTaskSheet extends ConsumerWidget {
                 height: 6,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFC3C5D9), // outline-variant
+                  color: Theme.of(context).colorScheme.outlineVariant, // outline-variant
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -56,51 +56,47 @@ class CancelTaskSheet extends ConsumerWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFFFDAD6), // error-container
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer, // error-container
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.warning, color: Color(0xFF93000A)), // on-error-container
+                    child: Icon(Icons.warning, color: Theme.of(context).colorScheme.onErrorContainer), // on-error-container
                   ),
-                  const SizedBox(width: 12),
-                  const Text(
+                  SizedBox(width: 12),
+                  Text(
                     'Cancel this task?',
-                    style: TextStyle(
-                      color: Color(0xFF191B25),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: 16),
+              Text(
                 'This action cannot be undone. Please select a reason if you wish to proceed.',
                 style: TextStyle(
-                  color: Color(0xFF434656), // on-surface-variant
+                  color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               
               // Chips
               Row(
                 children: [
                   _buildChip('Requester unreachable'),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   _buildChip('Changed my mind'),
                 ],
               ),
-              const SizedBox(height: 16),
-              const Divider(color: Color(0xFFC3C5D9), height: 1),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
+              Divider(color: Theme.of(context).colorScheme.outlineVariant, height: 1),
+              SizedBox(height: 16),
               
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFBA1A1A), // error
+                    backgroundColor: Theme.of(context).colorScheme.error, // error
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
@@ -112,27 +108,27 @@ class CancelTaskSheet extends ConsumerWidget {
                     }
                   },
                   child: state.isLoading 
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.cancel, size: 20),
                           SizedBox(width: 8),
-                          Text('Confirm cancel', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                          Text('Confirm cancel', style: Theme.of(context).textTheme.labelLarge!),
                         ],
                       ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: TextButton(
                   onPressed: state.isLoading ? null : () => Navigator.pop(context),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF191B25), // on-surface
+                    foregroundColor: Theme.of(context).colorScheme.onSurface, // on-surface
                   ),
-                  child: const Text('Never mind', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                  child: Text('Never mind', style: Theme.of(context).textTheme.labelLarge!),
                 ),
               ),
             ],
@@ -147,19 +143,14 @@ class CancelTaskSheet extends ConsumerWidget {
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBF8FF), // surface
+        color: Theme.of(context).colorScheme.surface, // surface
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFF737688)), // outline
+        border: Border.all(color: Theme.of(context).colorScheme.outline), // outline
       ),
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(
-          color: Color(0xFF191B25),
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.7,
-        ),
+        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
       ),
     );
   }

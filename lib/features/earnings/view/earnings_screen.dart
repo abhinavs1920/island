@@ -10,31 +10,27 @@ class EarningsScreen extends StatelessWidget {
     const double totalEarnings = 0.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF191B25)),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
+        title: Text(
           'Earnings',
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF003EC7),
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: const Color(0xFFC3C5D9), height: 1.0),
+          child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
         ),
       ),
       body: totalEarnings == 0.0
           ? const _EmptyEarningsView()
-          : const _EarningsSummaryView(totalEarnings: totalEarnings),
+          : _EarningsSummaryView(totalEarnings: totalEarnings),
     );
   }
 }
@@ -55,36 +51,28 @@ class _EmptyEarningsView extends StatelessWidget {
                 width: 120,
                 height: 120,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFE8E7F3),
+                  color: Theme.of(context).colorScheme.surfaceVariant,
                   shape: BoxShape.circle,
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.account_balance_wallet,
                     size: 64,
-                    color: Color(0xFF747686),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
+                const SizedBox(height: 24),
+              Text(
                 'No Earnings Yet',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1A1B23),
-                ),
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Complete your first gig to start earning. Your completed tasks and payments will appear here.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  color: Color(0xFF434654),
-                  height: 1.5,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant, // Using onSurfaceVariant instead of hardcoded 0xFF434654
                 ),
               ),
               const SizedBox(height: 32),
@@ -93,7 +81,7 @@ class _EmptyEarningsView extends StatelessWidget {
                   context.pop();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF002B92),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -101,14 +89,9 @@ class _EmptyEarningsView extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
+                child: Text(
                   'Find Gigs',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.5),
                 ),
               ),
             ],
@@ -135,78 +118,68 @@ class _EarningsSummaryView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFC4C5D7)),
+                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'TOTAL EARNINGS',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF5F5E5E),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       letterSpacing: 1.2,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     '\$${totalEarnings.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF002B92),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Earnings shown here are self-reported and may take time to reflect.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      color: Color(0xFF434654),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
-            const Text(
+            Text(
               'Recent Gigs',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A1B23),
-              ),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             _buildGigItem(
+              context,
               icon: Icons.shopping_cart,
-              iconBgColor: const Color(0xFFDBEAFE),
-              iconColor: const Color(0xFF1E40AF),
+              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
+              iconColor: Theme.of(context).colorScheme.primary,
               title: 'Grocery Delivery',
               date: 'Jun 12, 10:30 AM',
               amount: '+\$15.50',
             ),
             const SizedBox(height: 12),
             _buildGigItem(
+              context,
               icon: Icons.local_shipping,
-              iconBgColor: const Color(0xFFE8E7F3),
-              iconColor: const Color(0xFF434654),
+              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
+              iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
               title: 'Furniture Move',
               date: 'Jun 10, 2:15 PM',
               amount: '+\$45.00',
             ),
             const SizedBox(height: 12),
             _buildGigItem(
+              context,
               icon: Icons.grass,
-              iconBgColor: const Color(0xFFD1FAE5),
-              iconColor: const Color(0xFF10B981),
+              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
+              iconColor: Theme.of(context).colorScheme.secondary,
               title: 'Lawn Mowing',
               date: 'Jun 08, 9:00 AM',
               amount: '+\$30.00',
@@ -214,13 +187,10 @@ class _EarningsSummaryView extends StatelessWidget {
             const SizedBox(height: 24),
             TextButton(
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 'View All Earnings History',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF002B92),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -230,7 +200,8 @@ class _EarningsSummaryView extends StatelessWidget {
     );
   }
 
-  Widget _buildGigItem({
+  Widget _buildGigItem(
+    BuildContext context, {
     required IconData icon,
     required Color iconBgColor,
     required Color iconColor,
@@ -240,16 +211,16 @@ class _EarningsSummaryView extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFC4C5D7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: IntrinsicHeight(
           child: Row(
             children: [
-              Container(width: 4, color: const Color(0xFF002B92)),
+              Container(width: 4, color: Theme.of(context).colorScheme.primary),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Container(
@@ -268,20 +239,15 @@ class _EarningsSummaryView extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF1A1B23),
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       date,
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        color: Color(0xFF5F5E5E),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.outline, // 0xFF5F5E5E maps generally to outline or onSurfaceVariant
                       ),
                     ),
                   ],
@@ -291,11 +257,8 @@ class _EarningsSummaryView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   amount,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF002B92),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),

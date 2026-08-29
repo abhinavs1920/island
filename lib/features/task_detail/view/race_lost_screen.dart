@@ -6,8 +6,7 @@ class RaceLostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF), // surface
-      body: Stack(
+            body: Stack(
         children: [
           Center(
             child: Padding(
@@ -18,40 +17,40 @@ class RaceLostScreen extends StatelessWidget {
                   Container(
                     width: 128,
                     height: 128,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFEDEDFB), // surface-container
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer, // surface-container
                       shape: BoxShape.circle,
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.hourglass_empty,
                         size: 64,
-                        color: Color(0xFF737688), // outline
+                        color: Theme.of(context).colorScheme.outline, // outline
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 24),
+                  Text(
                     'This gig was just taken by another rider',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Color(0xFF191B25), // on-surface
+                      color: Theme.of(context).colorScheme.onSurface, // on-surface
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8),
+                  Text(
                     'It happens fast! There are plenty more gigs waiting for you.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Color(0xFF434656), // on-surface-variant
+                      color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
                       fontSize: 16,
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 100), // padding for bottom bar
+                  SizedBox(height: 100), // padding for bottom bar
                 ],
               ),
             ),
@@ -62,24 +61,20 @@ class RaceLostScreen extends StatelessWidget {
             bottom: 0,
             child: Container(
               padding: const EdgeInsets.all(20),
-              color: const Color(0xFFFBF8FF),
+              color: Theme.of(context).colorScheme.surface,
               child: SizedBox(
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003EC7),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text(
+                  child: Text(
                     'See other gigs nearby',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.7,
-                    ),
+                    style: Theme.of(context).textTheme.labelLarge!,
                   ),
                 ),
               ),

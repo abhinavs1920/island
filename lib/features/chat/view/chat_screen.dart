@@ -12,30 +12,30 @@ class ChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (taskId == 'empty' || taskId == 'latest') {
       return Scaffold(
-        backgroundColor: const Color(0xFFFBF8FF),
+        
         appBar: AppBar(
-          backgroundColor: const Color(0xFFFBF8FF),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
-          title: const Text('Chat', style: TextStyle(color: Color(0xFF191B25), fontSize: 20, fontWeight: FontWeight.w700)),
+          title: Text('Chat', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(1.0),
-            child: Container(color: const Color(0xFFC3C5D9), height: 1.0),
+            child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
           ),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.chat_bubble_outline, size: 64, color: Color(0xFF737688)),
+            children: [
+              Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.outline),
               SizedBox(height: 16),
               Text(
                 'No active chat',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF191B25)),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
               SizedBox(height: 8),
               Text(
                 'Accept a task to start chatting.',
-                style: TextStyle(fontSize: 16, color: Color(0xFF434656)),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -47,20 +47,20 @@ class ChatScreen extends ConsumerWidget {
     final textController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF), // surface-container-lowest
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF), // surface
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF003EC7)),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary),
           onPressed: () => Navigator.maybePop(context),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text('AC Repair', style: TextStyle(color: Color(0xFF191B25), fontSize: 20, fontWeight: FontWeight.w700)),
-            Text('Indiranagar', style: TextStyle(color: Color(0xFF434656), fontSize: 14, fontWeight: FontWeight.w500)),
+          children: [
+            Text('AC Repair', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+            Text('Indiranagar', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
           ],
         ),
         actions: [
@@ -69,7 +69,7 @@ class ChatScreen extends ConsumerWidget {
             child: Center(
               child: Text(
                 'Online',
-                style: TextStyle(color: Color(0xFF003EC7), fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
             ),
           ),
@@ -77,7 +77,7 @@ class ChatScreen extends ConsumerWidget {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
-            color: const Color(0xFFC3C5D9), // outline-variant
+            color: Theme.of(context).colorScheme.outlineVariant, // outline-variant
             height: 1.0,
           ),
         ),
@@ -103,26 +103,26 @@ class ChatScreen extends ConsumerWidget {
                             width: 32,
                             height: 32,
                             margin: const EdgeInsets.only(right: 8),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFE5E2E1), // secondary-container
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondaryContainer,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.person, size: 16, color: Color(0xFF656464)),
+                            child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
                           ),
                           Flexible(
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEDEDFB), // surface-container
+                                color: Theme.of(context).colorScheme.surfaceContainer,
                                 borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(12),
                                   bottomLeft: Radius.circular(12),
                                   bottomRight: Radius.circular(12),
                                   topLeft: Radius.circular(2),
                                 ),
-                                border: Border.all(color: const Color(0xFFC3C5D9)),
+                                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
-                              child: Text(msg['content'] ?? '', style: const TextStyle(color: Color(0xFF191B25), fontSize: 16)),
+                              child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                             ),
                           ),
                           const SizedBox(width: 48), // limit width
@@ -140,8 +140,8 @@ class ChatScreen extends ConsumerWidget {
                           Flexible(
                             child: Container(
                               padding: const EdgeInsets.all(12),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF003EC7), // primary
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(12),
                                   bottomLeft: Radius.circular(12),
@@ -149,7 +149,7 @@ class ChatScreen extends ConsumerWidget {
                                   topRight: Radius.circular(2),
                                 ),
                               ),
-                              child: Text(msg['content'] ?? '', style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16)),
+                              child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                             ),
                           ),
                         ],
@@ -158,17 +158,17 @@ class ChatScreen extends ConsumerWidget {
                   }
                 },
               ),
-              loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF003EC7))),
+              loading: () => Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
               error: (e, st) => Center(child: Text('Error loading chat: $e')),
             ),
           ),
           
           // Fixed Footer
           Container(
-            color: const Color(0xFFFBF8FF), // surface
+            color: Theme.of(context).colorScheme.surface,
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Color(0xFFC3C5D9))),
+              border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
             ),
             child: Column(
               children: [
@@ -180,11 +180,11 @@ class ChatScreen extends ConsumerWidget {
                         child: OutlinedButton(
                           onPressed: () => CancelTaskSheet.show(context, taskId),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF191B25),
-                            side: const BorderSide(color: Color(0xFF737688), width: 2),
+                            foregroundColor: Theme.of(context).colorScheme.onSurface,
+                            side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 2),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text('Cancel task', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                          child: Text('Cancel task', style: Theme.of(context).textTheme.labelLarge),
                         ),
                       ),
                     ),
@@ -195,17 +195,17 @@ class ChatScreen extends ConsumerWidget {
                         child: ElevatedButton(
                           onPressed: () => CompleteTaskSheet.show(context, taskId),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00875A), // Complete green
+                            backgroundColor: Theme.of(context).colorScheme.secondary, // Complete green
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             elevation: 0,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(Icons.check_circle, size: 20),
                               SizedBox(width: 4),
-                              Text('Mark complete', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 0.7)),
+                              Text('Mark complete', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
                             ],
                           ),
                         ),
@@ -217,15 +217,15 @@ class ChatScreen extends ConsumerWidget {
                 Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFF737688)),
+                    border: Border.all(color: Theme.of(context).colorScheme.outline),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.add_circle, color: Color(0xFF737688)),
+                        icon: Icon(Icons.add_circle, color: Theme.of(context).colorScheme.outline),
                         onPressed: () {},
                       ),
                       Expanded(
@@ -241,8 +241,8 @@ class ChatScreen extends ConsumerWidget {
                         width: 32,
                         height: 32,
                         margin: const EdgeInsets.only(right: 8),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF003EC7),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(

@@ -37,7 +37,6 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -50,27 +49,22 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                 onPressed: () {
                   if (context.canPop()) context.pop();
                 },
-                icon: const Icon(Icons.arrow_back, color: Color(0xFF191B25)),
+                icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Enter your phone number',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF191B25),
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                   height: 1.25,
                   letterSpacing: -0.64,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 "We'll send you an OTP to verify.",
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  color: Color(0xFF434656),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 40),
@@ -78,9 +72,9 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
               Container(
                 height: 64,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   border: Border.all(
-                    color: authState.error != null ? const Color(0xFFBA1A1A) : const Color(0xFFC3C5D9),
+                    color: authState.error != null ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.outlineVariant,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -88,23 +82,21 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: const BoxDecoration(
-                        border: Border(right: BorderSide(color: Color(0xFFC3C5D9))),
-                        color: Color(0xFFEDEDFB),
-                        borderRadius: BorderRadius.only(
+                      decoration: BoxDecoration(
+                        border: Border(right: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomLeft: Radius.circular(8),
                         ),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Text(
                             '+91',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF191B25),
                             ),
                           ),
                         ],
@@ -116,17 +108,14 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                         child: TextField(
                           controller: _phoneController,
                           readOnly: true, // using custom keypad
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF191B25),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: '000 000 0000',
-                            hintStyle: TextStyle(
-                              color: Color(0xFFC3C5D9),
+                            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                             ),
                           ),
                         ),
@@ -138,7 +127,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                           _phoneController.clear();
                           setState(() {});
                         },
-                        icon: const Icon(Icons.close, color: Color(0xFF434656)),
+                        icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                   ],
                 ),
@@ -147,10 +136,8 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                 const SizedBox(height: 8),
                 Text(
                   authState.error!,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    color: Color(0xFFBA1A1A),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
                   ),
                 ),
               ],
@@ -174,11 +161,11 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEDEDFB),
+                        color: Theme.of(context).colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.backspace, color: Color(0xFF434656)),
+                      child: Center(
+                        child: Icon(Icons.backspace, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ),
                   ),
@@ -192,24 +179,21 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                 child: ElevatedButton(
                   onPressed: authState.isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003EC7),
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: authState.isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 24,
                           width: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary, strokeWidth: 2),
                         )
-                      : const Text(
+                      : Text(
                           'Send OTP',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             letterSpacing: 0.7,
                           ),
                         ),
@@ -231,18 +215,15 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFC3C5D9)),
+          color: Theme.of(context).colorScheme.surface,
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
           child: Text(
             value,
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF191B25),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

@@ -50,23 +50,19 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
     final isComplete = _controllers.every((c) => c.text.isNotEmpty);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           onPressed: () {
             if (context.canPop()) context.pop();
           },
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF191B25)),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
         ),
-        title: const Text(
+        title: Text(
           'TaskRunner',
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF003EC7),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         centerTitle: true,
@@ -80,13 +76,10 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 32),
-                    const Text(
+                    Text(
                       'Verify Phone',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF191B25),
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: -0.64,
                       ),
                     ),
@@ -94,19 +87,16 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          color: Color(0xFF434656),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         children: [
                           const TextSpan(text: 'We sent a 6-digit code to\n'),
                           TextSpan(
                             text: phone.isNotEmpty ? phone : '+91 000 000 0000',
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF191B25),
                             ),
                           ),
                         ],
@@ -125,11 +115,8 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
                             maxLength: 1,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 32,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF191B25),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             autofocus: index == 0,
                             decoration: InputDecoration(
@@ -137,17 +124,17 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                               counterText: "",
                               filled: true,
                               fillColor: authState.error != null
-                                  ? const Color(0xFFFBF8FF)
+                                  ? Theme.of(context).colorScheme.surface
                                   : _focusNodes[index].hasFocus
-                                      ? const Color(0xFFFFFFFF)
-                                      : const Color(0xFFFBF8FF),
+                                      ? Colors.white
+                                      : Theme.of(context).colorScheme.surface,
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(4),
                                 borderSide: BorderSide(
                                   width: 2,
                                   color: authState.error != null
-                                      ? const Color(0xFFBA1A1A)
-                                      : const Color(0xFFC3C5D9),
+                                      ? Theme.of(context).colorScheme.error
+                                      : Theme.of(context).colorScheme.outlineVariant,
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -155,8 +142,8 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                                 borderSide: BorderSide(
                                   width: 2,
                                   color: authState.error != null
-                                      ? const Color(0xFFBA1A1A)
-                                      : const Color(0xFF003EC7),
+                                      ? Theme.of(context).colorScheme.error
+                                      : Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ),
@@ -170,15 +157,13 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error, color: Color(0xFFBA1A1A), size: 20),
+                          Icon(Icons.error, color: Theme.of(context).colorScheme.error, size: 20),
                           const SizedBox(width: 4),
                           Text(
                             authState.error!,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14,
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFFBA1A1A),
                             ),
                           ),
                         ],
@@ -187,13 +172,10 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                     const SizedBox(height: 32),
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
+                      child: Text(
                         'Resend in 0:28',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF003EC7),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -203,9 +185,9 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
             ),
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFBF8FF),
-                border: Border(top: BorderSide(color: Color(0xFFC3C5D9))),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -213,26 +195,23 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                 child: ElevatedButton(
                   onPressed: (!isComplete || authState.isLoading) ? null : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003EC7),
-                    disabledBackgroundColor: const Color(0xFFE1E1EF),
-                    foregroundColor: Colors.white,
-                    disabledForegroundColor: const Color(0xFF434656),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    disabledBackgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    disabledForegroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                   child: authState.isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 24,
                           width: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary, strokeWidth: 2),
                         )
-                      : const Text(
+                      : Text(
                           'Verify',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             letterSpacing: 0.7,
                           ),
                         ),

@@ -9,28 +9,24 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF), // surface
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFBF8FF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF002B92)),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
+        title: Text(
           'Settings',
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF002B92),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
-            color: const Color(0xFFC4C5D7),
+            color: Theme.of(context).colorScheme.outlineVariant,
             height: 1.0,
           ),
         ),
@@ -41,7 +37,7 @@ class SettingsScreen extends ConsumerWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFC4C5D7)),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
@@ -53,20 +49,23 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             children: [
               _buildListTile(
+                context,
                 icon: Icons.info,
                 title: 'App Version (v1.0.4)',
                 onTap: () {},
                 showChevron: false,
               ),
-              const Divider(height: 1, color: Color(0xFFC4C5D7)),
+              Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
               _buildListTile(
+                context,
                 icon: Icons.support_agent,
                 title: 'Support Contact',
                 onTap: () {},
                 showChevron: true,
               ),
-              const Divider(height: 1, color: Color(0xFFC4C5D7)),
+              Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
               _buildListTile(
+                context,
                 icon: Icons.logout,
                 title: 'Log out',
                 isDestructive: true,
@@ -85,7 +84,8 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildListTile(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -100,22 +100,20 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             Icon(
               icon,
-              color: isDestructive ? const Color(0xFFBA1A1A) : const Color(0xFF5F5E5E),
+              color: isDestructive ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.outline,
             ),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: isDestructive ? const Color(0xFFBA1A1A) : const Color(0xFF1A1B23),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: isDestructive ? FontWeight.w700 : FontWeight.w400,
+                  color: isDestructive ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
             if (showChevron)
-              const Icon(Icons.chevron_right, color: Color(0xFF5F5E5E)),
+              Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
           ],
         ),
       ),

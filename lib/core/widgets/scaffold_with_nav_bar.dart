@@ -57,9 +57,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: child,
       bottomNavigationBar: SafeArea(
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFBF8FF),
-            border: Border(top: BorderSide(color: Color(0xFFC3C5D9), width: 1.0)),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1.0)),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
@@ -78,21 +78,20 @@ class ScaffoldWithNavBar extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         decoration: BoxDecoration(
-                          color: isActive ? const Color(0xFF0052FF) : Colors.transparent,
+                          color: isActive ? Theme.of(context).colorScheme.primary : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Icon(
                           isActive ? item['activeIcon'] as IconData : item['icon'] as IconData,
-                          color: isActive ? Colors.white : const Color(0xFF434656),
+                          color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         item['label'] as String,
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                          color: isActive ? const Color(0xFF191B25) : const Color(0xFF434656),
+                          color: isActive ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],

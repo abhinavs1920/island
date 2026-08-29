@@ -8,7 +8,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF), // background/surface
+      backgroundColor: Theme.of(context).colorScheme.surface, // background/surface
       body: Stack(
         children: [
           // Background decorative element
@@ -19,7 +19,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                color: const Color(0xFF0052FF).withOpacity(0.2), // primary-container with opacity
+                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2), // primary-container with opacity
                 shape: BoxShape.circle,
               ),
               // we can use a BackdropFilter for blur, but simplicity is fine
@@ -35,49 +35,44 @@ class MatchedConfirmationScreen extends StatelessWidget {
                   Container(
                     width: 96,
                     height: 96,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF0052FF), // primary-container
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer, // primary-container
                       shape: BoxShape.circle,
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.check_circle,
                         size: 48,
-                        color: Color(0xFFDFE3FF), // on-primary-container
+                        color: Theme.of(context).colorScheme.onPrimaryContainer, // on-primary-container
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     "You're matched!",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF191B25),
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.64,
-                    ),
+                    style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   ),
-                  const SizedBox(height: 4),
-                  const Text(
+                  SizedBox(height: 4),
+                  Text(
                     'Message the requester to confirm details.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Color(0xFF434656), // on-surface-variant
+                      color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
                       fontSize: 16,
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   
                   // Contextual Details Card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFFFFF), // surface-container-lowest
+                      color: Theme.of(context).colorScheme.surface, // surface-container-lowest
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFC3C5D9)),
-                      boxShadow: const [
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                      boxShadow: [
                         BoxShadow(color: Color(0x0D000000), offset: Offset(0, 1), blurRadius: 2),
                       ],
                     ),
@@ -86,37 +81,32 @@ class MatchedConfirmationScreen extends StatelessWidget {
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE7E7F5), // surface-container-high
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerHigh, // surface-container-high
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.person, color: Color(0xFF003EC7)),
+                          child: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
                                 'Alex Johnson',
-                                style: TextStyle(
-                                  color: Color(0xFF191B25),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.7,
-                                ),
+                                style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                               ),
                               Text(
                                 'Delivery to Downtown',
                                 style: TextStyle(
-                                  color: Color(0xFF434656),
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 14,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.chevron_right, color: Color(0xFF737688)),
+                        Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
                       ],
                     ),
                   ),
@@ -136,8 +126,8 @@ class MatchedConfirmationScreen extends StatelessWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    const Color(0xFFFBF8FF),
-                    const Color(0xFFFBF8FF).withOpacity(0.0),
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surface.withOpacity(0.0),
                   ],
                 ),
               ),
@@ -148,23 +138,19 @@ class MatchedConfirmationScreen extends StatelessWidget {
                     context.pushReplacement('/chat/$taskId');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003EC7),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.chat, size: 20),
                       SizedBox(width: 4),
                       Text(
                         'Open chat',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.7,
-                        ),
+                        style: Theme.of(context).textTheme.labelLarge!,
                       ),
                     ],
                   ),

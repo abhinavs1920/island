@@ -15,7 +15,7 @@ class SystemErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8FF),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -26,26 +26,26 @@ class SystemErrorScreen extends StatelessWidget {
                 Container(
                   width: 96,
                   height: 96,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFDAD6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.errorContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.error_outline,
-                      color: Color(0xFFBA1A1A),
+                      color: Theme.of(context).colorScheme.error,
                       size: 48,
                     ),
                   ),
                 ),
                 const SizedBox(height: 32),
-                const Text(
+                Text(
                   'Something went wrong',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.64,
-                    color: Color(0xFF1A1B23),
+                    color: Theme.of(context).colorScheme.onSurface,
                     height: 1.25,
                   ),
                   textAlign: TextAlign.center,
@@ -57,7 +57,7 @@ class SystemErrorScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF434654),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.44,
                   ),
                   textAlign: TextAlign.center,
@@ -71,14 +71,14 @@ class SystemErrorScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: onRetry ?? () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF002B92),
-                        foregroundColor: const Color(0xFFFFFFFF),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         'Retry',
                         style: TextStyle(
                           fontSize: 14,
@@ -93,9 +93,9 @@ class SystemErrorScreen extends StatelessWidget {
                 TextButton(
                   onPressed: onContactSupport ?? () {},
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF002B92),
+                    foregroundColor: Theme.of(context).colorScheme.primary,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Contact Support',
                     style: TextStyle(
                       fontSize: 14,

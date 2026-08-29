@@ -167,7 +167,7 @@ class ChatScreen extends ConsumerWidget {
           Container(
             color: Theme.of(context).colorScheme.surface,
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
             ),
             child: Column(

@@ -148,7 +148,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/history/cancelled-gig-detail',
-        builder: (context, state) => const CancelledGigDetailScreen(),
+        builder: (context, state) => CancelledGigDetailScreen(gigId: state.extra as String?),
       ),
       GoRoute(
         path: '/misc/change-phone-number',
@@ -160,7 +160,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/history/completed-gig-detail',
-        builder: (context, state) => const CompletedGigDetailScreen(),
+        builder: (context, state) => CompletedGigDetailScreen(gigId: state.extra as String?),
       ),
       GoRoute(
         path: '/earnings/daily-weekly-targets',

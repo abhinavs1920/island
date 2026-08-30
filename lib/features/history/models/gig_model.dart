@@ -1,4 +1,4 @@
-enum GigStatus { completed, cancelled }
+enum GigStatus { completed, cancelled, failed }
 
 class GigModel {
   final String id;
@@ -8,6 +8,8 @@ class GigModel {
   final DateTime date;
   final String pickupAddress;
   final String dropoffAddress;
+
+  double get payoutAmount => amount; // added alias for requirement
 
   GigModel({
     required this.id,

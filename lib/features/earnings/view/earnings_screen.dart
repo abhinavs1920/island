@@ -1,3 +1,4 @@
+import '../../history/models/gig_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,7 +8,7 @@ class EarningsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Hardcoded to 0.0 for v1
-    const double totalEarnings = 0.0;
+    const double totalEarnings = 850.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -97,6 +98,36 @@ class _EarningsSummaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mockRecentGigs = [
+      GigModel(
+        id: 'gig_1',
+        type: 'Grocery Delivery',
+        status: GigStatus.completed,
+        amount: 120.0,
+        date: DateTime.now().subtract(const Duration(hours: 2)),
+        pickupAddress: 'Local Market',
+        dropoffAddress: '123 Main St',
+      ),
+      GigModel(
+        id: 'gig_2',
+        type: 'AC Repair',
+        status: GigStatus.cancelled,
+        amount: 50.0,
+        date: DateTime.now().subtract(const Duration(days: 1)),
+        pickupAddress: 'Hardware Store',
+        dropoffAddress: '456 Elm St',
+      ),
+      GigModel(
+        id: 'gig_3',
+        type: 'Furniture Move',
+        status: GigStatus.failed,
+        amount: 80.0,
+        date: DateTime.now().subtract(const Duration(days: 2)),
+        pickupAddress: 'IKEA',
+        dropoffAddress: '789 Oak Ave',
+      ),
+    ];
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -109,11 +140,18 @@ class _EarningsSummaryView extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
                   Text(
-                    'TOTAL EARNINGS',
+                    'Today\'s Earnings',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                       letterSpacing: 1.2,
@@ -121,9 +159,9 @@ class _EarningsSummaryView extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '\$${totalEarnings.toStringAsFixed(2)}',
+                    '₹${totalEarnings.toStringAsFixed(0)}',
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: const Color(0xFF003ec7), // Primary Blue
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -138,120 +176,128 @@ class _EarningsSummaryView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            Text(
-              'Recent Gigs',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recent Gigs',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                TextButton(
+                  onPressed: () => context.push('/history/gig-history-list'),
+                  child: Text(
+                    'See All',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: const Color(0xFF003ec7),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            _buildGigItem(
-              context,
-              icon: Icons.shopping_cart,
-              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
-              iconColor: Theme.of(context).colorScheme.primary,
-              title: 'Grocery Delivery',
-              date: 'Jun 12, 10:30 AM',
-              amount: '+\$15.50',
-            ),
-            const SizedBox(height: 12),
-            _buildGigItem(
-              context,
-              icon: Icons.local_shipping,
-              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
-              iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
-              title: 'Furniture Move',
-              date: 'Jun 10, 2:15 PM',
-              amount: '+\$45.00',
-            ),
-            const SizedBox(height: 12),
-            _buildGigItem(
-              context,
-              icon: Icons.grass,
-              iconBgColor: Theme.of(context).colorScheme.surfaceVariant,
-              iconColor: Theme.of(context).colorScheme.secondary,
-              title: 'Lawn Mowing',
-              date: 'Jun 08, 9:00 AM',
-              amount: '+\$30.00',
-            ),
-            const SizedBox(height: 24),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'View All Earnings History',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: mockRecentGigs.length,
+              itemBuilder: (context, index) {
+                final gig = mockRecentGigs[index];
+                final isCompleted = gig.status == GigStatus.completed;
+                final isCancelled = gig.status == GigStatus.cancelled;
+                final isFailed = gig.status == GigStatus.failed;
+                
+                String displayAmount = isCompleted ? '+ ₹${gig.payoutAmount.toInt()}' : '₹0';
+                Color amountColor = isCompleted ? Colors.green : Theme.of(context).colorScheme.onSurfaceVariant;
+                if (isFailed) {
+                  amountColor = Theme.of(context).colorScheme.error;
+                }
+
+                String badgeText = isCompleted ? 'Completed' : (isCancelled ? 'Cancelled' : 'Failed');
+                Color badgeColor = isCompleted ? Colors.green : Theme.of(context).colorScheme.error;
+
+                return GestureDetector(
+                  onTap: () {
+                    if (isCompleted) {
+                      context.push('/history/completed-gig-detail', extra: gig.id);
+                    } else {
+                      context.push('/history/cancelled-gig-detail', extra: gig.id);
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          Container(width: 4, color: badgeColor),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.surfaceVariant,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      isCompleted ? Icons.check_circle : Icons.cancel, 
+                                      color: badgeColor, 
+                                      size: 20
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          gig.type,
+                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          badgeText,
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: badgeColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    displayAmount,
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      color: amountColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGigItem(
-    BuildContext context, {
-    required IconData icon,
-    required Color iconBgColor,
-    required Color iconColor,
-    required String title,
-    required String date,
-    required String amount,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              Container(width: 4, color: Theme.of(context).colorScheme.primary),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: iconBgColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: iconColor, size: 20),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      date,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.outline, // 0xFF5F5E5E maps generally to outline or onSurfaceVariant
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  amount,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

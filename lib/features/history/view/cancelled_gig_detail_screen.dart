@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CancelledGigDetailScreen extends StatelessWidget {
-  const CancelledGigDetailScreen({Key? key}) : super(key: key);
+  final String? gigId;
+  const CancelledGigDetailScreen({Key? key, this.gigId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

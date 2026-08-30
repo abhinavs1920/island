@@ -240,7 +240,7 @@ class DailyWeeklyTargetsScreen extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: colorScheme.primaryContainer,
                   foregroundColor: colorScheme.onPrimaryContainer,
-                  minimumSize: const Size.infinity,
+                  minimumSize: const Size.infinite,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

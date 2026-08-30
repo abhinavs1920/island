@@ -14,6 +14,8 @@ class IsOnlineController extends Notifier<bool> {
   Future<void> toggle(bool value) async {
     state = value;
   }
+
+  void updateLocation() {}
 }
 
 final gigsProvider = AsyncNotifierProvider<GigsController, List<Gig>>(() {

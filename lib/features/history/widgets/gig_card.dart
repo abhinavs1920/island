@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/gig_model.dart';
-import 'package:intl/intl.dart';
 
 class GigCard extends StatelessWidget {
   final GigModel gig;
@@ -87,7 +86,7 @@ class GigCard extends StatelessWidget {
                           Icon(Icons.calendar_today, size: 18, color: colorScheme.onSurfaceVariant),
                           const SizedBox(width: 8),
                           Text(
-                            DateFormat('MMM dd, hh:mm a').format(gig.date),
+                            gig.date.toString(),
                             style: textTheme.labelMedium?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),

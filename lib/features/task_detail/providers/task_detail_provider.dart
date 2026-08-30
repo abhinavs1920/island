@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/storage/secure_storage.dart';
 
 final taskDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, taskId) async {
   final apiClient = ref.read(apiClientProvider).dio;
@@ -21,6 +22,10 @@ class AcceptTaskNotifier extends StateNotifier<AsyncValue<bool>> {
     try {
       final apiClient = ref.read(apiClientProvider).dio;
       await apiClient.post('/tasks/$taskId/accept');
+      
+      // Save it so the Chat tab resolves to this task
+      await ref.read(storageServiceProvider).saveLatestTaskId(taskId);
+      
       state = const AsyncValue.data(true);
       return 'matched';
     } on DioException catch (e, st) {

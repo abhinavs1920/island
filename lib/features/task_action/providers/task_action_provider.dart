@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/storage/secure_storage.dart';
 
 class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
   final Ref ref;
@@ -13,6 +14,7 @@ class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
         'rating': 5,
         'rating_note': 'Great job',
       });
+      await ref.read(storageServiceProvider).clearLatestTaskId();
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -26,6 +28,7 @@ class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
       await apiClient.post('/tasks/$taskId/cancel', data: {
         'reason': 'User requested',
       });
+      await ref.read(storageServiceProvider).clearLatestTaskId();
       state = const AsyncValue.data(null);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

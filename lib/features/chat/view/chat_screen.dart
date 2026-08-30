@@ -10,7 +10,24 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (taskId == 'empty' || taskId == 'latest') {
+    if (taskId == 'latest') {
+      final activeTaskAsync = ref.watch(activeTaskIdProvider);
+      return activeTaskAsync.when(
+        data: (activeId) {
+          if (activeId == null || activeId.isEmpty) {
+            return const ChatScreen(taskId: 'empty');
+          }
+          return ChatScreen(taskId: activeId);
+        },
+        loading: () => Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          body: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
+        ),
+        error: (e, st) => Scaffold(body: Center(child: Text('Error loading chat'))),
+      );
+    }
+
+    if (taskId == 'empty') {
       return Scaffold(
         
         appBar: AppBar(

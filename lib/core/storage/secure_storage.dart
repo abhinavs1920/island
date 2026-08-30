@@ -22,6 +22,11 @@ class SecureStorage {
     await _storage.delete(key: _tokenKey);
     await _storage.delete(key: _refreshTokenKey);
   }
+
+  static const _latestTaskKey = 'latest_task_id';
+  Future<void> saveLatestTaskId(String taskId) => _storage.write(key: _latestTaskKey, value: taskId);
+  Future<String?> getLatestTaskId() => _storage.read(key: _latestTaskKey);
+  Future<void> clearLatestTaskId() => _storage.delete(key: _latestTaskKey);
 }
 
 final storageServiceProvider = Provider((ref) => SecureStorage(ref.watch(secureStorageProvider)));

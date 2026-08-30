@@ -2,6 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/utils/remote_logger.dart';
+import '../../../core/storage/secure_storage.dart';
+
+final activeTaskIdProvider = FutureProvider<String?>((ref) async {
+  return await ref.read(storageServiceProvider).getLatestTaskId();
+});
 
 // State class for chat messages
 class ChatState {

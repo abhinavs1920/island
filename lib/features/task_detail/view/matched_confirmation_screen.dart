@@ -135,7 +135,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.pushReplacement('/chat/$taskId');
+                    context.go('/chat/$taskId');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,

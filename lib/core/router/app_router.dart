@@ -84,7 +84,7 @@ import '../../features/taskchat/view/masked_call_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/onboarding/splash',
+    initialLocation: '/home',
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -102,6 +102,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/earnings',
             builder: (context, state) => const EarningsScreen(),
+          ),
+          GoRoute(
+            path: '/taskchat/task-chat',
+            builder: (context, state) => const TaskChatScreen(),
           ),
         ],
       ),
@@ -380,10 +384,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/taskchat/task-chat-reconnecting',
         builder: (context, state) => const TaskChatReconnectingScreen(),
       ),
-      GoRoute(
-        path: '/taskchat/task-chat',
-        builder: (context, state) => const TaskChatScreen(),
-      ),
+
       GoRoute(
         path: '/taskdetail/task-detail-error',
         builder: (context, state) => const TaskDetailErrorScreen(),

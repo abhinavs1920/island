@@ -1,67 +1,28 @@
+import '../providers/history_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import '../models/gig_model.dart';
 import '../widgets/gig_card.dart';
 import 'package:go_router/go_router.dart';
 
-class GigHistoryListScreen extends StatefulWidget {
+class GigHistoryListScreen extends ConsumerStatefulWidget {
   const GigHistoryListScreen({Key? key}) : super(key: key);
 
   @override
-  State<GigHistoryListScreen> createState() => _GigHistoryListScreenState();
+  ConsumerState<GigHistoryListScreen> createState() => _GigHistoryListScreenState();
 }
 
-class _GigHistoryListScreenState extends State<GigHistoryListScreen> {
+class _GigHistoryListScreenState extends ConsumerState<GigHistoryListScreen> {
   int _selectedTabIndex = 0;
 
-  final List<GigModel> _mockGigs = [
-    GigModel(
-      id: '1',
-      type: 'Grocery Delivery',
-      status: GigStatus.completed,
-      amount: 15.50,
-      date: DateTime(2023, 6, 12, 10, 30),
-      pickupAddress: 'Indiranagar',
-      dropoffAddress: 'Koramangala',
-    ),
-    GigModel(
-      id: '2',
-      type: 'Package Delivery',
-      status: GigStatus.completed,
-      amount: 22.00,
-      date: DateTime(2023, 6, 11, 14, 15),
-      pickupAddress: 'Whitefield',
-      dropoffAddress: 'MG Road',
-    ),
-    GigModel(
-      id: '3',
-      type: 'AC Repair',
-      status: GigStatus.cancelled,
-      amount: 12.50,
-      date: DateTime(2023, 6, 10, 9, 0),
-      pickupAddress: 'HSR Layout',
-      dropoffAddress: 'BTM Layout',
-    ),
-    GigModel(
-      id: '4',
-      type: 'Food Delivery',
-      status: GigStatus.completed,
-      amount: 8.75,
-      date: DateTime(2023, 6, 9, 18, 45),
-      pickupAddress: 'Jayanagar',
-      dropoffAddress: 'JP Nagar',
-    ),
-  ];
+  
 
-  @override
+    @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final filteredGigs = _mockGigs.where((gig) {
-      if (_selectedTabIndex == 1) return gig.status == GigStatus.completed;
-      if (_selectedTabIndex == 2) return gig.status == GigStatus.cancelled;
-      return true;
-    }).toList();
+    final historyAsync = ref.watch(gigHistoryProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -83,7 +44,13 @@ class _GigHistoryListScreenState extends State<GigHistoryListScreen> {
           ),
         ),
         centerTitle: true,
-        actions: const [SizedBox(width: 48)],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh, color: colorScheme.onSurfaceVariant),
+            onPressed: () => ref.read(gigHistoryProvider.notifier).refresh(),
+          ),
+          const SizedBox(width: 8)
+        ],
       ),
       body: Column(
         children: [
@@ -102,20 +69,37 @@ class _GigHistoryListScreenState extends State<GigHistoryListScreen> {
           ),
           const Divider(height: 1),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: filteredGigs.length,
-              itemBuilder: (context, index) {
-                final gig = filteredGigs[index];
-                return GigCard(
-                  gig: gig,
-                  onTap: () {
-                    // Assuming router handles these paths, otherwise this is just an example
-                    if (gig.status == GigStatus.completed) {
-                      context.push('/history/completed/${gig.id}');
-                    } else {
-                      context.push('/history/cancelled/${gig.id}');
-                    }
+            child: historyAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => Center(
+                child: Text('Error loading history: $err', style: TextStyle(color: colorScheme.error)),
+              ),
+              data: (gigs) {
+                final filteredGigs = gigs.where((gig) {
+                  if (_selectedTabIndex == 1) return gig.status == GigStatus.completed;
+                  if (_selectedTabIndex == 2) return gig.status == GigStatus.cancelled || gig.status == GigStatus.failed;
+                  return true;
+                }).toList();
+
+                if (filteredGigs.isEmpty) {
+                  return const Center(child: Text('No gigs found.'));
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: filteredGigs.length,
+                  itemBuilder: (context, index) {
+                    final gig = filteredGigs[index];
+                    return GigCard(
+                      gig: gig,
+                      onTap: () {
+                        if (gig.status == GigStatus.completed) {
+                          context.push('/history/completed-gig-detail', extra: gig.id);
+                        } else {
+                          context.push('/history/cancelled-gig-detail', extra: gig.id);
+                        }
+                      },
+                    );
                   },
                 );
               },

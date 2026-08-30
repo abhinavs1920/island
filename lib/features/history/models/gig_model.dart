@@ -20,4 +20,31 @@ class GigModel {
     required this.pickupAddress,
     required this.dropoffAddress,
   });
+
+  factory GigModel.fromJson(Map<String, dynamic> json) {
+    // Parse status
+    GigStatus parsedStatus = GigStatus.completed;
+    final statusStr = json['status']?.toString().toLowerCase() ?? '';
+    if (statusStr == 'cancelled') parsedStatus = GigStatus.cancelled;
+    else if (statusStr == 'failed') parsedStatus = GigStatus.failed;
+    
+    // Parse amount from budget_max or budget_min if available
+    double parsedAmount = 0.0;
+    if (json['budget_max'] != null) {
+      parsedAmount = (json['budget_max'] as num).toDouble();
+    } else if (json['budget_min'] != null) {
+      parsedAmount = (json['budget_min'] as num).toDouble();
+    }
+
+    return GigModel(
+      id: json['id']?.toString() ?? '',
+      type: json['category']?.toString() ?? 'Task',
+      status: parsedStatus,
+      amount: parsedAmount,
+      date: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
+      pickupAddress: 'Pickup location (lat: ${json['lat']}, lng: ${json['lng']})',
+      dropoffAddress: 'Dropoff location', // Not provided by backend in snippet
+    );
+  }
 }
+

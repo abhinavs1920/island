@@ -6,6 +6,17 @@ class TaskActionNotifier extends StateNotifier<AsyncValue<void>> {
   final Ref ref;
   TaskActionNotifier(this.ref) : super(const AsyncValue.data(null));
 
+  Future<void> startTask(String taskId) async {
+    state = const AsyncValue.loading();
+    try {
+      final apiClient = ref.read(apiClientProvider).dio;
+      await apiClient.post('/tasks/$taskId/start');
+      state = const AsyncValue.data(null);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
   Future<void> completeTask(String taskId) async {
     state = const AsyncValue.loading();
     try {

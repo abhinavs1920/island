@@ -12,7 +12,7 @@ class RateCustomerScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const CircleAvatar(size: 48, child: Icon(Icons.person, size: 32)),
+            const CircleAvatar(radius: 24, child: Icon(Icons.person, size: 32)),
             const SizedBox(height: 16),
             Text('How was your trip with John?', style: theme.textTheme.titleLarge),
             const SizedBox(height: 32),

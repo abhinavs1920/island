@@ -100,7 +100,7 @@ class GigCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(8),
-                          border: BorderSide(color: colorScheme.surfaceContainerHighest),
+                          border: Border.all(color: colorScheme.surfaceContainerHighest),
                         ),
                         child: Row(
                           children: [

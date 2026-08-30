@@ -160,7 +160,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/history/completed-gig-detail',
-        builder: (context, state) => CompletedGigDetailScreen(gigId: state.extra as String?),
+        builder: (context, state) => CompletedGigDetailScreen(gigId: state.extra as String? ?? '8492'),
       ),
       GoRoute(
         path: '/earnings/daily-weekly-targets',

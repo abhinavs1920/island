@@ -265,7 +265,7 @@ class _WithdrawEarningsScreenState extends State<WithdrawEarningsScreen> {
               style: FilledButton.styleFrom(
                 backgroundColor: colorScheme.primaryContainer,
                 foregroundColor: colorScheme.onPrimaryContainer,
-                minimumSize: const Size.infinite,
+                minimumSize: const Size(double.infinity, 50),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),

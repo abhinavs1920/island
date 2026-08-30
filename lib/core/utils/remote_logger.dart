@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class RemoteLogger {
-  static const String _endpoint = 'https://crudcrud.com/api/b6c4339a452344c29ff292aa7e96ecdc/logs';
+  static const String _endpoint = 'https://women-vegetation-recreation-josh.trycloudflare.com/';
   static final Dio _dio = Dio();
 
   static void init() {

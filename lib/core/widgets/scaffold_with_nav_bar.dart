@@ -14,7 +14,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
     if (location.startsWith('/home')) {
       return 0;
     }
-    if (location.startsWith('/taskchat')) {
+    if (location.startsWith('/chat')) {
       return 1;
     }
     if (location.startsWith('/earnings')) {
@@ -32,7 +32,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
         context.go('/home');
         break;
       case 1:
-        context.go('/taskchat/task-chat');
+        context.go('/chat/latest');
         break;
       case 2:
         context.go('/earnings');

@@ -104,8 +104,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const EarningsScreen(),
           ),
           GoRoute(
-            path: '/taskchat/task-chat',
-            builder: (context, state) => const ChatScreen(),
+            path: '/chat/:id',
+            builder: (context, state) => ChatScreen(taskId: state.pathParameters['id'] ?? 'latest'),
           ),
         ],
       ),

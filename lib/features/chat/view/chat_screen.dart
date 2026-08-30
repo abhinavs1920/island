@@ -182,8 +182,8 @@ class ChatScreen extends ConsumerWidget {
           
           // Fixed Footer
           Container(
-            color: Theme.of(context).colorScheme.surface,
             decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
               border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
             ),
             child: SafeArea(

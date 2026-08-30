@@ -43,8 +43,8 @@ class ApiClient {
                 '$baseUrl/auth/refresh',
                 data: {'refresh_token': refreshToken},
               );
-              final newToken = response.data['token'];
-              final newRefresh = response.data['refresh_token'];
+              final newToken = response.data['access_token'];
+              final newRefresh = response.data['refresh_token'] ?? refreshToken;
               await _storage.saveTokens(token: newToken, refreshToken: newRefresh);
               
               // Retry original request

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/chat_provider.dart';
+import '../../../core/storage/secure_storage.dart';
 import '../../task_action/view/cancel_task_sheet.dart';
 import '../../task_action/view/complete_task_sheet.dart';
 
+// ─── Router shell: resolve 'latest' task id ──────────────────────────────────
 class ChatScreen extends ConsumerWidget {
   final String taskId;
   const ChatScreen({Key? key, required this.taskId}) : super(key: key);
@@ -15,51 +18,137 @@ class ChatScreen extends ConsumerWidget {
       return activeTaskAsync.when(
         data: (activeId) {
           if (activeId == null || activeId.isEmpty) {
-            return const ChatScreen(taskId: 'empty');
+            return const _EmptyChatScreen();
           }
-          return ChatScreen(taskId: activeId);
+          return _ActiveChatScreen(taskId: activeId);
         },
         loading: () => Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)),
         ),
-        error: (e, st) => Scaffold(body: Center(child: Text('Error loading chat'))),
+        error: (e, st) => const _EmptyChatScreen(),
       );
     }
 
     if (taskId == 'empty') {
-      return Scaffold(
-        
-        appBar: AppBar(
-          title: const Text('Chat'),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1.0),
-            child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
-          ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.outline),
-              SizedBox(height: 16),
-              Text(
-                'No active chat',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Accept a task to start chatting.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-              ),
-            ],
-          ),
-        ),
-      );
+      return const _EmptyChatScreen();
     }
 
-    final messagesAsync = ref.watch(chatMessagesProvider(taskId));
-    final textController = TextEditingController();
+    return _ActiveChatScreen(taskId: taskId);
+  }
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+class _EmptyChatScreen extends StatelessWidget {
+  const _EmptyChatScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.outline),
+            const SizedBox(height: 16),
+            Text(
+              'No active chat',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Accept a task to start chatting.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Active chat (StatefulWidget to manage controllers) ──────────────────────
+class _ActiveChatScreen extends ConsumerStatefulWidget {
+  final String taskId;
+  const _ActiveChatScreen({required this.taskId});
+
+  @override
+  ConsumerState<_ActiveChatScreen> createState() => _ActiveChatScreenState();
+}
+
+class _ActiveChatScreenState extends ConsumerState<_ActiveChatScreen> {
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  Future<void> _sendMessage() async {
+    final text = _textController.text.trim();
+    if (text.isEmpty) return;
+    _textController.clear();
+    try {
+      await ref.read(chatActionProvider).sendMessage(widget.taskId, text);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to send message')),
+        );
+      }
+    }
+  }
+
+  Future<void> _onCancelTapped() async {
+    await CancelTaskSheet.show(context, widget.taskId);
+    if (!mounted) return;
+    // If task was cancelled the latest_task_id was cleared — navigate home
+    final latestId = await ref.read(storageServiceProvider).getLatestTaskId();
+    if (latestId == null && mounted) {
+      context.go('/home');
+    }
+  }
+
+  Future<void> _onCompleteTapped() async {
+    await CompleteTaskSheet.show(context, widget.taskId);
+    if (!mounted) return;
+    // If task was completed the latest_task_id was cleared — navigate home
+    final latestId = await ref.read(storageServiceProvider).getLatestTaskId();
+    if (latestId == null && mounted) {
+      context.go('/home');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final messagesAsync = ref.watch(chatMessagesProvider(widget.taskId));
+
+    // Auto-scroll when new messages arrive
+    ref.listen(chatMessagesProvider(widget.taskId), (prev, next) {
+      if (next.messages.length != (prev?.messages.length ?? 0)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+      }
+    });
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
@@ -68,8 +157,8 @@ class ChatScreen extends ConsumerWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('AC Repair', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-            Text('Indiranagar', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            Text('Active Task', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+            Text('Chat with requester', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
           ],
         ),
         actions: [
@@ -78,21 +167,19 @@ class ChatScreen extends ConsumerWidget {
             child: Center(
               child: Text(
                 'Online',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.primary),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: Theme.of(context).colorScheme.outlineVariant, // outline-variant
-            height: 1.0,
-          ),
+          child: Container(color: Theme.of(context).colorScheme.outlineVariant, height: 1.0),
         ),
       ),
       body: Column(
         children: [
+          // ── Message List ──────────────────────────────────────────────────
           Expanded(
             child: Builder(
               builder: (context) {
@@ -100,87 +187,43 @@ class ChatScreen extends ConsumerWidget {
                   return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary));
                 }
                 if (messagesAsync.error != null && messagesAsync.messages.isEmpty) {
-                  return Center(child: Text('Error loading chat: ${messagesAsync.error}'));
+                  return Center(
+                    child: Text(
+                      'Could not load messages.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  );
                 }
-                
+
                 final messages = messagesAsync.messages;
+                if (messages.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No messages yet. Say hello!',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  );
+                }
+
                 return ListView.builder(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    final msg = messages[index];
-                    final isMe = msg['sender_type'] == 'rider'; 
-                    
-                    if (!isMe) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.secondaryContainer,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
-                            ),
-                            Flexible(
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainer,
-                                  borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(12),
-                                    bottomLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12),
-                                    topLeft: Radius.circular(2),
-                                  ),
-                                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-                                ),
-                                child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
-                              ),
-                            ),
-                            const SizedBox(width: 48), // limit width
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(width: 48), // limit width
-                            Flexible(
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    bottomLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12),
-                                    topRight: Radius.circular(2),
-                                  ),
-                                ),
-                                child: Text(msg['content'] ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
+                    final msg = messages[index] as Map<String, dynamic>;
+                    final isMe = msg['sender_type'] == 'rider';
+                    return _ChatBubble(message: msg, isMe: isMe);
                   },
                 );
               },
             ),
           ),
-          
-          // Fixed Footer
+
+          // ── Footer ───────────────────────────────────────────────────────
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -194,99 +237,183 @@ class ChatScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Cancel / Complete buttons
                     Row(
                       children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 48,
-                        child: OutlinedButton(
-                          onPressed: () => CancelTaskSheet.show(context, taskId),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Theme.of(context).colorScheme.onSurface,
-                            side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 2),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: Text('Cancel task', style: Theme.of(context).textTheme.labelLarge),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: () => CompleteTaskSheet.show(context, taskId),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.secondary, // Complete green
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        Expanded(
+                          child: SizedBox(
+                            height: 48,
+                            child: OutlinedButton(
+                              onPressed: _onCancelTapped,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Theme.of(context).colorScheme.onSurface,
+                                side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 2),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              child: Text(
+                                'Cancel task',
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
                             ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.check_circle, size: 20),
-                              SizedBox(width: 4),
-                              Text('Mark complete', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
-                            ],
                           ),
                         ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: SizedBox(
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: _onCompleteTapped,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).colorScheme.secondary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.check_circle, size: 20),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Mark complete',
+                                    style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Message input
+                    Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Theme.of(context).colorScheme.outline),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextField(
+                              controller: _textController,
+                              textCapitalization: TextCapitalization.sentences,
+                              decoration: InputDecoration(
+                                hintText: 'Type a message...',
+                                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
+                                isDense: true,
+                              ),
+                              onSubmitted: (_) => _sendMessage(),
+                            ),
+                          ),
+                          Container(
+                            width: 36,
+                            height: 36,
+                            margin: const EdgeInsets.only(right: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(Icons.send, color: Colors.white, size: 18),
+                              onPressed: _sendMessage,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Theme.of(context).colorScheme.outline),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.add_circle, color: Theme.of(context).colorScheme.outline),
-                        onPressed: () {},
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: textController,
-                          decoration: const InputDecoration(
-                            hintText: 'Type a message...',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 32,
-                        height: 32,
-                        margin: const EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(Icons.send, color: Colors.white, size: 16),
-                          onPressed: () async {
-                            final text = textController.text;
-                            if (text.isNotEmpty) {
-                              textController.clear();
-                              try {
-                                await ref.read(chatActionProvider).sendMessage(taskId, text);
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send message')));
-                              }
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Chat bubble ─────────────────────────────────────────────────────────────
+class _ChatBubble extends StatelessWidget {
+  final Map<String, dynamic> message;
+  final bool isMe;
+  const _ChatBubble({required this.message, required this.isMe});
+
+  @override
+  Widget build(BuildContext context) {
+    final content = message['content'] as String? ?? '';
+
+    if (!isMe) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
+            ),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                    topLeft: Radius.circular(2),
+                  ),
+                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                ),
+                child: Text(
+                  content,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
+            ),
+            const SizedBox(width: 48),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(width: 48),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                  topRight: Radius.circular(2),
+                ),
+              ),
+              child: Text(
+                content,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
               ),
             ),
           ),

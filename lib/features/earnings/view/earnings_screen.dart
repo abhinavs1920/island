@@ -67,7 +67,7 @@ class _EmptyEarningsView extends StatelessWidget {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
-                  context.pop();
+                  context.go('/home');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,

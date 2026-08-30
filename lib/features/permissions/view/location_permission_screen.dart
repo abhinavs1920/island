@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LocationPermissionScreen extends StatelessWidget {
   const LocationPermissionScreen({super.key});
@@ -47,7 +48,7 @@ class LocationPermissionScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: () => context.go('/permission/notification'),
                   child: const Text('Allow location'),
                 ),
               ),
@@ -56,7 +57,7 @@ class LocationPermissionScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => context.go('/home'),
                   child: const Text('Not now'),
                 ),
               ),

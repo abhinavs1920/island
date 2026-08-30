@@ -48,11 +48,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK (Fast ARM64 only)
-        run: flutter build apk --target-platform android-arm64
+      - name: Build APK (Debug ARM64)
+        run: flutter build apk --debug --target-platform android-arm64
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: release-apks
-          path: build/app/outputs/flutter-apk/*-release.apk
+          name: debug-apks
+          path: build/app/outputs/flutter-apk/*-debug.apk

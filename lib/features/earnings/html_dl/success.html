@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payout Initiated - TaskRunner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed": "#001452",
+                      "inverse-primary": "#b7c4ff",
+                      "surface-bright": "#fbf8ff",
+                      "inverse-surface": "#2f3039",
+                      "info-blue": "#1e40af",
+                      "on-secondary-fixed-variant": "#474647",
+                      "on-tertiary-container": "#ffaa94",
+                      "surface-dim": "#d9d9e4",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#2551d8",
+                      "primary-container": "#003ec7",
+                      "warning-red": "#991b1b",
+                      "on-primary": "#ffffff",
+                      "success-emerald": "#10b981",
+                      "on-primary-container": "#adbcff",
+                      "outline": "#747686",
+                      "on-secondary-fixed": "#1c1b1c",
+                      "error": "#ba1a1a",
+                      "on-background": "#1a1b23",
+                      "outline-variant": "#c4c5d7",
+                      "inverse-on-surface": "#f0f0fb",
+                      "tertiary-container": "#952301",
+                      "surface": "#fbf8ff",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#e5e2e1",
+                      "on-primary-fixed-variant": "#0038b6",
+                      "background": "#fbf8ff",
+                      "surface-container-highest": "#e2e1ed",
+                      "on-surface-variant": "#434654",
+                      "on-error-container": "#93000a",
+                      "tertiary": "#6d1600",
+                      "on-secondary-container": "#636262",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#e2dfdf",
+                      "secondary-fixed-dim": "#c8c6c6",
+                      "surface-muted": "#fbf8ff",
+                      "warning-bg": "#fee2e2",
+                      "surface-container-low": "#f3f2fe",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#ffdbd2",
+                      "surface-container": "#ededf8",
+                      "primary-fixed": "#dde1ff",
+                      "primary-fixed-dim": "#b7c4ff",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#891f00",
+                      "success-light": "#d1fae5",
+                      "info-bg": "#dbeafe",
+                      "surface-lowest": "#ffffff",
+                      "on-surface": "#1a1b23",
+                      "on-tertiary-fixed": "#3c0800",
+                      "surface-container-high": "#e8e7f3",
+                      "tertiary-fixed-dim": "#ffb4a1",
+                      "secondary": "#5f5e5e",
+                      "surface-variant": "#e2e1ed",
+                      "primary": "#002b92"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "672px",
+                      "unit": "4px",
+                      "touch-target": "48px",
+                      "margin": "16px",
+                      "stack-gap": "12px",
+                      "gutter": "20px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "label-bold": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-bold": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar intentionally omitted per suppression rule for transactional/success screens -->
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-gutter max-w-container-max mx-auto w-full pb-24 pt-16">
+<!-- Success Animation / Icon -->
+<div class="mb-8 relative flex items-center justify-center w-24 h-24 rounded-full bg-success-light border-4 border-success-emerald/20 shadow-sm">
+<span class="material-symbols-outlined text-success-emerald text-5xl" style="font-variation-settings: 'FILL' 1;">
+                check_circle
+            </span>
+<!-- Subtle pulse ring -->
+<div class="absolute inset-0 rounded-full border-2 border-success-emerald animate-ping opacity-20"></div>
+</div>
+<!-- Headline -->
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2 text-center tracking-tight">Payout Initiated!</h1>
+<!-- Withdrawn Amount -->
+<div class="font-display-lg text-display-lg text-primary mb-6 text-center tracking-tight">
+            $250.00
+        </div>
+<!-- Transaction Details Card -->
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6 mb-8 relative overflow-hidden group hover:scale-[0.98] transition-transform duration-200">
+<!-- Accent Bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex flex-col gap-stack-gap ml-2">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 0;">account_balance</span>
+<div>
+<p class="font-label-md text-label-md text-secondary">Destination</p>
+<p class="font-body-md text-body-md text-on-surface">Chase Bank ending in •••• 4821</p>
+</div>
+</div>
+<div class="h-px bg-outline-variant/50 w-full my-1"></div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 0;">schedule</span>
+<div>
+<p class="font-label-md text-label-md text-secondary">Estimated Arrival</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">1-2 business days</p>
+</div>
+</div>
+<div class="h-px bg-outline-variant/50 w-full my-1"></div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+<div>
+<p class="font-label-md text-label-md text-secondary">Reference ID</p>
+<p class="font-body-md text-body-md text-on-surface font-mono text-sm">TXN-8472-A9F</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-touch-target bg-primary-container text-on-primary-container font-headline-lg-mobile text-headline-lg-mobile rounded-lg flex items-center justify-center hover:bg-primary-container/90 active:scale-95 transition-all duration-200 shadow-sm mt-4">
+            Back to Earnings
+        </button>
+<a class="mt-6 font-label-bold text-label-bold text-primary hover:underline flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+            Need help with this transfer?
+        </a>
+</main>
+<!-- BottomNavBar intentionally omitted per suppression rule for transactional/success screens -->
+</body></html>

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class MatchedConfirmationScreen extends StatelessWidget {
-  final String taskId;
-  const MatchedConfirmationScreen({Key? key, required this.taskId}) : super(key: key);
+  const MatchedConfirmationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // background/surface
+      backgroundColor: Theme.of(context).colorScheme.surface, // background/surface
       body: Stack(
         children: [
           // Background decorative element
@@ -47,32 +45,34 @@ class MatchedConfirmationScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     "You're matched!",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      letterSpacing: -0.64,
+                    ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'Message the requester to confirm details.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
-                      fontSize: 16,
                       height: 1.5,
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   
                   // Contextual Details Card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface, // surface-container-lowest
+                      color: Theme.of(context).colorScheme.surfaceContainerLowest, // surface-container-lowest
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(color: Color(0x0D000000), offset: Offset(0, 1), blurRadius: 2),
                       ],
                     ),
@@ -87,20 +87,22 @@ class MatchedConfirmationScreen extends StatelessWidget {
                           ),
                           child: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Alex Johnson',
-                                style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  letterSpacing: 0.7,
+                                ),
                               ),
                               Text(
                                 'Delivery to Downtown',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  fontSize: 14,
                                 ),
                               ),
                             ],
@@ -120,7 +122,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20 + MediaQuery.paddingOf(context).bottom, top: 16),
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
@@ -135,22 +137,25 @@ class MatchedConfirmationScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.go('/chat/$taskId');
+                    // Navigate to chat
+                    Navigator.pushReplacementNamed(context, '/chat');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.chat, size: 20),
-                      SizedBox(width: 4),
+                      const Icon(Icons.chat, size: 20),
+                      const SizedBox(width: 4),
                       Text(
                         'Open chat',
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          letterSpacing: 0.7,
+                        ),
                       ),
                     ],
                   ),

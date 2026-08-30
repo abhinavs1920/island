@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'gig_model.dart';
+import '../models/gig_model.dart';
 
 class GigCard extends StatelessWidget {
   final Gig gig;

@@ -19,20 +19,12 @@ class CancelTaskSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(taskActionProvider);
-    
-    ref.listen<AsyncValue<void>>(taskActionProvider, (previous, next) {
-      if (next.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to cancel task: ${next.error}')));
-      } else if (!next.isLoading && previous?.isLoading == true) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task cancelled successfully!')));
-      }
-    });
 
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface, // surface
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)), // outline-variant
       ),
       child: SafeArea(
         child: Padding(
@@ -62,34 +54,35 @@ class CancelTaskSheet extends ConsumerWidget {
                     ),
                     child: Icon(Icons.warning, color: Theme.of(context).colorScheme.onErrorContainer), // on-error-container
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Text(
                     'Cancel this task?',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'This action cannot be undone. Please select a reason if you wish to proceed.',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
-                  fontSize: 16,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               
               // Chips
               Row(
                 children: [
                   _buildChip(context, 'Requester unreachable'),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   _buildChip(context, 'Changed my mind'),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Divider(color: Theme.of(context).colorScheme.outlineVariant, height: 1),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               
               SizedBox(
                 width: double.infinity,
@@ -97,9 +90,10 @@ class CancelTaskSheet extends ConsumerWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.error, // error
-                    foregroundColor: Colors.white,
+                    foregroundColor: Theme.of(context).colorScheme.onError, // on-error
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
+                    elevation: 0,
+                  ),
                   onPressed: state.isLoading ? null : () async {
                     await ref.read(taskActionProvider.notifier).cancelTask(taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {
@@ -107,18 +101,18 @@ class CancelTaskSheet extends ConsumerWidget {
                     }
                   },
                   child: state.isLoading 
-                    ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onError, strokeWidth: 2))
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.cancel, size: 20),
-                          SizedBox(width: 8),
-                          Text('Confirm cancel', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white)),
+                          const Icon(Icons.cancel, size: 20),
+                          const SizedBox(width: 8),
+                          Text('Confirm cancel', style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7)),
                         ],
                       ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -127,7 +121,7 @@ class CancelTaskSheet extends ConsumerWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.onSurface, // on-surface
                   ),
-                  child: Text('Never mind', style: Theme.of(context).textTheme.labelLarge!),
+                  child: Text('Never mind', style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7)),
                 ),
               ),
             ],
@@ -149,7 +143,10 @@ class CancelTaskSheet extends ConsumerWidget {
       alignment: Alignment.center,
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+          letterSpacing: 0.7,
+        ),
       ),
     );
   }

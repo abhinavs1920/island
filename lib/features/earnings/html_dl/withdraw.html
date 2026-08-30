@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TaskRunner - Withdrawal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "warning-red": "#991b1b",
+                            "on-error": "#ffffff",
+                            "surface-muted": "#fbf8ff",
+                            "primary-fixed-dim": "#b7c4ff",
+                            "outline": "#747686",
+                            "surface-bright": "#fbf8ff",
+                            "on-secondary-fixed-variant": "#474647",
+                            "primary": "#002b92",
+                            "secondary": "#5f5e5e",
+                            "tertiary-fixed-dim": "#ffb4a1",
+                            "on-tertiary-fixed-variant": "#891f00",
+                            "warning-bg": "#fee2e2",
+                            "surface-container-low": "#f3f2fe",
+                            "on-primary-container": "#adbcff",
+                            "info-bg": "#dbeafe",
+                            "on-tertiary-container": "#ffaa94",
+                            "on-error-container": "#93000a",
+                            "on-secondary-container": "#636262",
+                            "outline-variant": "#c4c5d7",
+                            "success-light": "#d1fae5",
+                            "on-primary-fixed": "#001452",
+                            "error": "#ba1a1a",
+                            "surface-container-highest": "#e2e1ed",
+                            "on-tertiary-fixed": "#3c0800",
+                            "on-secondary-fixed": "#1c1b1c",
+                            "tertiary-container": "#952301",
+                            "on-secondary": "#ffffff",
+                            "success-emerald": "#10b981",
+                            "on-primary-fixed-variant": "#0038b6",
+                            "background": "#fbf8ff",
+                            "inverse-surface": "#2f3039",
+                            "tertiary-fixed": "#ffdbd2",
+                            "on-background": "#1a1b23",
+                            "surface-tint": "#2551d8",
+                            "surface-container-high": "#e8e7f3",
+                            "on-primary": "#ffffff",
+                            "secondary-container": "#e2dfdf",
+                            "primary-fixed": "#dde1ff",
+                            "error-container": "#ffdad6",
+                            "inverse-on-surface": "#f0f0fb",
+                            "on-surface-variant": "#434654",
+                            "inverse-primary": "#b7c4ff",
+                            "surface-dim": "#d9d9e4",
+                            "primary-container": "#003ec7",
+                            "surface-container": "#ededf8",
+                            "secondary-fixed": "#e5e2e1",
+                            "on-tertiary": "#ffffff",
+                            "secondary-fixed-dim": "#c8c6c6",
+                            "tertiary": "#6d1600",
+                            "surface-container-lowest": "#ffffff",
+                            "info-blue": "#1e40af",
+                            "surface-variant": "#e2e1ed",
+                            "surface-lowest": "#ffffff",
+                            "surface": "#fbf8ff",
+                            "on-surface": "#1a1b23"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "gutter": "20px",
+                            "unit": "4px",
+                            "stack-gap": "12px",
+                            "container-max": "672px",
+                            "margin": "16px",
+                            "touch-target": "48px"
+                    },
+                    "fontFamily": {
+                            "headline-lg": [
+                                    "Inter"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ],
+                            "label-bold": [
+                                    "Inter"
+                            ],
+                            "label-md": [
+                                    "Inter"
+                            ],
+                            "headline-lg-mobile": [
+                                    "Inter"
+                            ],
+                            "display-lg": [
+                                    "Inter"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "headline-lg": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "32px",
+                                            "letterSpacing": "-0.01em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "body-md": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "24px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "label-bold": [
+                                    "14px",
+                                    {
+                                            "lineHeight": "20px",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "label-md": [
+                                    "14px",
+                                    {
+                                            "lineHeight": "20px",
+                                            "fontWeight": "500"
+                                    }
+                            ],
+                            "headline-lg-mobile": [
+                                    "20px",
+                                    {
+                                            "lineHeight": "28px",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "display-lg": [
+                                    "32px",
+                                    {
+                                            "lineHeight": "40px",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "800"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "18px",
+                                    {
+                                            "lineHeight": "26px",
+                                            "fontWeight": "500"
+                                    }
+                            ]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased pb-[100px] pt-[80px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flat no shadows">
+<div class="flex justify-between items-center px-gutter h-touch-target max-w-container-max mx-auto">
+<button class="h-touch-target w-touch-target flex items-center justify-center text-primary hover:bg-surface-container active:scale-95 transition-transform duration-100 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Withdrawal</h1>
+<div class="w-touch-target"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-container-max mx-auto px-gutter mt-margin flex flex-col gap-stack-gap">
+<!-- Available Balance Card -->
+<section class="bg-surface-container-low rounded-xl p-margin shadow-sm border border-outline-variant relative overflow-hidden active:scale-98 transition-all duration-200 cursor-pointer">
+<div class="absolute top-0 left-0 bottom-0 w-unit bg-primary"></div>
+<div class="flex flex-col ml-unit">
+<span class="font-label-md text-label-md text-secondary mb-1">Available Balance</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-display-lg text-display-lg text-on-surface">₹1,240.00</span>
+</div>
+</div>
+</section>
+<!-- Withdrawal Amount Input -->
+<section class="bg-surface-lowest rounded-xl p-margin shadow-sm border border-outline-variant flex flex-col gap-2 relative">
+<div class="absolute top-0 left-0 bottom-0 w-unit bg-tertiary-container"></div>
+<label class="font-label-bold text-label-bold text-on-surface ml-unit" for="withdrawalAmount">Withdrawal Amount</label>
+<div class="relative flex items-center ml-unit">
+<span class="absolute left-4 font-headline-lg text-headline-lg text-secondary">₹</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-container rounded-lg border border-outline-variant text-on-surface font-headline-lg text-headline-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" id="withdrawalAmount" inputmode="decimal" placeholder="0.00" type="number"/>
+</div>
+<p class="text-sm text-secondary ml-unit mt-1">Min. withdrawal ₹100.00</p>
+</section>
+<!-- Bank Details Card -->
+<section class="bg-surface-container rounded-xl p-margin shadow-sm border border-outline-variant flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<h3 class="font-label-bold text-label-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+                    Linked Bank Account
+                </h3>
+<button class="font-label-md text-label-md text-primary hover:underline px-2 py-1 active:scale-95 transition-transform">Change</button>
+</div>
+<div class="flex items-center gap-3 bg-surface-lowest p-3 rounded-lg border border-outline-variant">
+<div class="w-10 h-10 bg-surface-variant rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="museum">museum</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">HDFC Bank</span>
+<span class="font-label-md text-label-md text-secondary tracking-widest">• •••• 1234</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action Area -->
+<div class="fixed bottom-[80px] w-full max-w-container-max left-1/2 -translate-x-1/2 px-gutter pb-margin bg-surface bg-opacity-90 backdrop-blur-sm z-40 flex flex-col gap-2">
+<p class="text-center text-xs text-secondary mb-2 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="info">info</span>
+            Estimated processing time: 24-48 hours
+        </p>
+<button class="w-full h-[56px] bg-primary-container text-on-primary-container font-headline-lg-mobile text-headline-lg-mobile rounded-xl shadow-sm hover:bg-primary hover:text-on-primary active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+            Withdraw Now
+             <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface shadow-sm md:hidden">
+<div class="flex justify-around items-center h-20 px-gutter border-t border-outline-variant max-w-container-max mx-auto">
+<a class="flex flex-col items-center justify-center text-secondary px-margin py-unit hover:bg-surface-container-high active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary px-margin py-unit hover:bg-surface-container-high active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-md text-label-md mt-1">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-margin py-unit hover:bg-surface-container-high active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-md text-label-md mt-1">Earnings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary px-margin py-unit hover:bg-surface-container-high active:scale-98 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

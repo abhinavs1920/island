@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'home_controller.dart';
-import 'gig_card.dart';
-import 'gig_model.dart';
+import '../providers/home_controller.dart';
+import '../widgets/gig_card.dart';
+import '../models/gig_model.dart';
+import '../widgets/network_error_body.dart';
+import '../widgets/surge_alert_dialog.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -59,6 +61,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             padding: const EdgeInsets.only(right: 20.0),
             child: Row(
               children: [
+                IconButton(
+                  icon: const Icon(Icons.local_fire_department, color: Colors.orange),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SurgeAlertDialog(
+                        onGoOnline: () {
+                          Navigator.pop(context);
+                          ref.read(isOnlineProvider.notifier).toggle(true);
+                        },
+                        onDismiss: () => Navigator.pop(context),
+                      ),
+                    );
+                  },
+                ),
                 Text(
                   isOnline ? 'ONLINE' : 'OFFLINE',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -84,6 +101,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
       ),
       body: SafeArea(
         child: isOnline ? _buildOnlineBody(gigsAsync) : _buildOfflineBody(),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(context, Icons.assignment, 'Tasks', true),
+                _buildNavItem(context, Icons.chat_bubble_outline, 'Chat', false),
+                _buildNavItem(context, Icons.payments_outlined, 'Earnings', false),
+                _buildNavItem(context, Icons.person_outline, 'Profile', false),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isActive) {
+    return InkWell(
+      onTap: () {},
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: isActive
+            ? BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(24),
+              )
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isActive
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -260,8 +334,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               );
             },
             loading: () => _buildLoadingSkeletons(),
-            error: (err, _) => Center(
-              child: Text('Error: $err', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            error: (err, _) => NetworkErrorBody(
+              onRetry: () {
+                ref.invalidate(gigsProvider);
+              },
             ),
           ),
         ],

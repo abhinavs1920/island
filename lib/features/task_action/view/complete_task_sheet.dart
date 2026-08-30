@@ -26,19 +26,11 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(taskActionProvider);
-    
-    ref.listen<AsyncValue<void>>(taskActionProvider, (previous, next) {
-      if (next.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to complete task: ${next.error}')));
-      } else if (!next.isLoading && previous?.isLoading == true) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task completed successfully!')));
-      }
-    });
 
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface, // surface
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)), // md says rounded-t-xl which is 12px
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)), // md says rounded-t-xl which is 12px
         border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant), left: BorderSide(color: Theme.of(context).colorScheme.outlineVariant), right: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
       ),
       child: SafeArea(
@@ -65,17 +57,18 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
               
               Text(
                 'Task Completed',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'How was your experience with Alex?',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 8),
+              Text(
+                'How was your experience with Alex?',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
+                ),
+              ),
+              const SizedBox(height: 24),
               
               // Stars
               Row(
@@ -86,7 +79,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     padding: const EdgeInsets.all(8),
                     icon: Icon(
                       Icons.star,
-                      color: index < _rating ? Color(0xFFEAB308) : Theme.of(context).colorScheme.outlineVariant,
+                      color: index < _rating ? const Color(0xFFEAB308) : Theme.of(context).colorScheme.outlineVariant,
                     ),
                     onPressed: () {
                       setState(() {
@@ -96,23 +89,26 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                   );
                 }),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               
               // Feedback
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Additional Feedback (Optional)',
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    letterSpacing: 0.7,
+                  ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               TextField(
                 maxLines: 4,
                 decoration: InputDecoration(
                   hintText: 'Leave a note about the drop-off...',
                   hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                  fillColor: Theme.of(context).colorScheme.surface,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainerLowest, // surface
                   filled: true,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -124,7 +120,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               
               // Actions
               SizedBox(
@@ -132,11 +128,12 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                 height: 56,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary, // success
+                    backgroundColor: const Color(0xFF166534), // success
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    side: BorderSide(color: Theme.of(context).colorScheme.secondary),
-                    ),
+                    side: const BorderSide(color: Color(0xFF14532D)),
+                    elevation: 0,
+                  ),
                   onPressed: state.isLoading ? null : () async {
                     await ref.read(taskActionProvider.notifier).completeTask(widget.taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {
@@ -144,18 +141,18 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     }
                   },
                   child: state.isLoading 
-                    ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Submit and finish', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white)),
-                          SizedBox(width: 8),
-                          Icon(Icons.check_circle, size: 20),
+                          Text('Submit and finish', style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7)),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.check_circle, size: 20),
                         ],
                       ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -164,7 +161,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary, // primary
                   ),
-                  child: Text('Skip rating', style: Theme.of(context).textTheme.labelLarge!),
+                  child: Text('Skip rating', style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7)),
                 ),
               ),
             ],

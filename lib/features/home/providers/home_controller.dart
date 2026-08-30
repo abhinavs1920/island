@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
-import 'gig_model.dart';
+import '../models/gig_model.dart';
 
 final isOnlineProvider = NotifierProvider<IsOnlineController, bool>(() {
   return IsOnlineController();

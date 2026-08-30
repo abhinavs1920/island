@@ -14,8 +14,8 @@ void main() async {
   await Firebase.initializeApp();
   
   await Supabase.initialize(
-    url: const String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://placeholder.supabase.co'),
-    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'placeholder_anon_key'),
+    url: const String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://gpepmnsfsxjlsuentdta.supabase.co'),
+    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdwZXBtbnNmc3hqbHN1ZW50ZHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3NjQzNjIsImV4cCI6MjEwMzM0MDM2Mn0.gE7PlhE21Hy0o8HLUgXFEAFxxZLf86BRMfNxcXOmAKU'),
   );
 
   runApp(const ProviderScope(child: RiderApp()));

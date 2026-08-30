@@ -92,7 +92,7 @@ class ChatScreen extends ConsumerWidget {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final msg = messages[index];
-                    final isMe = msg['sender_id'] == 'me'; // example logic
+                    final isMe = msg['sender_type'] == 'rider'; 
                     
                     if (!isMe) {
                       return Padding(
@@ -175,9 +175,10 @@ class ChatScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-              children: [
-                Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Row(
+                      children: [
                     Expanded(
                       child: SizedBox(
                         height: 48,

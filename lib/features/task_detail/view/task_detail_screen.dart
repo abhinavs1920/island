@@ -233,9 +233,9 @@ class TaskDetailScreen extends ConsumerWidget {
                       final status = await ref.read(acceptTaskProvider.notifier).acceptTask(taskId);
                       if (!context.mounted) return;
                       if (status == 'matched') {
-                        Navigator.pushNamed(context, '/matched_confirmation');
+                        context.push('/taskdetail/matched-confirmation');
                       } else if (status == 'race_lost') {
-                        Navigator.pushNamed(context, '/race_lost');
+                        context.push('/taskdetail/race-lost');
                       } else if (status == 'error') {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error accepting task')));
                       }

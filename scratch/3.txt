@@ -1,0 +1,280 @@
+  <html class="light">
+    <head class="">
+      <meta class="">
+      </meta>
+      <meta class="">
+      </meta>
+      <title class="">
+        TaskRunner - Arrived at Pickup
+      </title>
+      <script class="">
+      </script>
+      <link class="">
+      </link>
+      <link class="">
+      </link>
+      <link class="">
+      </link>
+      <script class="">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#ededf8",
+                        "on-secondary-fixed-variant": "#474647",
+                        "surface-container-high": "#e8e7f3",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-muted": "#fbf8ff",
+                        "info-bg": "#dbeafe",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-lowest": "#ffffff",
+                        "on-primary-fixed": "#001452",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e1ed",
+                        "on-tertiary-container": "#ffaa94",
+                        "primary-container": "#003ec7",
+                        "inverse-primary": "#b7c4ff",
+                        "success-light": "#d1fae5",
+                        "secondary-fixed-dim": "#c8c6c6",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#2551d8",
+                        "surface-container-low": "#f3f2fe",
+                        "tertiary": "#6d1600",
+                        "info-blue": "#1e40af",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2f3039",
+                        "warning-bg": "#fee2e2",
+                        "warning-red": "#991b1b",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-container": "#636262",
+                        "on-background": "#1a1b23",
+                        "surface-bright": "#fbf8ff",
+                        "on-secondary-fixed": "#1c1b1c",
+                        "on-tertiary-fixed-variant": "#891f00",
+                        "on-surface-variant": "#434654",
+                        "on-surface": "#1a1b23",
+                        "tertiary-fixed-dim": "#ffb4a1",
+                        "secondary-container": "#e2dfdf",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#adbcff",
+                        "surface": "#fbf8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d9d9e4",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "tertiary-fixed": "#ffdbd2",
+                        "on-error": "#ffffff",
+                        "background": "#fbf8ff",
+                        "outline": "#747686",
+                        "primary": "#002b92",
+                        "surface-variant": "#e2e1ed",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "on-tertiary-fixed": "#3c0800",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#952301",
+                        "primary-fixed": "#dde1ff",
+                        "outline-variant": "#c4c5d7",
+                        "success-emerald": "#10b981"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target": "48px",
+                        "margin": "16px",
+                        "container-max": "672px",
+                        "gutter": "20px",
+                        "unit": "4px",
+                        "stack-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-bold": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+      </script>
+      <style class="">
+        body { font-family: 'Inter', sans-serif; }
+      </style>
+      <style class="">
+        body {
+      min-height: max(884px, 100dvh);
+    }
+      </style>
+    </head>
+    <body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
+      <header class="fixed top-0 w-full z-50 bg-surface dark:bg-on-background shadow-sm border-b border-outline-variant dark:border-on-surface-variant flex items-center justify-between px-margin h-touch-target max-w-container-max mx-auto md:hidden">
+        <button class="h-touch-target w-touch-target flex items-center justify-center text-primary dark:text-primary-fixed hover:bg-surface-container-low transition-colors active:scale-95 transition-transform rounded-full">
+          <span class="material-symbols-outlined">
+            menu
+          </span>
+        </button>
+        <div class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim">
+          TaskRunner
+        </div>
+        <button class="h-touch-target px-4 flex items-center justify-center font-label-bold text-success-emerald hover:bg-surface-container-low transition-colors active:scale-95 transition-transform rounded-full">
+          Online
+        </button>
+      </header>
+      <div class="h-touch-target md:hidden">
+      </div>
+      <main class="flex-1 max-w-container-max mx-auto w-full px-gutter py-stack-gap pb-24 flex flex-col gap-stack-gap">
+        <section class="bg-success-light rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm border border-outline-variant">
+          <div class="w-20 h-20 bg-success-emerald rounded-full flex items-center justify-center mb-4 shadow-lg text-on-primary">
+            <span class="material-symbols-outlined text-[40px]">
+              check
+            </span>
+          </div>
+          <h1 class="font-display-lg text-display-lg text-on-surface mb-2">
+            Arrived at Pickup
+          </h1>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Ready to collect the items.
+          </p>
+        </section>
+        <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden relative">
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary">
+          </div>
+          <div class="p-margin flex flex-col gap-margin pl-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface flex-shrink-0">
+                <span class="material-symbols-outlined">
+                  location_on
+                </span>
+              </div>
+              <div class="">
+                <h2 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Pickup Address
+                </h2>
+                <p class="font-body-lg text-body-lg text-on-surface">
+                  123 Maple Street, Indiranagar
+                </p>
+              </div>
+            </div>
+            <div class="h-px bg-outline-variant w-full">
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface flex-shrink-0">
+                <span class="material-symbols-outlined">
+                  person
+                </span>
+              </div>
+              <div class="">
+                <h2 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Customer Name
+                </h2>
+                <p class="font-body-lg text-body-lg text-on-surface">
+                  Sarah Jenkins
+                </p>
+              </div>
+            </div>
+            <div class="h-px bg-outline-variant w-full">
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface flex-shrink-0">
+                <span class="material-symbols-outlined">
+                  inventory_2
+                </span>
+              </div>
+              <div class="">
+                <h2 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Order Details
+                </h2>
+                <p class="font-body-lg text-body-lg text-on-surface">
+                  Grocery Order #9821
+                </p>
+                <div class="inline-flex items-center gap-1 bg-warning-bg text-warning-red px-2 py-1 rounded-md mt-2">
+                  <span class="material-symbols-outlined text-[14px]">
+                    fitness_center
+                  </span>
+                  <span class="font-label-bold text-[12px]">
+                    Heavy
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="flex gap-4">
+          <button class="flex-1 h-touch-target bg-surface-container-low border border-outline-variant rounded-xl flex items-center justify-center gap-2 font-label-bold text-label-bold text-primary hover:bg-surface-container transition-colors active:scale-95 shadow-sm">
+            <span class="material-symbols-outlined">
+              chat
+            </span>
+            Chat
+          </button>
+          <button class="flex-1 h-touch-target bg-surface-container-low border border-outline-variant rounded-xl flex items-center justify-center gap-2 font-label-bold text-label-bold text-primary hover:bg-surface-container transition-colors active:scale-95 shadow-sm">
+            <span class="material-symbols-outlined">
+              call
+            </span>
+            Call
+          </button>
+        </section>
+        <div class="flex-1">
+        </div>
+        <section class="mt-4">
+          <button class="w-full h-[56px] bg-primary-container text-on-primary-container font-headline-lg-mobile text-headline-lg-mobile rounded-xl shadow-lg hover:bg-primary transition-colors active:scale-[0.98] duration-200 flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined">
+              check_circle
+            </span>
+            Confirm Pickup
+          </button>
+        </section>
+      </main>
+      <nav class="fixed bottom-0 w-full z-50 rounded-t-xl border-t border-outline-variant dark:border-on-surface-variant shadow-lg fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-2 bg-surface dark:bg-on-background max-w-container-max mx-auto md:hidden">
+        <button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 hover:bg-surface-container-highest transition-colors active:scale-[0.98] transition-all duration-200">
+          <span class="material-symbols-outlined">
+            assignment
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Tasks
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 hover:bg-surface-container-highest transition-colors active:scale-[0.98] transition-all duration-200 px-4 rounded-full">
+          <span class="material-symbols-outlined">
+            chat
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Chat
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 hover:bg-surface-container-highest transition-colors active:scale-[0.98] transition-all duration-200 px-4 rounded-full">
+          <span class="material-symbols-outlined">
+            payments
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Earnings
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 hover:bg-surface-container-highest transition-colors active:scale-[0.98] transition-all duration-200 px-4 rounded-full">
+          <span class="material-symbols-outlined">
+            person
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Profile
+          </span>
+        </button>
+      </nav>
+      <div class="h-20 md:hidden">
+      </div>
+    </body>
+  </html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TaskRunner - Dropoff Arrived</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "warning-bg": "#fee2e2",
+                        "tertiary": "#6d1600",
+                        "surface-lowest": "#ffffff",
+                        "surface-container-highest": "#e2e1ed",
+                        "error": "#ba1a1a",
+                        "background": "#fbf8ff",
+                        "tertiary-fixed": "#ffdbd2",
+                        "surface-dim": "#d9d9e4",
+                        "on-primary-fixed": "#001452",
+                        "tertiary-container": "#952301",
+                        "info-blue": "#1e40af",
+                        "inverse-on-surface": "#f0f0fb",
+                        "warning-red": "#991b1b",
+                        "on-background": "#1a1b23",
+                        "surface-container-high": "#e8e7f3",
+                        "outline": "#747686",
+                        "success-emerald": "#10b981",
+                        "secondary": "#5f5e5e",
+                        "surface-muted": "#fbf8ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "on-surface": "#1a1b23",
+                        "primary-fixed": "#dde1ff",
+                        "surface-tint": "#2551d8",
+                        "on-tertiary-fixed-variant": "#891f00",
+                        "success-light": "#d1fae5",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#ededf8",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-primary-container": "#adbcff",
+                        "inverse-primary": "#b7c4ff",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c4c5d7",
+                        "surface": "#fbf8ff",
+                        "surface-bright": "#fbf8ff",
+                        "inverse-surface": "#2f3039",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#3c0800",
+                        "secondary-fixed-dim": "#c8c6c6",
+                        "primary": "#002b92",
+                        "on-secondary-container": "#636262",
+                        "surface-container-low": "#f3f2fe",
+                        "primary-container": "#003ec7",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#434654",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "info-bg": "#dbeafe",
+                        "tertiary-fixed-dim": "#ffb4a1",
+                        "on-tertiary-container": "#ffaa94",
+                        "on-secondary-fixed": "#1c1b1c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#474647",
+                        "secondary-container": "#e2dfdf",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e2e1ed"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-gap": "12px",
+                        "margin": "16px",
+                        "container-max": "672px",
+                        "gutter": "20px",
+                        "touch-target": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-bold": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen flex flex-col pt-16 pb-24 max-w-container-max mx-auto md:hidden">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-on-surface-variant shadow-sm flex items-center justify-between px-margin h-touch-target max-w-container-max mx-auto">
+<button class="h-touch-target w-touch-target flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors active:scale-95 text-on-surface-variant">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed">Task Detail</h1>
+<div class="h-touch-target flex items-center justify-center px-4 font-label-bold text-success-emerald">
+            Online
+        </div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow px-gutter py-6 flex flex-col gap-6 overflow-y-auto">
+<!-- Status Card -->
+<div class="bg-success-light rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm border border-success-emerald/20">
+<div class="bg-success-emerald text-on-primary rounded-full p-4 mb-4 shadow-md">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">You've arrived at the dropoff.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Please proceed to hand over the package.</p>
+</div>
+<!-- Task Info Details -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-margin flex flex-col gap-stack-gap">
+<div class="flex items-center gap-3">
+<div class="w-1 h-8 bg-primary rounded-full"></div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Order Number</p>
+<p class="font-body-lg text-body-lg text-on-surface font-bold">#8492</p>
+</div>
+</div>
+<div class="h-px bg-outline-variant w-full my-2"></div>
+<div class="flex items-center gap-3">
+<div class="w-1 h-8 bg-info-blue rounded-full"></div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Recipient</p>
+<p class="font-body-lg text-body-lg text-on-surface font-bold">Sarah Jenkins</p>
+</div>
+</div>
+</div>
+<!-- Address Section -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-margin flex flex-col gap-stack-gap relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<div class="pl-2">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary">location_on</span>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Dropoff Address</h3>
+</div>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface leading-tight">
+                    123 Maple Avenue,<br/>
+                    Suite 4B,<br/>
+                    Indiranagar
+                </p>
+</div>
+<div class="mt-4 rounded-lg overflow-hidden h-32 relative shadow-inner">
+<img class="w-full h-full object-cover" data-alt="A detailed map view showing an urban street layout with a distinct marker pinpointing a specific building in Indiranagar. The map style is clean, modern, and high-contrast, designed for quick legibility on a mobile device while riding. The color palette features light greys for roads, soft blue-greys for blocks, and a vibrant primary blue route line ending at a bright red destination pin." data-location="Indiranagar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp3yglfPXQRUzewp_WmQEARnvocIyMIb42tYRTsnlHiCRg79sMwZzIpgN1t76QKq_gksUvkFUHnlUy4xIbX-FLvx-0fRxnklBNFsRFApxUPHz_cuY0z1PRO_auueBud3fkQ7hK6sNfnInQWM8QbwtMw0NRQU8IRIVsyanjvWpm3FJUJeG_L-ez1rf3aD19KtfsBOBsZ-ibErT7TiJviIBjrgR0DvlPrh3nBnIZOGEmxrC7R8wMSg5Py8XJdlcCDdzEKK9QDCAHPVI"/>
+</div>
+</div>
+</main>
+<!-- Bottom CTA Fixed -->
+<div class="fixed bottom-[72px] left-0 w-full px-gutter py-4 bg-gradient-to-t from-surface to-transparent z-40 max-w-container-max mx-auto">
+<button class="w-full h-14 bg-primary-container text-on-primary font-headline-lg-mobile text-headline-lg-mobile rounded-xl shadow-lg hover:bg-primary-fixed-dim transition-colors active:scale-95 flex items-center justify-center gap-2">
+            Confirm Delivery
+            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-2 bg-surface dark:bg-on-background max-w-container-max mx-auto z-50 rounded-t-xl border-t border-outline-variant dark:border-on-surface-variant shadow-lg h-[72px]">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 active:scale-[0.98] transition-all duration-200">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-label-md text-label-md mt-1 hidden">Tasks</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+<span class="material-symbols-outlined text-2xl">chat</span>
+<span class="font-label-md text-label-md mt-1 hidden">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+<span class="material-symbols-outlined text-2xl">payments</span>
+<span class="font-label-md text-label-md mt-1 hidden">Earnings</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="font-label-md text-label-md mt-1 hidden">Profile</span>
+</button>
+</nav>
+</body></html>

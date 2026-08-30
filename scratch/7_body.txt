@@ -1,0 +1,202 @@
+  <body class="bg-primary text-on-primary h-screen w-full overflow-hidden relative font-body-lg text-body-lg">
+    <div class="absolute inset-0 w-full h-full z-0 opacity-80">
+      <canvas class="">
+      </canvas>
+      <script class="">
+        (function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_48');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+varying vec2 v_texCoord;
+
+void main() {
+    vec2 uv = v_texCoord;
+    
+    // Create a subtle, celebratory pulse effect
+    float pulse = 0.5 + 0.5 * sin(u_time * 2.0);
+    
+    // Background color: a deep, slightly shimmering blue/purple gradient
+    vec3 color1 = vec3(0.0, 0.24, 0.78); // Primary Blue #003ec7 scaled
+    vec3 color2 = vec3(0.05, 0.05, 0.2); // Darker base
+    
+    vec3 finalColor = mix(color2, color1, uv.y + pulse * 0.1);
+    
+    // Add some subtle "sparkle" noise
+    float noise = fract(sin(dot(uv * u_time, vec2(12.9898, 78.233))) * 43758.5453);
+    if (noise > 0.995) {
+        finalColor += vec3(0.8, 0.9, 1.0) * pulse;
+    }
+    
+    gl_FragColor = vec4(finalColor, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+      </script>
+    </div>
+    <div class="relative z-10 w-full h-full max-w-container-max mx-auto px-gutter flex flex-col justify-between pt-margin pb-8">
+      <header class="flex items-center w-full h-touch-target">
+        <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors active:scale-95 text-white">
+          <span class="material-symbols-outlined">
+            arrow_back
+          </span>
+        </button>
+      </header>
+      <section class="flex flex-col items-center text-center mt-8 mb-12">
+        <div class="w-24 h-24 rounded-full bg-success-emerald flex items-center justify-center mb-6 celebration-icon">
+          <span class="material-symbols-outlined text-white text-5xl">
+            check_circle
+          </span>
+        </div>
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-white mb-2 tracking-wide">
+          Gig Completed!
+        </h1>
+        <div class="mt-4 flex flex-col items-center">
+          <span class="font-label-bold text-label-bold text-white/80 uppercase mb-1">
+            Total Earnings
+          </span>
+          <span class="font-display-lg text-display-lg text-white">
+            ₹85.00
+          </span>
+        </div>
+      </section>
+      <section class="glass-panel rounded-xl p-margin mb-auto w-full">
+        <h2 class="font-label-bold text-label-bold text-white mb-4 border-b border-white/20 pb-2">
+          Gig Details
+        </h2>
+        <div class="grid grid-cols-2 gap-stack-gap">
+          <div class="flex items-start gap-3 p-2">
+            <span class="material-symbols-outlined text-white/70">
+              navigation
+            </span>
+            <div class="">
+              <p class="font-label-md text-label-md text-white/70">
+                Distance
+              </p>
+              <p class="font-body-md text-body-md text-white font-medium">
+                4.2 km
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-2">
+            <span class="material-symbols-outlined text-white/70">
+              schedule
+            </span>
+            <div class="">
+              <p class="font-label-md text-label-md text-white/70">
+                Duration
+              </p>
+              <p class="font-body-md text-body-md text-white font-medium">
+                28 mins
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-2">
+            <span class="material-symbols-outlined text-white/70">
+              payments
+            </span>
+            <div class="">
+              <p class="font-label-md text-label-md text-white/70">
+                Base Pay
+              </p>
+              <p class="font-body-md text-body-md text-white font-medium">
+                ₹65.00
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-2">
+            <span class="material-symbols-outlined text-success-light">
+              stars
+            </span>
+            <div class="">
+              <p class="font-label-md text-label-md text-white/70">
+                Bonus
+              </p>
+              <p class="font-body-md text-body-md text-success-light font-medium">
+                +₹20.00
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="flex flex-col gap-4 w-full mt-8">
+        <button class="w-full h-14 bg-white text-primary font-headline-lg-mobile text-headline-lg-mobile rounded-lg shadow-lg active:scale-[0.98] transition-transform hover:bg-surface-container-low flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">
+            star_rate
+          </span>
+          Rate Customer
+        </button>
+        <button class="w-full h-14 bg-transparent border-2 border-white text-white font-headline-lg-mobile text-headline-lg-mobile rounded-lg active:scale-[0.98] transition-transform hover:bg-white/10 flex items-center justify-center">
+          Go Back to Home
+        </button>
+      </section>
+    </div>
+  </body>

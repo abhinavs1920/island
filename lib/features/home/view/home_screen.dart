@@ -102,65 +102,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
       body: SafeArea(
         child: isOnline ? _buildOnlineBody(gigsAsync) : _buildOfflineBody(),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(context, Icons.assignment, 'Tasks', true),
-                _buildNavItem(context, Icons.chat_bubble_outline, 'Chat', false),
-                _buildNavItem(context, Icons.payments_outlined, 'Earnings', false),
-                _buildNavItem(context, Icons.person_outline, 'Profile', false),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isActive) {
-    return InkWell(
-      onTap: () {},
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: isActive
-            ? BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(24),
-              )
-            : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: isActive
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: isActive
-                    ? Theme.of(context).colorScheme.onPrimaryContainer
-                    : Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildOfflineBody() {
     return Center(

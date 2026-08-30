@@ -123,7 +123,6 @@ class _GigHistoryListScreenState extends State<GigHistoryListScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNav(colorScheme, textTheme),
     );
   }
 
@@ -156,71 +155,4 @@ class _GigHistoryListScreenState extends State<GigHistoryListScreen> {
     );
   }
 
-  Widget _buildBottomNav(ColorScheme colorScheme, TextTheme textTheme) {
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            offset: const Offset(0, -4),
-            blurRadius: 12,
-          ),
-        ],
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      child: SafeArea(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(Icons.assignment, 'Tasks', false, colorScheme, textTheme),
-            _buildNavItem(Icons.chat, 'Chat', false, colorScheme, textTheme),
-            _buildNavItem(Icons.payments, 'Earnings', true, colorScheme, textTheme),
-            _buildNavItem(Icons.person, 'Profile', false, colorScheme, textTheme),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive, ColorScheme colorScheme, TextTheme textTheme) {
-    if (isActive) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        decoration: BoxDecoration(
-          color: colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: colorScheme.onPrimaryContainer),
-            Text(
-              label,
-              style: textTheme.labelSmall?.copyWith(
-                color: colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: colorScheme.onSurfaceVariant),
-          Text(
-            label,
-            style: textTheme.labelSmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

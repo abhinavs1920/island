@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/task_action_provider.dart';
@@ -138,6 +139,7 @@ class _CompleteTaskSheetState extends ConsumerState<CompleteTaskSheet> {
                     await ref.read(taskActionProvider.notifier).completeTask(widget.taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {
                       Navigator.pop(context);
+                      context.push('/activegig/post-gig-summary');
                     }
                   },
                   child: state.isLoading 

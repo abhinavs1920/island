@@ -1,0 +1,127 @@
+  <body class="bg-surface text-on-surface h-screen flex flex-col pt-16 pb-24 max-w-container-max mx-auto md:hidden">
+    <header class="bg-surface dark:bg-on-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-on-surface-variant shadow-sm flex items-center justify-between px-margin h-touch-target max-w-container-max mx-auto">
+      <button class="h-touch-target w-touch-target flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors active:scale-95 text-on-surface-variant">
+        <span class="material-symbols-outlined text-2xl">
+          arrow_back
+        </span>
+      </button>
+      <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed">
+        Task Detail
+      </h1>
+      <div class="h-touch-target flex items-center justify-center px-4 font-label-bold text-success-emerald">
+        Online
+      </div>
+    </header>
+    <main class="flex-grow px-gutter py-6 flex flex-col gap-6 overflow-y-auto">
+      <div class="bg-success-light rounded-xl p-6 flex flex-col items-center justify-center text-center shadow-sm border border-success-emerald/20">
+        <div class="bg-success-emerald text-on-primary rounded-full p-4 mb-4 shadow-md">
+          <span class="material-symbols-outlined text-4xl">
+            check_circle
+          </span>
+        </div>
+        <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+          You've arrived at the dropoff.
+        </h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-2">
+          Please proceed to hand over the package.
+        </p>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-margin flex flex-col gap-stack-gap">
+        <div class="flex items-center gap-3">
+          <div class="w-1 h-8 bg-primary rounded-full">
+          </div>
+          <div class="">
+            <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+              Order Number
+            </p>
+            <p class="font-body-lg text-body-lg text-on-surface font-bold">
+              #8492
+            </p>
+          </div>
+        </div>
+        <div class="h-px bg-outline-variant w-full my-2">
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-1 h-8 bg-info-blue rounded-full">
+          </div>
+          <div class="">
+            <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+              Recipient
+            </p>
+            <p class="font-body-lg text-body-lg text-on-surface font-bold">
+              Sarah Jenkins
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-margin flex flex-col gap-stack-gap relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary">
+        </div>
+        <div class="pl-2">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-tertiary">
+              location_on
+            </span>
+            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+              Dropoff Address
+            </h3>
+          </div>
+          <p class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface leading-tight">
+            123 Maple Avenue,
+            <br class="">
+            </br>
+            Suite 4B,
+            <br class="">
+            </br>
+            Indiranagar
+          </p>
+        </div>
+        <div class="mt-4 rounded-lg overflow-hidden h-32 relative shadow-inner">
+          <img class="w-full h-full object-cover">
+          </img>
+        </div>
+      </div>
+    </main>
+    <div class="fixed bottom-[72px] left-0 w-full px-gutter py-4 bg-gradient-to-t from-surface to-transparent z-40 max-w-container-max mx-auto">
+      <button class="w-full h-14 bg-primary-container text-on-primary font-headline-lg-mobile text-headline-lg-mobile rounded-xl shadow-lg hover:bg-primary-fixed-dim transition-colors active:scale-95 flex items-center justify-center gap-2">
+        Confirm Delivery
+        <span class="material-symbols-outlined">
+          arrow_forward
+        </span>
+      </button>
+    </div>
+    <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-2 bg-surface dark:bg-on-background max-w-container-max mx-auto z-50 rounded-t-xl border-t border-outline-variant dark:border-on-surface-variant shadow-lg h-[72px]">
+      <button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 active:scale-[0.98] transition-all duration-200">
+        <span class="material-symbols-outlined text-2xl">
+          assignment
+        </span>
+        <span class="font-label-md text-label-md mt-1 hidden">
+          Tasks
+        </span>
+      </button>
+      <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+        <span class="material-symbols-outlined text-2xl">
+          chat
+        </span>
+        <span class="font-label-md text-label-md mt-1 hidden">
+          Chat
+        </span>
+      </button>
+      <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+        <span class="material-symbols-outlined text-2xl">
+          payments
+        </span>
+        <span class="font-label-md text-label-md mt-1 hidden">
+          Earnings
+        </span>
+      </button>
+      <button class="flex flex-col items-center justify-center text-on-surface-variant py-2 active:scale-[0.98] transition-all duration-200 px-4">
+        <span class="material-symbols-outlined text-2xl">
+          person
+        </span>
+        <span class="font-label-md text-label-md mt-1 hidden">
+          Profile
+        </span>
+      </button>
+    </nav>
+  </body>

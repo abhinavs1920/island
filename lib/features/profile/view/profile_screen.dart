@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -14,18 +15,6 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: colorScheme.onSurfaceVariant),
-          onPressed: () {},
-        ),
-        title: Text(
-          'TaskRunner',
-          style: textTheme.headlineSmall?.copyWith(
-            color: colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -211,7 +200,7 @@ class ProfileScreen extends StatelessWidget {
                     leading: Icon(Icons.settings, color: colorScheme.secondary),
                     title: const Text('Settings'),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
+                    onTap: () => context.push('/settings/settings'),
                   ),
                   const Divider(height: 1),
                   ListTile(
@@ -237,30 +226,6 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onSurfaceVariant,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Tasks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payments),
-            label: 'Earnings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }

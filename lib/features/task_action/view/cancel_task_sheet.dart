@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/task_action_provider.dart';
@@ -98,6 +99,7 @@ class CancelTaskSheet extends ConsumerWidget {
                     await ref.read(taskActionProvider.notifier).cancelTask(taskId);
                     if (context.mounted && !ref.read(taskActionProvider).hasError) {
                       Navigator.pop(context);
+                      context.go('/home');
                     }
                   },
                   child: state.isLoading 

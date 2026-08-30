@@ -1,4 +1,4 @@
-import '../../features/taskchat/view/task_chat_screen.dart';
+import '../../features/chat/view/chat_screen.dart';
 
 import '../../features/support/view/help_and_support_screen.dart';
 import '../../features/taskdetail/view/task_detail_loading_screen.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/errors/view/session_expired_screen.dart';
 import '../../features/settings/view/settings_screen.dart';
 import '../../features/activegig/view/navigation_handoff_screen.dart';
-import '../../features/taskdetail/view/task_detail_screen.dart';
+import '../../features/task_detail/view/task_detail_screen.dart';
 import '../../features/onboarding/view/phone_entry_error_screen.dart';
 import '../../features/notifications/view/notification_center_screen.dart';
 import '../../features/earnings/view/add_edit_bank_account_screen.dart';
@@ -105,7 +105,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/taskchat/task-chat',
-            builder: (context, state) => const TaskChatScreen(),
+            builder: (context, state) => const ChatScreen(),
           ),
         ],
       ),
@@ -394,8 +394,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const TaskDetailLoadingScreen(),
       ),
       GoRoute(
-        path: '/taskdetail/task-detail',
-        builder: (context, state) => const TaskDetailScreen(),
+        path: '/task/:id',
+        builder: (context, state) => TaskDetailScreen(taskId: state.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: '/registration/vehicle-details',

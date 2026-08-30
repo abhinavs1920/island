@@ -1,27 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/storage/secure_storage.dart';
 
 final taskDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, taskId) async {
-  final apiClient = ApiClient();
-  final response = await apiClient.get('/get_task_details?task_id=$taskId');
+  final apiClient = ref.read(apiClientProvider).dio;
+  final response = await apiClient.get('/tasks/$taskId');
   return response.data;
 });
 
 final acceptTaskProvider = StateNotifierProvider<AcceptTaskNotifier, AsyncValue<bool>>((ref) {
-  return AcceptTaskNotifier();
+  return AcceptTaskNotifier(ref);
 });
 
 class AcceptTaskNotifier extends StateNotifier<AsyncValue<bool>> {
-  AcceptTaskNotifier() : super(const AsyncValue.data(false));
+  final Ref ref;
+  AcceptTaskNotifier(this.ref) : super(const AsyncValue.data(false));
 
   Future<String> acceptTask(String taskId) async {
     state = const AsyncValue.loading();
     try {
-      final apiClient = ApiClient();
-      final response = await apiClient.post('/accept_task', data: {'task_id': taskId});
+      final apiClient = ref.read(apiClientProvider).dio;
+      await apiClient.post('/tasks/$taskId/accept');
+      
+      // Save it so the Chat tab resolves to this task
+      await ref.read(storageServiceProvider).saveLatestTaskId(taskId);
+      
       state = const AsyncValue.data(true);
-      // Assuming response returns status 'matched' or 'race_lost'
-      return response.data['status'] as String; 
+      return 'matched';
+    } on DioException catch (e, st) {
+      if (e.response?.statusCode == 409) {
+        state = AsyncValue.error(e, st);
+        return 'race_lost';
+      }
+      state = AsyncValue.error(e, st);
+      return 'error';
     } catch (e, st) {
       state = AsyncValue.error(e, st);
       return 'error';

@@ -1,0 +1,51 @@
+  <body class="bg-surface-dim h-screen w-full flex flex-col items-center justify-end overflow-hidden font-body-md text-body-md">
+    <div class="absolute inset-0 bg-on-background/20 z-0">
+    </div>
+    <div class="relative w-full max-w-container-max bg-surface-lowest rounded-t-[24px] shadow-lg flex flex-col z-10 bottom-sheet-anim pb-safe">
+      <div class="w-full flex justify-center pt-unit pb-stack-gap">
+        <div class="w-12 h-1.5 bg-outline-variant rounded-full mt-2">
+        </div>
+      </div>
+      <div class="px-gutter pb-gutter flex flex-col gap-stack-gap">
+        <div class="flex flex-col gap-unit mb-margin">
+          <span class="font-label-bold text-label-bold text-secondary uppercase tracking-wider">
+            Navigate to
+          </span>
+          <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+            123 Maple Avenue, Suite 4B, Indiranagar
+          </h2>
+        </div>
+        <button class="w-full min-h-[64px] bg-primary-container text-on-primary-container rounded-xl flex items-center justify-between px-margin py-stack-gap active:scale-[0.98] transition-transform duration-200 border-l-4 border-primary">
+          <div class="flex items-center gap-margin">
+            <span class="material-symbols-outlined text-[32px]">
+              map
+            </span>
+            <span class="font-body-lg text-body-lg text-surface-lowest">
+              Open in Google Maps
+            </span>
+          </div>
+          <span class="material-symbols-outlined text-surface-lowest opacity-80">
+            arrow_forward_ios
+          </span>
+        </button>
+        <button class="w-full min-h-[64px] bg-surface-container-low text-on-surface rounded-xl flex items-center justify-between px-margin py-stack-gap border border-outline-variant hover:bg-surface-container active:scale-[0.98] transition-all duration-200 shadow-sm">
+          <div class="flex items-center gap-margin">
+            <span class="material-symbols-outlined text-[32px] text-primary">
+              explore
+            </span>
+            <span class="font-body-lg text-body-lg">
+              Open in Apple Maps
+            </span>
+          </div>
+          <span class="material-symbols-outlined text-outline">
+            arrow_forward_ios
+          </span>
+        </button>
+        <div class="flex justify-center mt-margin">
+          <button class="min-h-touch-target px-margin font-label-md text-label-md text-secondary hover:text-on-surface transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>

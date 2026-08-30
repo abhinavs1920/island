@@ -1,0 +1,98 @@
+  <body class="bg-background text-on-background min-h-screen pb-32">
+    <header class="bg-surface dark:bg-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline flat no shadows flex items-center justify-between px-margin h-touch-target max-w-container-max mx-auto md:hidden">
+      <button class="h-10 w-10 flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-dim transition-all duration-200 active:scale-95 rounded-full">
+        <span class="material-symbols-outlined">
+          arrow_back
+        </span>
+      </button>
+      <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim tracking-tight">
+        Proof of Delivery
+      </h1>
+      <div class="h-10 w-10">
+      </div>
+    </header>
+    <header class="bg-surface dark:bg-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline flat no shadows hidden md:flex items-center justify-between px-margin h-16 max-w-container-max mx-auto">
+      <div class="flex items-center gap-4">
+        <button class="h-10 w-10 flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-dim transition-all duration-200 active:scale-95 rounded-full">
+          <span class="material-symbols-outlined">
+            arrow_back
+          </span>
+        </button>
+        <h1 class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim tracking-tight">
+          Proof of Delivery
+        </h1>
+      </div>
+    </header>
+    <main class="pt-20 px-gutter max-w-container-max mx-auto flex flex-col gap-stack-gap">
+      <div class="w-full aspect-[3/4] md:aspect-video bg-inverse-surface rounded-xl flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
+        <div class="absolute inset-0 border-2 border-outline/30 m-4 rounded-lg pointer-events-none">
+        </div>
+        <div class="w-16 h-16 rounded-full bg-surface-container-lowest/10 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-4xl text-on-tertiary">
+            photo_camera
+          </span>
+        </div>
+        <p class="font-body-md text-body-md text-surface-container-high px-6 text-center">
+          Position package within the frame
+        </p>
+      </div>
+      <p class="font-body-md text-body-md text-on-surface-variant text-center my-2">
+        Take a clear photo of the delivered package.
+      </p>
+      <div class="flex flex-col gap-unit">
+        <button class="w-full h-touch-target bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-high transition-transform duration-200 active:scale-98 shadow-sm">
+          <span class="material-symbols-outlined">
+            photo_camera
+          </span>
+          Take Photo
+        </button>
+        <button class="w-full h-touch-target border border-primary-container text-primary-container bg-surface-lowest font-label-bold text-label-bold rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low transition-transform duration-200 active:scale-98 shadow-sm">
+          <span class="material-symbols-outlined">
+            image
+          </span>
+          Choose from Gallery
+        </button>
+      </div>
+    </main>
+    <div class="fixed bottom-20 md:bottom-8 left-0 right-0 px-gutter max-w-container-max mx-auto z-40 bg-gradient-to-t from-background via-background to-transparent pt-4 pb-2">
+      <button class="w-full h-touch-target bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-lg flex items-center justify-center shadow-sm hover:bg-surface-container-high transition-transform duration-200 active:scale-98">
+        Submit Proof
+      </button>
+    </div>
+    <nav class="bg-surface-container dark:bg-surface-container-highest fixed bottom-0 w-full z-50 rounded-t-xl shadow-sm border-t border-outline-variant dark:border-outline md:hidden">
+      <div class="flex justify-around items-center h-16 px-gutter max-w-container-max mx-auto">
+        <button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-5 py-1 transition-transform duration-200 active:scale-98">
+          <span class="material-symbols-outlined">
+            assignment
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Tasks
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+          <span class="material-symbols-outlined">
+            chat_bubble
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Chat
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+          <span class="material-symbols-outlined">
+            payments
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Earnings
+          </span>
+        </button>
+        <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+          <span class="material-symbols-outlined">
+            person
+          </span>
+          <span class="font-label-md text-label-md mt-1">
+            Profile
+          </span>
+        </button>
+      </div>
+    </nav>
+  </body>

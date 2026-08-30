@@ -1,0 +1,223 @@
+  <html class="light">
+    <head class="">
+      <meta class="">
+      </meta>
+      <meta class="">
+      </meta>
+      <title class="">
+        TaskRunner - Proof of Delivery
+      </title>
+      <script class="">
+      </script>
+      <link class="">
+      </link>
+      <link class="">
+      </link>
+      <link class="">
+      </link>
+      <script class="">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "primary-fixed-dim": "#b7c4ff",
+                            "outline": "#747686",
+                            "info-blue": "#1e40af",
+                            "on-primary": "#ffffff",
+                            "success-emerald": "#10b981",
+                            "on-primary-fixed": "#001452",
+                            "on-primary-container": "#adbcff",
+                            "on-tertiary": "#ffffff",
+                            "inverse-surface": "#2f3039",
+                            "primary": "#002b92",
+                            "surface-muted": "#fbf8ff",
+                            "inverse-primary": "#b7c4ff",
+                            "on-tertiary-fixed": "#3c0800",
+                            "tertiary-fixed-dim": "#ffb4a1",
+                            "on-surface-variant": "#434654",
+                            "surface-tint": "#2551d8",
+                            "on-tertiary-fixed-variant": "#891f00",
+                            "on-background": "#1a1b23",
+                            "tertiary": "#6d1600",
+                            "secondary-fixed": "#e5e2e1",
+                            "outline-variant": "#c4c5d7",
+                            "surface-container-high": "#e8e7f3",
+                            "primary-container": "#003ec7",
+                            "inverse-on-surface": "#f0f0fb",
+                            "surface-container-highest": "#e2e1ed",
+                            "on-secondary-container": "#636262",
+                            "surface-container-lowest": "#ffffff",
+                            "tertiary-fixed": "#ffdbd2",
+                            "surface-container": "#ededf8",
+                            "on-secondary": "#ffffff",
+                            "secondary": "#5f5e5e",
+                            "on-secondary-fixed": "#1c1b1c",
+                            "error-container": "#ffdad6",
+                            "on-tertiary-container": "#ffaa94",
+                            "info-bg": "#dbeafe",
+                            "surface": "#fbf8ff",
+                            "warning-bg": "#fee2e2",
+                            "tertiary-container": "#952301",
+                            "on-secondary-fixed-variant": "#474647",
+                            "surface-dim": "#d9d9e4",
+                            "surface-container-low": "#f3f2fe",
+                            "on-primary-fixed-variant": "#0038b6",
+                            "surface-bright": "#fbf8ff",
+                            "surface-variant": "#e2e1ed",
+                            "warning-red": "#991b1b",
+                            "secondary-container": "#e2dfdf",
+                            "primary-fixed": "#dde1ff",
+                            "success-light": "#d1fae5",
+                            "on-error": "#ffffff",
+                            "error": "#ba1a1a",
+                            "secondary-fixed-dim": "#c8c6c6",
+                            "on-surface": "#1a1b23",
+                            "surface-lowest": "#ffffff",
+                            "background": "#fbf8ff",
+                            "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "touch-target": "48px",
+                            "stack-gap": "12px",
+                            "margin": "16px",
+                            "unit": "4px",
+                            "gutter": "20px",
+                            "container-max": "672px"
+                    },
+                    "fontFamily": {
+                            "label-bold": ["Inter"],
+                            "label-md": ["Inter"],
+                            "body-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                            "label-bold": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "500"}],
+                            "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                            "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                }
+            }
+        }
+      </script>
+      <style class="">
+        body { font-family: 'Inter', sans-serif; }
+      </style>
+      <style class="">
+        body {
+      min-height: max(884px, 100dvh);
+    }
+      </style>
+    </head>
+    <body class="bg-background text-on-background min-h-screen pb-32">
+      <header class="bg-surface dark:bg-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline flat no shadows flex items-center justify-between px-margin h-touch-target max-w-container-max mx-auto md:hidden">
+        <button class="h-10 w-10 flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-dim transition-all duration-200 active:scale-95 rounded-full">
+          <span class="material-symbols-outlined">
+            arrow_back
+          </span>
+        </button>
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary dark:text-primary-fixed-dim tracking-tight">
+          Proof of Delivery
+        </h1>
+        <div class="h-10 w-10">
+        </div>
+      </header>
+      <header class="bg-surface dark:bg-background fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline flat no shadows hidden md:flex items-center justify-between px-margin h-16 max-w-container-max mx-auto">
+        <div class="flex items-center gap-4">
+          <button class="h-10 w-10 flex items-center justify-center text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-dim transition-all duration-200 active:scale-95 rounded-full">
+            <span class="material-symbols-outlined">
+              arrow_back
+            </span>
+          </button>
+          <h1 class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim tracking-tight">
+            Proof of Delivery
+          </h1>
+        </div>
+      </header>
+      <main class="pt-20 px-gutter max-w-container-max mx-auto flex flex-col gap-stack-gap">
+        <div class="w-full aspect-[3/4] md:aspect-video bg-inverse-surface rounded-xl flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
+          <div class="absolute inset-0 border-2 border-outline/30 m-4 rounded-lg pointer-events-none">
+          </div>
+          <div class="w-16 h-16 rounded-full bg-surface-container-lowest/10 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-4xl text-on-tertiary">
+              photo_camera
+            </span>
+          </div>
+          <p class="font-body-md text-body-md text-surface-container-high px-6 text-center">
+            Position package within the frame
+          </p>
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant text-center my-2">
+          Take a clear photo of the delivered package.
+        </p>
+        <div class="flex flex-col gap-unit">
+          <button class="w-full h-touch-target bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-high transition-transform duration-200 active:scale-98 shadow-sm">
+            <span class="material-symbols-outlined">
+              photo_camera
+            </span>
+            Take Photo
+          </button>
+          <button class="w-full h-touch-target border border-primary-container text-primary-container bg-surface-lowest font-label-bold text-label-bold rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low transition-transform duration-200 active:scale-98 shadow-sm">
+            <span class="material-symbols-outlined">
+              image
+            </span>
+            Choose from Gallery
+          </button>
+        </div>
+      </main>
+      <div class="fixed bottom-20 md:bottom-8 left-0 right-0 px-gutter max-w-container-max mx-auto z-40 bg-gradient-to-t from-background via-background to-transparent pt-4 pb-2">
+        <button class="w-full h-touch-target bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-lg flex items-center justify-center shadow-sm hover:bg-surface-container-high transition-transform duration-200 active:scale-98">
+          Submit Proof
+        </button>
+      </div>
+      <nav class="bg-surface-container dark:bg-surface-container-highest fixed bottom-0 w-full z-50 rounded-t-xl shadow-sm border-t border-outline-variant dark:border-outline md:hidden">
+        <div class="flex justify-around items-center h-16 px-gutter max-w-container-max mx-auto">
+          <button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-5 py-1 transition-transform duration-200 active:scale-98">
+            <span class="material-symbols-outlined">
+              assignment
+            </span>
+            <span class="font-label-md text-label-md mt-1">
+              Tasks
+            </span>
+          </button>
+          <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+            <span class="material-symbols-outlined">
+              chat_bubble
+            </span>
+            <span class="font-label-md text-label-md mt-1">
+              Chat
+            </span>
+          </button>
+          <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+            <span class="material-symbols-outlined">
+              payments
+            </span>
+            <span class="font-label-md text-label-md mt-1">
+              Earnings
+            </span>
+          </button>
+          <button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim px-5 py-1 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-transform duration-200 active:scale-98 rounded-full">
+            <span class="material-symbols-outlined">
+              person
+            </span>
+            <span class="font-label-md text-label-md mt-1">
+              Profile
+            </span>
+          </button>
+        </div>
+      </nav>
+    </body>
+  </html>

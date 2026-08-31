@@ -1,10 +1,14 @@
+import '../../../core/storage/secure_storage.dart';
+import '../../task_action/providers/task_action_provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-class ArrivedPickupScreen extends StatelessWidget {
+class ArrivedPickupScreen extends ConsumerWidget {
   const ArrivedPickupScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -246,7 +250,15 @@ class ArrivedPickupScreen extends StatelessWidget {
             const SizedBox(height: 32),
             // Primary Action
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () async {
+                final taskId = await ref.read(storageServiceProvider).getLatestTaskId();
+                if (taskId != null) {
+                  await ref.read(taskActionProvider.notifier).startTask(taskId);
+                  if (context.mounted) {
+                    context.push('/activegig/in-progress'); // Or wherever they go next
+                  }
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: colorScheme.primaryContainer,
                 foregroundColor: colorScheme.onPrimaryContainer,

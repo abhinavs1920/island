@@ -1,10 +1,12 @@
+import '../providers/task_detail_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-class TaskDetailScreen extends StatelessWidget {
+class TaskDetailScreen extends ConsumerWidget {
   const TaskDetailScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -213,7 +215,18 @@ class TaskDetailScreen extends StatelessWidget {
                 ],
               ),
               child: FilledButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  final result = await ref.read(acceptTaskProvider.notifier).acceptTask(taskId);
+                  if (context.mounted) {
+                    if (result == 'matched') {
+                      context.go('/taskdetail/matched-confirmation');
+                    } else if (result == 'race_lost') {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Someone else claimed this task.')));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('An error occurred.')));
+                    }
+                  }
+                },
                 style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(56),
                   backgroundColor: colorScheme.primary,

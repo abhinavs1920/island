@@ -1,11 +1,14 @@
+import '../../../core/storage/secure_storage.dart';
+import '../../task_action/providers/task_action_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ActiveGigInProgressScreen extends StatelessWidget {
+class ActiveGigInProgressScreen extends ConsumerWidget {
   const ActiveGigInProgressScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -260,7 +263,15 @@ class ActiveGigInProgressScreen extends StatelessWidget {
                           ],
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final taskId = await ref.read(storageServiceProvider).getLatestTaskId();
+                            if (taskId != null) {
+                              await ref.read(taskActionProvider.notifier).cancelTask(taskId);
+                              if (context.mounted) {
+                                context.go('/history'); // Go to history after cancel
+                              }
+                            }
+                          },
                           style: TextButton.styleFrom(
                             foregroundColor: colorScheme.error,
                           ),

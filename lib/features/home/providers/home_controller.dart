@@ -50,7 +50,7 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     
     try {
       final dio = ref.read(apiClientProvider).dio;
-      final response = await dio.get('/tasks/available?lat=0.0&lng=0.0&radius_km=10.0&limit=50');
+      final response = await dio.get('/tasks/available?lat=19.0760&lng=72.8777&radius_km=10.0&limit=50');
       final responseData = response.data;
       final data = (responseData is Map && responseData.containsKey('tasks')
           ? responseData['tasks'] as List?

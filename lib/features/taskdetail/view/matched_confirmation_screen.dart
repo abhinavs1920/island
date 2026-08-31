@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 class MatchedConfirmationScreen extends StatelessWidget {
@@ -148,7 +149,7 @@ class MatchedConfirmationScreen extends StatelessWidget {
               ),
               child: SafeArea(
                 child: FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () => context.go('/chat/latest'),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(56),
                     backgroundColor: colorScheme.primary,

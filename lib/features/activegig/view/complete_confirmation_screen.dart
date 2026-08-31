@@ -1,15 +1,18 @@
+import '../../../core/storage/secure_storage.dart';
+import '../../task_action/providers/task_action_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:ui';
 
-class CompleteConfirmationScreen extends StatefulWidget {
+class CompleteConfirmationScreen extends ConsumerStatefulWidget {
   const CompleteConfirmationScreen({super.key});
 
   @override
-  State<CompleteConfirmationScreen> createState() => _CompleteConfirmationScreenState();
+  ConsumerState<CompleteConfirmationScreen> createState() => _CompleteConfirmationScreenState();
 }
 
-class _CompleteConfirmationScreenState extends State<CompleteConfirmationScreen> {
+class _CompleteConfirmationScreenState extends ConsumerState<CompleteConfirmationScreen> {
   int _rating = 0;
   final TextEditingController _feedbackController = TextEditingController();
 
@@ -263,7 +266,15 @@ class _CompleteConfirmationScreenState extends State<CompleteConfirmationScreen>
                       
                       // Actions
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final taskId = await ref.read(storageServiceProvider).getLatestTaskId();
+                          if (taskId != null) {
+                            await ref.read(taskActionProvider.notifier).completeTask(taskId);
+                            if (context.mounted) {
+                              context.go('/history'); // Go to history after complete
+                            }
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF166534), // Green #166534
                           foregroundColor: Colors.white,

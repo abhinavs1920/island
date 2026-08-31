@@ -1,12 +1,63 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/storage/secure_storage.dart';
 
-final taskDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, taskId) async {
-  final apiClient = ref.read(apiClientProvider).dio;
-  final response = await apiClient.get('/tasks/$taskId');
-  return response.data;
+class TaskDetailNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, String> {
+  RealtimeChannel? _channel;
+
+  @override
+  Future<Map<String, dynamic>> build(String arg) async {
+    _channel?.unsubscribe();
+    _channel = null;
+
+    ref.onDispose(() {
+      _channel?.unsubscribe();
+    });
+
+    _subscribeRealtime(arg);
+    return _fetchTask(arg);
+  }
+
+  Future<Map<String, dynamic>> _fetchTask(String taskId) async {
+    final apiClient = ref.read(apiClientProvider).dio;
+    final response = await apiClient.get('/tasks/$taskId');
+    return response.data;
+  }
+
+  void _subscribeRealtime(String taskId) {
+    try {
+      final supabase = Supabase.instance.client;
+      _channel = supabase.channel('task_$taskId').onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'tasks',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'id',
+          value: taskId,
+        ),
+        callback: (payload) async {
+          // Whenever the task changes, invalidate the provider to trigger a re-fetch
+          // or update state directly if payload.newRecord contains all needed fields.
+          // Re-fetching is safer to ensure joined data is correct.
+          try {
+            final updatedTask = await _fetchTask(taskId);
+            state = AsyncValue.data(updatedTask);
+          } catch (e) {
+            // ignore
+          }
+        },
+      ).subscribe();
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
+final taskDetailProvider = AsyncNotifierProvider.family<TaskDetailNotifier, Map<String, dynamic>, String>(() {
+  return TaskDetailNotifier();
 });
 
 final acceptTaskProvider = StateNotifierProvider<AcceptTaskNotifier, AsyncValue<bool>>((ref) {

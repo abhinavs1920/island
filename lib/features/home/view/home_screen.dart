@@ -1,3 +1,4 @@
+import '../../../core/providers/viewing_scope_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,11 +20,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(currentViewingScopeProvider.notifier).state = ViewingHome();
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(currentViewingScopeProvider.notifier).state = null;
+    });
     super.dispose();
   }
 

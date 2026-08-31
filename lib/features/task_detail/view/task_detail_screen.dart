@@ -1,17 +1,40 @@
+import '../../../core/providers/viewing_scope_provider.dart';
 import '../../home/providers/home_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/task_detail_provider.dart';
 
-class TaskDetailScreen extends ConsumerWidget {
+class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
 
   const TaskDetailScreen({Key? key, required this.taskId}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final taskDetailAsync = ref.watch(taskDetailProvider(taskId));
+  ConsumerState<TaskDetailScreen> createState() => _TaskDetailScreenState();
+}
+
+class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(currentViewingScopeProvider.notifier).state = ViewingTask(widget.taskId);
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(currentViewingScopeProvider.notifier).state = null;
+    });
+    super.dispose();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    final taskDetailAsync = ref.watch(taskDetailProvider(widget.taskId));
     final acceptTaskState = ref.watch(acceptTaskProvider);
 
     return Scaffold(
@@ -232,7 +255,7 @@ class TaskDetailScreen extends ConsumerWidget {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: acceptTaskState.isLoading ? null : () async {
-                      final status = await ref.read(acceptTaskProvider.notifier).acceptTask(taskId);
+                      final status = await ref.read(acceptTaskProvider.notifier).acceptTask(widget.taskId);
                       if (!context.mounted) return;
                       if (status == 'matched') {
                         context.push('/taskdetail/matched-confirmation');

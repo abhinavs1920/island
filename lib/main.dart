@@ -1,3 +1,4 @@
+import 'core/notifications/push_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,13 +22,20 @@ void main() async {
   runApp(const ProviderScope(child: RiderApp()));
 }
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 class RiderApp extends ConsumerWidget {
   const RiderApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+
+    // Initialize PushManager once
+    ref.listenManual(pushManagerProvider, (_, __) {});
+    
     return MaterialApp.router(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'Flikk',
       theme: AppTheme.lightTheme,
       routerConfig: router,

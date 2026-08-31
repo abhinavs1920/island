@@ -36,27 +36,12 @@ class Gig {
 
     return Gig(
       id: json['id']?.toString() ?? '',
-      title: json['category']?.toString() ?? 'Task',
+      title: json['category']?.toString() ?? json['title']?.toString() ?? json['task_type']?.toString() ?? 'Task',
       price: price,
       description: desc,
-      distance: '~nearby',
-      duration: '',
-      icon: 'assignment',
-      tags: [],
-    );
-  } else if (budgetRaw is String) {
-      final match = RegExp(r'\d+').firstMatch(budgetRaw.replaceAll(',', ''));
-      if (match != null) price = double.tryParse(match.group(0)!) ?? 0;
-    }
-
-    return Gig(
-      id: json['id']?.toString() ?? '',
-      title: json['title'] as String? ?? json['task_type'] as String? ?? 'Task',
-      price: price,
-      description: json['description'] as String? ?? '',
-      distance: json['distance'] as String? ?? '~nearby',
-      duration: json['duration'] as String? ?? '',
-      icon: json['icon'] as String? ?? 'assignment',
+      distance: json['distance']?.toString() ?? '~nearby',
+      duration: json['duration']?.toString() ?? '',
+      icon: json['icon']?.toString() ?? 'assignment',
       tags: (json['tags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }

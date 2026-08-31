@@ -1,11 +1,13 @@
+import '../../home/providers/home_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -18,15 +20,17 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            
             child: Center(
               child: Text(
-                'Online',
+                ref.watch(isOnlineProvider) ? 'Online' : 'Offline',
                 style: textTheme.labelLarge?.copyWith(
-                  color: Colors.green,
+                  color: ref.watch(isOnlineProvider) ? Colors.green : colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+
           ),
         ],
       ),

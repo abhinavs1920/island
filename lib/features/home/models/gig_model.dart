@@ -20,12 +20,31 @@ class Gig {
   });
 
   factory Gig.fromJson(Map<String, dynamic> json) {
-    // Backend returns 'budget' as a string like "₹500-800"; extract the lower number as price
     double price = 0;
-    final budgetRaw = json['budget'] ?? json['price'];
-    if (budgetRaw is num) {
-      price = budgetRaw.toDouble();
-    } else if (budgetRaw is String) {
+    if (json['budget_min'] != null) {
+      price = (json['budget_min'] as num).toDouble();
+    } else if (json['budget_max'] != null) {
+      price = (json['budget_max'] as num).toDouble();
+    }
+
+    String desc = '';
+    final constraints = json['constraints'];
+    if (constraints is Map) {
+      desc = constraints['details']?.toString() ?? '';
+    }
+    if (desc.isEmpty) desc = json['description']?.toString() ?? '';
+
+    return Gig(
+      id: json['id']?.toString() ?? '',
+      title: json['category']?.toString() ?? 'Task',
+      price: price,
+      description: desc,
+      distance: '~nearby',
+      duration: '',
+      icon: 'assignment',
+      tags: [],
+    );
+  } else if (budgetRaw is String) {
       final match = RegExp(r'\d+').firstMatch(budgetRaw.replaceAll(',', ''));
       if (match != null) price = double.tryParse(match.group(0)!) ?? 0;
     }

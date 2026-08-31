@@ -1,3 +1,4 @@
+import '../../home/providers/home_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,12 +33,12 @@ class TaskDetailScreen extends ConsumerWidget {
         ),
         centerTitle: true,
         actions: [
-          TextButton(
+                    TextButton(
             onPressed: () {},
             child: Text(
-              'Online',
+              ref.watch(isOnlineProvider) ? 'Online' : 'Offline',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant, // on-surface-variant
+                color: ref.watch(isOnlineProvider) ? Colors.green : Theme.of(context).colorScheme.onSurfaceVariant,
                 letterSpacing: 0.7,
               ),
             ),

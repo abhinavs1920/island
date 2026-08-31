@@ -6,6 +6,8 @@ import '../providers/chat_provider.dart';
 import '../../../core/storage/secure_storage.dart';
 import '../../task_action/view/cancel_task_sheet.dart';
 import '../../task_action/view/complete_task_sheet.dart';
+import '../../task_detail/providers/task_detail_provider.dart';
+import '../../task_action/providers/task_action_provider.dart';
 
 // ─── Router shell: resolve 'latest' task id ──────────────────────────────────
 class ChatScreen extends ConsumerWidget {
@@ -143,6 +145,8 @@ class _ActiveChatScreenState extends ConsumerState<_ActiveChatScreen> {
   @override
   Widget build(BuildContext context) {
     final messagesAsync = ref.watch(chatMessagesProvider(widget.taskId));
+    final taskAsync = ref.watch(taskDetailProvider(widget.taskId));
+    final taskStatus = taskAsync.value?['status'] as String?;
 
     // Auto-scroll when new messages arrive
     ref.listen(chatMessagesProvider(widget.taskId), (prev, next) {
@@ -265,7 +269,13 @@ class _ActiveChatScreenState extends ConsumerState<_ActiveChatScreen> {
                           child: SizedBox(
                             height: 48,
                             child: ElevatedButton(
-                              onPressed: _onCompleteTapped,
+                              onPressed: () async {
+                                if (taskStatus == 'rider_matched') {
+                                  await ref.read(taskActionProvider.notifier).startTask(widget.taskId);
+                                } else {
+                                  _onCompleteTapped();
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,
                                 foregroundColor: Colors.white,
@@ -274,10 +284,10 @@ class _ActiveChatScreenState extends ConsumerState<_ActiveChatScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.check_circle, size: 20),
+                                  Icon(taskStatus == 'rider_matched' ? Icons.play_arrow : Icons.check_circle, size: 20),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Mark complete',
+                                    taskStatus == 'rider_matched' ? 'Start task' : 'Mark complete',
                                     style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
                                   ),
                                 ],

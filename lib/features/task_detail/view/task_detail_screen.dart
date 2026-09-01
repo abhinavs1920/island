@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/task_detail_provider.dart';
+import '../widgets/milestone_stepper.dart';
+import '../providers/milestone_provider.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -36,6 +38,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   Widget build(BuildContext context) {
     final taskDetailAsync = ref.watch(taskDetailProvider(widget.taskId));
     final acceptTaskState = ref.watch(acceptTaskProvider);
+    final milestonesAsync = ref.watch(milestoneProvider(widget.taskId));
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface, // surface
@@ -232,6 +235,18 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         ],
                       ),
                     ),
+                    if ((data['category'] as String?)?.toLowerCase().contains('errand') == true || (data['category'] as String?)?.toLowerCase().contains('milestone') == true) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                        ),
+                        child: MilestoneStepper(taskId: widget.taskId, milestones: milestonesAsync.value ?? []),
+                      ),
+                    ],
                   ],
                 ),
               ),

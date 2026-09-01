@@ -1,4 +1,5 @@
 import '../../features/chat/view/chat_screen.dart';
+import '../../features/activegig/view/gig_navigation_screen.dart';
 
 import '../../features/support/view/help_and_support_screen.dart';
 import '../../features/taskdetail/view/task_detail_loading_screen.dart';
@@ -400,6 +401,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/registration/vehicle-details',
         builder: (context, state) => const VehicleDetailsScreen(),
+      ),
+      GoRoute(
+        path: '/activegig/navigation',
+        builder: (context, state) => GigNavigationScreen(taskId: state.extra as String? ?? ''),
       ),
       GoRoute(
         path: '/onboarding/welcome',

@@ -249,15 +249,20 @@ class ActiveGigInProgressScreen extends ConsumerWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: ElevatedButton.icon(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  final taskId = await ref.read(storageServiceProvider).getLatestTaskId();
+                                  if (context.mounted && taskId != null) {
+                                    context.push('/activegig/navigation', extra: taskId);
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green.shade600,
                                   foregroundColor: colorScheme.onPrimary,
                                   padding: const EdgeInsets.symmetric(vertical: 12),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
-                                icon: const Icon(Icons.call),
-                                label: const Text('Call'),
+                                icon: const Icon(Icons.navigation),
+                                label: const Text('Navigate'),
                               ),
                             ),
                           ],

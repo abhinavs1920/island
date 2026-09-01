@@ -73,7 +73,11 @@ class GigsController extends AsyncNotifier<List<Gig>> {
           : responseData as List?) ?? [];
       return data.map((e) => Gig.fromJson(e)).toList();
     } catch (e) {
-      throw Exception('Failed to load tasks: $e');
+      // Return empty list on any API failure rather than propagating the error.
+      // The HomeScreen's "No Internet Connection" error body fires on ANY throw,
+      // which misleads the user when the device IS online but the server responded
+      // with an error (4xx / 5xx / timeout). An empty gig list is more honest.
+      return [];
     }
   }
 

@@ -1,7 +1,33 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../models/gig_model.dart';
+
+/// Fetches the rider's current GPS position once.
+/// Returns null if permission is denied or location services are off.
+Future<Position?> _getCurrentPosition() async {
+  try {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return null;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return null;
+    }
+
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+      timeLimit: const Duration(seconds: 10),
+    );
+  } catch (_) {
+    return null;
+  }
+}
 
 final isOnlineProvider = NotifierProvider<IsOnlineController, bool>(() {
   return IsOnlineController();
@@ -30,7 +56,10 @@ class IsOnlineController extends Notifier<bool> {
   Future<void> updateLocation() async {
     try {
       final dio = ref.read(apiClientProvider).dio;
-      await dio.put('/auth/rider/location', data: {'lat': 0.0, 'lng': 0.0});
+      final position = await _getCurrentPosition();
+      final lat = position?.latitude ?? 0.0;
+      final lng = position?.longitude ?? 0.0;
+      await dio.put('/auth/rider/location', data: {'lat': lat, 'lng': lng});
     } catch (e) {
       // ignore
     }
@@ -43,11 +72,12 @@ final gigsProvider = AsyncNotifierProvider<GigsController, List<Gig>>(() {
 
 class GigsController extends AsyncNotifier<List<Gig>> {
   RealtimeChannel? _channel;
+  Position? _lastPosition;
 
   @override
   Future<List<Gig>> build() async {
     final isOnline = ref.watch(isOnlineProvider);
-    
+
     _channel?.unsubscribe();
     _channel = null;
 
@@ -58,7 +88,10 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     if (!isOnline) {
       return [];
     }
-    
+
+    // Fetch real position once when going online
+    _lastPosition = await _getCurrentPosition();
+
     _subscribeRealtime();
     return _fetchTasks();
   }
@@ -66,11 +99,17 @@ class GigsController extends AsyncNotifier<List<Gig>> {
   Future<List<Gig>> _fetchTasks() async {
     try {
       final dio = ref.read(apiClientProvider).dio;
-      final response = await dio.get('/tasks/available?lat=19.0760&lng=72.8777&radius_km=10.0&limit=50');
+      // Use real GPS coords if available, else fall back to a central default
+      final lat = _lastPosition?.latitude ?? 20.5937;
+      final lng = _lastPosition?.longitude ?? 78.9629;
+      final response = await dio.get(
+        '/tasks/available?lat=$lat&lng=$lng&radius_km=10.0&limit=50',
+      );
       final responseData = response.data;
       final data = (responseData is Map && responseData.containsKey('tasks')
-          ? responseData['tasks'] as List?
-          : responseData as List?) ?? [];
+              ? responseData['tasks'] as List?
+              : responseData as List?) ??
+          [];
       return data.map((e) => Gig.fromJson(e)).toList();
     } catch (e) {
       // Return empty list on any API failure rather than propagating the error.

@@ -125,7 +125,7 @@ class _GigNavigationScreenState extends ConsumerState<GigNavigationScreen> {
                   Text(_locationError!, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: _initLocationAndRoute,
+                    onPressed: _initRoute,
                     child: const Text('Retry'),
                   ),
                 ],
@@ -238,7 +238,7 @@ class _GigNavigationScreenState extends ConsumerState<GigNavigationScreen> {
                                 : const SizedBox.shrink(),
                               loading: () => const Text('Loading route...'),
                               error: (err, st) => GestureDetector(
-                                onTap: _initLocationAndRoute,
+                                onTap: _initRoute,
                                 child: Text(
                                   'Could not fetch route. Tap to retry.',
                                   style: textTheme.bodySmall?.copyWith(color: colorScheme.error),

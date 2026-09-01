@@ -43,10 +43,10 @@ class LocationNotifier extends Notifier<Position?> {
     } catch (_) {}
 
     // 3. Subscribe to continuous updates (high accuracy, every ~30m or 15s)
-    const locationSettings = AndroidSettings(
+    final locationSettings = AndroidSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 30,       // metres before triggering update
-      intervalDuration: Duration(seconds: 15),
+      intervalDuration: const Duration(seconds: 15),
     );
 
     _sub = Geolocator.getPositionStream(

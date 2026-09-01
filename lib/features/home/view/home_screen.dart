@@ -6,6 +6,7 @@ import '../providers/home_controller.dart';
 import '../widgets/gig_card.dart';
 import '../models/gig_model.dart';
 import '../widgets/network_error_body.dart';
+import '../../../core/providers/location_provider.dart';
 import '../widgets/surge_alert_dialog.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -38,7 +39,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (ref.read(isOnlineProvider)) {
-        ref.read(isOnlineProvider.notifier).updateLocation();
+        ref.read(locationProvider.notifier).refresh();
       }
     }
   }

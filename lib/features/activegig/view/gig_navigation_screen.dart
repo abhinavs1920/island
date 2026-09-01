@@ -168,7 +168,7 @@ class _GigNavigationScreenState extends ConsumerState<GigNavigationScreen> {
                           ),
                         ),
                       ),
-                      if (routeAsync.hasData && routeAsync.value != null)
+                      if (routeAsync.value != null)
                         Positioned(
                           top: 16,
                           left: 0,

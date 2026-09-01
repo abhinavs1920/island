@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
 
+import '../../../core/providers/location_provider.dart';
 import '../providers/route_provider.dart';
 import '../../task_detail/providers/task_detail_provider.dart';
 
@@ -19,62 +19,42 @@ class GigNavigationScreen extends ConsumerStatefulWidget {
 class _GigNavigationScreenState extends ConsumerState<GigNavigationScreen> {
   bool _isLoadingLocation = true;
   String? _locationError;
-  Position? _position;
 
   @override
   void initState() {
     super.initState();
-    _initLocationAndRoute();
+    _initRoute();
   }
 
-  Future<void> _initLocationAndRoute() async {
+  Future<void> _initRoute() async {
     setState(() {
       _isLoadingLocation = true;
       _locationError = null;
     });
 
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        throw const LocationServiceDisabledException();
+    // Use the already-running background location provider
+    final pos = ref.read(locationProvider);
+
+    if (pos == null) {
+      // Wait briefly for the first fix (provider just started or GPS warming up)
+      await Future.delayed(const Duration(seconds: 3));
+      final retried = ref.read(locationProvider);
+      if (retried == null) {
+        setState(() {
+          _locationError = 'Could not get your location. Ensure location services and permissions are enabled.';
+          _isLoadingLocation = false;
+        });
+        return;
       }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          throw const PermissionDeniedException('Location permissions are denied');
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        throw const PermissionDeniedException('Location permissions are permanently denied');
-      }
-
-      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      
-      setState(() {
-        _position = position;
-        _isLoadingLocation = false;
-      });
-
-      ref.read(routeProvider.notifier).fetchRoute(
-            widget.taskId,
-            position.latitude,
-            position.longitude,
-          );
-    } catch (e) {
-      setState(() {
-        if (e is LocationServiceDisabledException) {
-          _locationError = 'Location services are disabled.';
-        } else if (e is PermissionDeniedException) {
-          _locationError = e.message ?? 'Permission denied';
-        } else {
-          _locationError = 'Failed to get location: $e';
-        }
-        _isLoadingLocation = false;
-      });
+      _triggerRouteFetch(retried.latitude, retried.longitude);
+    } else {
+      _triggerRouteFetch(pos.latitude, pos.longitude);
     }
+  }
+
+  void _triggerRouteFetch(double lat, double lng) {
+    setState(() => _isLoadingLocation = false);
+    ref.read(routeProvider.notifier).fetchRoute(widget.taskId, lat, lng);
   }
 
   void _openInMaps() async {

@@ -1,4 +1,5 @@
 import 'core/notifications/push_manager.dart';
+import 'core/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,6 +34,9 @@ class RiderApp extends ConsumerWidget {
 
     // Initialize PushManager once
     ref.listenManual(pushManagerProvider, (_, __) {});
+
+    // Start background location tracking immediately on app launch
+    ref.listenManual(locationProvider, (_, __) {});
     
     return MaterialApp.router(
       scaffoldMessengerKey: scaffoldMessengerKey,

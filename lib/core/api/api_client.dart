@@ -16,8 +16,8 @@ class ApiClient {
   late Dio _dio;
 
   ApiClient(this._storage, this._router) {
-    // The API is now hosted on a remote VM at port 45092
-    const baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'http://103.15.252.35:45092');
+    // The API is now hosted on a remote VM at port 8000
+    const baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'http://103.15.252.35:8000');
     _dio = Dio(BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),

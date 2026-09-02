@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'core/notifications/push_manager.dart';
 import 'core/providers/location_provider.dart';
 import 'package:flutter/material.dart';
@@ -5,14 +6,100 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
-
 import 'core/utils/remote_logger.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   RemoteLogger.init();
+
+  // 1. Global Flutter Error Interceptor
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    RemoteLogger.log('FLUTTER_ERROR: ${details.exceptionAsString()}\n${details.stack}');
+  };
+
+  // 2. Global Asynchronous Platform Error Interceptor
+  PlatformDispatcher.instance.onError = (error, stack) {
+    RemoteLogger.log('ASYNC_PLATFORM_ERROR: $error\n$stack');
+    return true;
+  };
+
+  // 3. Global Visual Error Fallback Screen (Replaces silent white/grey screens with detailed debug diagnostics)
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      color: const Color(0xFF0F172A),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: const [
+                    Icon(Icons.bug_report, color: Colors.redAccent, size: 28),
+                    SizedBox(width: 8),
+                    Text(
+                      'DIAGNOSTIC CRASH REPORT',
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E293B),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.redAccent.withOpacity(0.5)),
+                  ),
+                  child: Text(
+                    details.exceptionAsString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'STACKTRACE:',
+                  style: TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E293B),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    details.stack.toString(),
+                    style: const TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontFamily: 'monospace',
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  };
+
   await Firebase.initializeApp();
   
   await Supabase.initialize(

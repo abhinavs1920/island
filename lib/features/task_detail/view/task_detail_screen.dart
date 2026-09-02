@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/viewing_scope_provider.dart';
+import '../../../core/utils/remote_logger.dart';
 import '../../home/providers/home_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +20,12 @@ class TaskDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
+  bool _showRawDebugJson = false;
+
   @override
   void initState() {
     super.initState();
+    RemoteLogger.log('TaskDetailScreen: initState taskId=${widget.taskId}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(currentViewingScopeProvider.notifier).state = ViewingTask(widget.taskId);
     });
@@ -28,6 +33,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 
   @override
   void dispose() {
+    RemoteLogger.log('TaskDetailScreen: dispose taskId=${widget.taskId}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) ref.read(currentViewingScopeProvider.notifier).state = null;
     });
@@ -45,11 +51,11 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     final milestonesAsync = ref.watch(milestoneProvider(widget.taskId));
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // Crisp slate background for high contrast
+      backgroundColor: const Color(0xFFF1F5F9), // Crisp slate-100 background
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
+        elevation: 1,
+        scrolledUnderElevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.maybePop(context),
@@ -63,8 +69,20 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         ),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: Icon(
+              _showRawDebugJson ? Icons.bug_report : Icons.bug_report_outlined,
+              color: _showRawDebugJson ? Colors.amber.shade800 : colorScheme.onSurfaceVariant,
+            ),
+            tooltip: 'Toggle Debug Diagnostics',
+            onPressed: () {
+              setState(() {
+                _showRawDebugJson = !_showRawDebugJson;
+              });
+            },
+          ),
           Padding(
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -88,13 +106,6 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             ),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: colorScheme.outlineVariant,
-            height: 1.0,
-          ),
-        ),
       ),
       body: taskDetailAsync.when(
         data: (data) {
@@ -145,17 +156,21 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Map Preview Card
+                  // 1. Live Debugging Diagnostic HUD Card
+                  _buildDebugHud(context, data, 'DATA_LOADED'),
+                  const SizedBox(height: 12),
+
+                  // 2. Map Preview Card
                   _buildMapPreview(context, location, distance),
                   const SizedBox(height: 14),
 
-                  // Core Details Card
+                  // 3. Core Details Card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.04),
@@ -294,7 +309,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  // Pending Status Alert (if rider_matched)
+                  // 4. Pending Status Alert (if rider_matched)
                   if (status == 'rider_matched') ...[
                     Container(
                       padding: const EdgeInsets.all(14),
@@ -335,13 +350,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     const SizedBox(height: 14),
                   ],
 
-                  // Description & Instructions Card
+                  // 5. Description & Instructions Card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.04),
@@ -394,7 +409,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     ),
                   ),
 
-                  // Milestone Stepper (if multi-step errand)
+                  // 6. Milestone Stepper (if multi-step errand)
                   if (isMilestoneGig) ...[
                     const SizedBox(height: 14),
                     Container(
@@ -402,7 +417,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        border: Border.all(color: const Color(0xFFCBD5E1)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.04),
@@ -423,35 +438,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             ),
           );
         },
-        loading: () => const _TaskDetailLoadingView(),
-        error: (e, st) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
-                const SizedBox(height: 12),
-                Text(
-                  'Failed to load task details',
-                  style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  e.toString(),
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () => ref.invalidate(taskDetailProvider(widget.taskId)),
-                  icon: const Icon(Icons.refresh, size: 18),
-                  label: const Text('Retry'),
-                ),
-              ],
-            ),
-          ),
-        ),
+        loading: () => _buildLoadingDiagnostics(context),
+        error: (e, st) => _buildErrorDiagnostics(context, e, st),
       ),
       bottomNavigationBar: taskDetailAsync.maybeWhen(
         data: (data) {
@@ -562,6 +550,173 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
           );
         },
         orElse: () => null,
+      ),
+    );
+  }
+
+  Widget _buildDebugHud(BuildContext context, dynamic payload, String stateLabel) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F172A), // Dark slate
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.amber.shade700),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.code, color: Colors.amber, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                'LIVE DIAGNOSTIC HUD [$stateLabel]',
+                style: const TextStyle(
+                  color: Colors.amber,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 11,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Task ID: ${widget.taskId}',
+            style: const TextStyle(color: Colors.white, fontFamily: 'monospace', fontSize: 11),
+          ),
+          Text(
+            'API Route: /tasks/${widget.taskId}',
+            style: const TextStyle(color: Color(0xFF94A3B8), fontFamily: 'monospace', fontSize: 11),
+          ),
+          if (_showRawDebugJson && payload != null) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SelectableText(
+                const JsonEncoder.withIndent('  ').convert(payload),
+                style: const TextStyle(color: Colors.greenAccent, fontFamily: 'monospace', fontSize: 10),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingDiagnostics(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildDebugHud(context, null, 'FETCHING_STATE'),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: 44,
+              height: 44,
+              child: CircularProgressIndicator(
+                color: colorScheme.primary,
+                strokeWidth: 3.5,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Loading task: ${widget.taskId}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Color(0xFF334155),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Connecting to backend API...',
+              style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorDiagnostics(BuildContext context, Object error, StackTrace? stackTrace) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildDebugHud(context, {'error': error.toString()}, 'FETCH_ERROR'),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.red.shade300),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.error_outline, color: colorScheme.error, size: 28),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Task Fetch Failed',
+                      style: TextStyle(
+                        color: colorScheme.error,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  error.toString(),
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: Color(0xFF1E293B)),
+                ),
+                if (stackTrace != null) ...[
+                  const SizedBox(height: 12),
+                  const Text('Stacktrace Preview:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      stackTrace.toString(),
+                      maxLines: 8,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontFamily: 'monospace', fontSize: 10, color: Color(0xFF64748B)),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    ref.invalidate(taskDetailProvider(widget.taskId));
+                  },
+                  icon: const Icon(Icons.refresh, size: 18),
+                  label: const Text('Retry Fetch'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -781,38 +936,4 @@ class _MapGridPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _MapGridPainter oldDelegate) => false;
-}
-
-class _TaskDetailLoadingView extends StatelessWidget {
-  const _TaskDetailLoadingView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: CircularProgressIndicator(
-              color: colorScheme.primary,
-              strokeWidth: 3,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Loading task details...',
-            style: TextStyle(
-              color: colorScheme.onSurfaceVariant,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

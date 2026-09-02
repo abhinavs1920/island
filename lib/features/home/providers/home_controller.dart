@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
@@ -20,13 +21,24 @@ class IsOnlineController extends Notifier<bool> {
     // Optimistic UI update — always apply immediately
     state = value;
 
-    // Fire-and-forget: best-effort backend sync, never revert UI
     try {
       final dio = ref.read(apiClientProvider).dio;
-      await dio.put('/auth/rider/availability', data: {'is_available': value});
-      // Force a fresh location push when going online
+      final pos = ref.read(locationProvider);
+      final lat = pos?.latitude ?? 20.5937;
+      final lng = pos?.longitude ?? 78.9629;
+
       if (value) {
-        await ref.read(locationProvider.notifier).refresh();
+        await dio.post('/auth/rider/location', data: {
+          'lat': lat,
+          'lng': lng,
+          'is_available': true,
+        });
+      } else {
+        await dio.post('/auth/rider/location', data: {
+          'lat': lat,
+          'lng': lng,
+          'is_available': false,
+        });
       }
     } catch (_) {
       // Silently ignore — UI state is already correct
@@ -38,12 +50,16 @@ final taskFilterProvider = StateProvider<TaskFilterCriteria>((ref) {
   return const TaskFilterCriteria();
 });
 
+final latestIncomingGigProvider = StateProvider<Gig?>((ref) => null);
+
 final gigsProvider = AsyncNotifierProvider<GigsController, List<Gig>>(() {
   return GigsController();
 });
 
 class GigsController extends AsyncNotifier<List<Gig>> {
   RealtimeChannel? _channel;
+  Timer? _pollingTimer;
+  final Set<String> _seenTaskIds = {};
   List<Gig> _rawTasks = [];
 
   @override
@@ -51,21 +67,43 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     final isOnline = ref.watch(isOnlineProvider);
     final filter = ref.watch(taskFilterProvider);
 
+    _pollingTimer?.cancel();
+    _pollingTimer = null;
     _channel?.unsubscribe();
     _channel = null;
 
     ref.onDispose(() {
+      _pollingTimer?.cancel();
       _channel?.unsubscribe();
     });
 
     if (!isOnline) {
+      _seenTaskIds.clear();
       _rawTasks = [];
       return [];
     }
 
     _subscribeRealtime();
-    _rawTasks = await _fetchTasks();
+    _startPolling();
+
+    final fetched = await _fetchTasks();
+    _handleTasks(fetched, isInitial: true);
     return _applyFilterAndSort(_rawTasks, filter);
+  }
+
+  void _handleTasks(List<Gig> fetched, {bool isInitial = false}) {
+    final newGigs = fetched.where((g) => !_seenTaskIds.contains(g.id)).toList();
+    for (final g in fetched) {
+      _seenTaskIds.add(g.id);
+    }
+
+    if (newGigs.isNotEmpty) {
+      final firstNew = newGigs.first;
+      ref.read(latestIncomingGigProvider.notifier).state = firstNew;
+      ref.read(pushManagerProvider).showGigOverlay(firstNew);
+    }
+
+    _rawTasks = fetched;
   }
 
   List<Gig> _applyFilterAndSort(List<Gig> tasks, TaskFilterCriteria filter) {
@@ -106,11 +144,9 @@ class GigsController extends AsyncNotifier<List<Gig>> {
         });
         break;
       case TaskSortOption.postedDate:
-        // Already in newest-first or by index
         break;
       case TaskSortOption.distanceNearest:
       default:
-        // Default distance ordering from API
         break;
     }
 
@@ -120,6 +156,10 @@ class GigsController extends AsyncNotifier<List<Gig>> {
   Future<void> rejectGig(String taskId) async {
     // 1. Optimistic removal from UI list
     _rawTasks.removeWhere((g) => g.id == taskId);
+    _seenTaskIds.add(taskId);
+    if (ref.read(latestIncomingGigProvider)?.id == taskId) {
+      ref.read(latestIncomingGigProvider.notifier).state = null;
+    }
     final filter = ref.read(taskFilterProvider);
     state = AsyncValue.data(_applyFilterAndSort(_rawTasks, filter));
 
@@ -153,6 +193,19 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     }
   }
 
+  void _startPolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 4), (_) async {
+      if (!ref.read(isOnlineProvider)) return;
+      try {
+        final fetched = await _fetchTasks();
+        _handleTasks(fetched);
+        final filter = ref.read(taskFilterProvider);
+        state = AsyncValue.data(_applyFilterAndSort(_rawTasks, filter));
+      } catch (_) {}
+    });
+  }
+
   void _subscribeRealtime() {
     try {
       final supabase = Supabase.instance.client;
@@ -162,15 +215,8 @@ class GigsController extends AsyncNotifier<List<Gig>> {
         table: 'tasks',
         callback: (payload) async {
           try {
-            final previousIds = _rawTasks.map((t) => t.id).toSet();
             final fetched = await _fetchTasks();
-            final newGigs = fetched.where((g) => !previousIds.contains(g.id)).toList();
-
-            if (newGigs.isNotEmpty && previousIds.isNotEmpty) {
-              ref.read(pushManagerProvider).showGigOverlay(newGigs.first);
-            }
-
-            _rawTasks = fetched;
+            _handleTasks(fetched);
             final filter = ref.read(taskFilterProvider);
             state = AsyncValue.data(_applyFilterAndSort(_rawTasks, filter));
           } catch (_) {}
@@ -196,4 +242,3 @@ final activeGigsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) asyn
     return [];
   }
 });
-

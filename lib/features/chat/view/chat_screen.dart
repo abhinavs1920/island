@@ -1,3 +1,4 @@
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/viewing_scope_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -167,6 +168,32 @@ class _ActiveChatScreenState extends ConsumerState<_ActiveChatScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.phone, color: Theme.of(context).colorScheme.primary),
+            tooltip: 'Call Requester',
+            onPressed: () async {
+              final taskData = taskAsync.value;
+              final phone = taskData?['requester_phone']?.toString() ?? '+919876543210';
+              final uri = Uri.parse('tel:$phone');
+              try {
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Could not open phone dialer')),
+                    );
+                  }
+                }
+              } catch (_) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not initiate call')),
+                  );
+                }
+              }
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Center(

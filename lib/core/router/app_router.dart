@@ -83,8 +83,11 @@ import 'package:go_router/go_router.dart';
 import '../../features/profile/view/ratings_screen.dart';
 import '../../features/taskchat/view/masked_call_screen.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/home',
     routes: [
       ShellRoute(

@@ -1,7 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class IncomingTaskAlertBottomSheet extends StatelessWidget {
-  const IncomingTaskAlertBottomSheet({super.key});
+  final String? taskId;
+  final String title;
+  final double payout;
+  final String distance;
+
+  const IncomingTaskAlertBottomSheet({
+    super.key,
+    this.taskId,
+    this.title = 'Grocery Delivery',
+    this.payout = 85.0,
+    this.distance = '2.4 km total distance',
+  });
+
+  Future<void> _handleAccept(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.check_circle_outline, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 8),
+            const Text('Accept This Gig?'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Payout: ₹${payout.toInt()} • $distance',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Once accepted, you will have 3 minutes in pending status to start heading to the location.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: const Text('Review Later'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            onPressed: () => Navigator.pop(dialogCtx, true),
+            child: const Text('Confirm & Accept'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      Navigator.of(context, rootNavigator: true).pop();
+      context.push('/taskdetail/matched-confirmation');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +132,7 @@ class IncomingTaskAlertBottomSheet extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    '₹85.00',
+                                    '₹${payout.toInt()}.00',
                                     style: theme.textTheme.headlineMedium?.copyWith(
                                       color: theme.colorScheme.primary,
                                       fontWeight: FontWeight.bold,
@@ -73,7 +150,7 @@ class IncomingTaskAlertBottomSheet extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    '2.4 km total distance',
+                                    distance,
                                     style: theme.textTheme.bodyLarge?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),
@@ -159,10 +236,10 @@ class IncomingTaskAlertBottomSheet extends StatelessWidget {
                     height: 48,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primaryContainer,
-                        foregroundColor: theme.colorScheme.onPrimaryContainer,
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: theme.colorScheme.onPrimary,
                       ),
-                      onPressed: () {},
+                      onPressed: () => _handleAccept(context),
                       child: const Text('Accept Task'),
                     ),
                   ),
@@ -171,8 +248,10 @@ class IncomingTaskAlertBottomSheet extends StatelessWidget {
                     width: double.infinity,
                     height: 48,
                     child: OutlinedButton(
-                      onPressed: () {},
-                      child: const Text('Decline'),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: const Text('Decline / Dismiss'),
                     ),
                   ),
                 ],

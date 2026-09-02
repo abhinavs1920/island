@@ -1,3 +1,4 @@
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/viewing_scope_provider.dart';
 import '../../home/providers/home_controller.dart';
 import 'package:go_router/go_router.dart';
@@ -206,7 +207,46 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // Description Section
+                    // 1. Pending Status 3-Minute Alert (if rider_matched)
+                    if (data['status'] == 'rider_matched') ...[
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.orange.shade300),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.timer_outlined, color: Colors.orange, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Pending: Start within 3 minutes',
+                                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.orange.shade900,
+                                        ),
+                                  ),
+                                  Text(
+                                    'Tap "Start Task" once you begin heading to the destination.',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: Colors.orange.shade900,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
+                    // 2. Description Section with Step-by-Step Instructions
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -222,20 +262,45 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                               Icon(Icons.description, size: 20, color: Theme.of(context).colorScheme.onSurface),
                               const SizedBox(width: 8),
                               Text(
-                                'Task Description',
-                                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface, letterSpacing: 0.7),
+                                'Task Overview & Instructions',
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.7,
+                                    ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
                           Text(
                             data['description'] ?? 'Cooler fan not working, making noise. Needs immediate inspection and potentially a part replacement if the bearing is shot. Client is available now.',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.5),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  height: 1.5,
+                                ),
                           ),
+                          const SizedBox(height: 16),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          Text(
+                            'EXECUTION STEPS',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildInstructionStep(context, '1', 'Navigate to pickup/task location (${data['location'] ?? 'Indiranagar'}).'),
+                          _buildInstructionStep(context, '2', 'Connect with requester and confirm task scope and items.'),
+                          _buildInstructionStep(context, '3', 'Execute the gig requirements following safety standards.'),
+                          _buildInstructionStep(context, '4', 'Mark task completed and collect requester rating.'),
                         ],
                       ),
                     ),
-                    if ((data['category'] as String?)?.toLowerCase().contains('errand') == true || (data['category'] as String?)?.toLowerCase().contains('milestone') == true) ...[
+                    if ((data['category'] as String?)?.toLowerCase().contains('errand') == true ||
+                        (data['category'] as String?)?.toLowerCase().contains('milestone') == true ||
+                        (milestonesAsync.value?.isNotEmpty ?? false)) ...[
                       const SizedBox(height: 12),
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -258,49 +323,85 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
               right: 0,
               bottom: 0,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface, // surface
+                  color: Theme.of(context).colorScheme.surface,
                   border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.1), offset: const Offset(0, -4), blurRadius: 6),
+                    BoxShadow(color: Colors.black.withOpacity(0.08), offset: const Offset(0, -3), blurRadius: 6),
                   ],
                 ),
-                child: SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: acceptTaskState.isLoading ? null : () async {
-                      final status = await ref.read(acceptTaskProvider.notifier).acceptTask(widget.taskId);
-                      if (!context.mounted) return;
-                      if (status == 'matched') {
-                        context.push('/taskdetail/matched-confirmation');
-                      } else if (status == 'race_lost') {
-                        context.push('/taskdetail/race-lost');
-                      } else if (status == 'error') {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error accepting task')));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      elevation: 0,
+                child: Row(
+                  children: [
+                    // Call Requester CTA
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      onPressed: () => _callRequester(context, data['requester_phone']?.toString()),
+                      icon: const Icon(Icons.phone, size: 18),
+                      label: const Text('Call'),
                     ),
-                    child: acceptTaskState.isLoading
-                      ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary, strokeWidth: 2))
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Accept this gig',
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.check_circle, size: 20),
-                          ],
+                    const SizedBox(width: 12),
+                    // Primary Action Button (Accept / Start / Chat)
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: acceptTaskState.isLoading
+                              ? null
+                              : () async {
+                                  final taskStatus = data['status'] as String? ?? 'posted';
+                                  if (taskStatus == 'rider_matched') {
+                                    context.push('/chat/${widget.taskId}');
+                                  } else if (taskStatus == 'in_progress') {
+                                    context.push('/chat/${widget.taskId}');
+                                  } else {
+                                    final status = await ref.read(acceptTaskProvider.notifier).acceptTask(widget.taskId);
+                                    if (!context.mounted) return;
+                                    if (status == 'matched') {
+                                      context.push('/taskdetail/matched-confirmation');
+                                    } else if (status == 'race_lost') {
+                                      context.push('/taskdetail/race-lost');
+                                    } else if (status == 'error') {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error accepting task')));
+                                    }
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            elevation: 0,
+                          ),
+                          child: acceptTaskState.isLoading
+                              ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary, strokeWidth: 2))
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      data['status'] == 'rider_matched'
+                                          ? 'Start / Open Chat'
+                                          : (data['status'] == 'in_progress' ? 'Open Active Chat' : 'Accept this gig'),
+                                      style: Theme.of(context).textTheme.labelLarge?.copyWith(letterSpacing: 0.7),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      data['status'] == 'rider_matched' || data['status'] == 'in_progress'
+                                          ? Icons.chat_bubble_outline
+                                          : Icons.check_circle,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
                         ),
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -310,6 +411,64 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         error: (e, st) => Center(child: Text('Error: $e', style: TextStyle(color: Theme.of(context).colorScheme.error))),
       ),
     );
+  }
+
+  Widget _buildInstructionStep(BuildContext context, String stepNumber, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              stepNumber,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _callRequester(BuildContext context, String? phone) async {
+    final phoneNumber = (phone != null && phone.isNotEmpty) ? phone : '+919876543210';
+    final uri = Uri.parse('tel:$phoneNumber');
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Unable to open phone dialer')),
+          );
+        }
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not initiate call')),
+        );
+      }
+    }
   }
 }
 

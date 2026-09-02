@@ -1,7 +1,11 @@
 import '../../features/home/providers/home_controller.dart';
+import '../../features/home/models/gig_model.dart';
+import '../../features/notifications/widgets/gig_notification_banner.dart';
+import '../router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/viewing_scope_provider.dart';
 import '../../main.dart';
 import '../utils/remote_logger.dart';
@@ -14,6 +18,7 @@ final pushManagerProvider = Provider<PushManager>((ref) {
 
 class PushManager {
   final Ref ref;
+  OverlayEntry? _currentGigOverlay;
 
   PushManager(this.ref);
 
@@ -26,11 +31,32 @@ class PushManager {
     RemoteLogger.log('FCM Foreground: ${message.messageId}');
     final data = message.data;
     final taskId = data['task_id']?.toString();
-    final type = data['type']?.toString(); // e.g., 'new_message', 'status_update', 'new_gig'
+    final type = data['type']?.toString();
 
-    if (type == 'new_gig') {
-      // FCM-triggered silent re-fetch for Home Screen
+    // 1. If it's a new gig offer / alert
+    if (type == 'new_gig' || type == 'task_posted' || type == 'new_gig_alert') {
       ref.invalidate(gigsProvider);
+
+      if (taskId != null && taskId.isNotEmpty) {
+        final title = message.notification?.title ?? data['title'] ?? 'New Gig Nearby';
+        final description = message.notification?.body ?? data['body'] ?? '';
+        final price = double.tryParse(data['price']?.toString() ?? data['payout']?.toString() ?? '85') ?? 85.0;
+        final distance = data['distance']?.toString() ?? '~nearby';
+        final duration = data['duration']?.toString() ?? '30 mins';
+
+        final gig = Gig(
+          id: taskId,
+          title: title,
+          price: price,
+          description: description,
+          distance: distance,
+          duration: duration,
+          icon: 'assignment',
+        );
+
+        _showGigOverlay(gig);
+        return;
+      }
     }
 
     if (_shouldSuppress(taskId, type)) {
@@ -41,26 +67,57 @@ class PushManager {
     _showBanner(message);
   }
 
+  void _showGigOverlay(Gig gig) {
+    _currentGigOverlay?.remove();
+    _currentGigOverlay = null;
+
+    final overlayState = rootNavigatorKey.currentState?.overlay;
+    if (overlayState == null) return;
+
+    late OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 8,
+        left: 8,
+        right: 8,
+        child: GigNotificationBanner(
+          gig: gig,
+          onDismiss: () {
+            if (_currentGigOverlay == entry) {
+              entry.remove();
+              _currentGigOverlay = null;
+            }
+          },
+        ),
+      ),
+    );
+
+    _currentGigOverlay = entry;
+    overlayState.insert(entry);
+  }
+
   void _onBackgroundMessageTapped(RemoteMessage message) {
     RemoteLogger.log('FCM Tapped: ${message.messageId}');
-    // Navigation logic could go here based on payload if needed
+    final data = message.data;
+    final taskId = data['task_id']?.toString();
+    if (taskId != null && taskId.isNotEmpty) {
+      final context = rootNavigatorKey.currentContext;
+      if (context != null) {
+        context.push('/task/$taskId');
+      }
+    }
   }
 
   bool _shouldSuppress(String? taskId, String? type) {
     final scope = ref.read(currentViewingScopeProvider);
-
-    if (type == 'new_gig' && scope is ViewingHome) {
-      return true;
-    }
 
     if (taskId == null) return false;
 
     if (scope is ViewingChat && scope.taskId == taskId && type == 'new_message') {
       return true;
     }
-    
+
     if (scope is ViewingTask && scope.taskId == taskId) {
-      // Suppress status updates if we are actively viewing the task detail
       return true;
     }
 

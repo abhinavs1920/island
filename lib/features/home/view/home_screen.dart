@@ -8,6 +8,8 @@ import '../models/gig_model.dart';
 import '../widgets/network_error_body.dart';
 import '../../../core/providers/location_provider.dart';
 import '../widgets/surge_alert_dialog.dart';
+import '../widgets/task_filter_dialog.dart';
+import '../../notifications/widgets/gig_notification_banner.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -180,77 +182,107 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   }
 
   Widget _buildOnlineBody(AsyncValue<List<Gig>> gigsAsync) {
+    final activeGigsAsync = ref.watch(activeGigsProvider);
+    final filterCriteria = ref.watch(taskFilterProvider);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // 1. Reduced Prominence Online Banner
           Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(8),
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(Icons.radar, color: Colors.white, size: 24),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "You're online",
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            'Looking for gigs nearby...',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
                 ),
-                const SizedBox(height: 16),
+              ],
+            ),
+            child: Row(
+              children: [
                 Container(
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(2),
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
                   ),
-                  child: FractionallySizedBox(
-                    widthFactor: 0.25,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "You're online • Actively looking for gigs nearby",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
+
+          // 2. Active Gigs Section (Accepted / In-Progress Tasks)
+          activeGigsAsync.when(
+            data: (activeList) {
+              if (activeList.isEmpty) return const SizedBox.shrink();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Active Gigs (${activeList.length})',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'In Progress',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...activeList.map((task) => _buildActiveGigCard(context, task)).toList(),
+                  const SizedBox(height: 16),
+                ],
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+
+          // 3. Available Gigs Section Header with Filter CTA
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -258,21 +290,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 'Available Gigs',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.filter_list, size: 16, color: Theme.of(context).colorScheme.primary),
+                onPressed: () {
+                  TaskFilterDialog.show(
+                    context,
+                    currentCriteria: ref.read(taskFilterProvider),
+                    onApply: (newCriteria) {
+                      ref.read(taskFilterProvider.notifier).state = newCriteria;
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.filter_list,
+                  size: 16,
+                  color: (filterCriteria.urgentOnly || filterCriteria.maxDistanceKm != null)
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
                 label: Text(
-                  'Filter',
+                  (filterCriteria.urgentOnly || filterCriteria.maxDistanceKm != null)
+                      ? 'Filtered'
+                      : 'Sort & Filter',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: (filterCriteria.urgentOnly || filterCriteria.maxDistanceKm != null)
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+
+          // 4. Available Gigs List with Remove from List support
           gigsAsync.when(
             data: (gigs) {
               if (gigs.isEmpty) return _buildEmptyState();
@@ -281,6 +335,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     .map<Widget>((gig) => GigCard(
                           gig: gig,
                           onTap: () => context.push('/task/${gig.id}'),
+                          onRemove: () async {
+                            await ref.read(gigsProvider.notifier).rejectGig(gig.id);
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Gig removed from your list'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
                         ))
                     .toList(),
               );
@@ -293,6 +357,134 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActiveGigCard(BuildContext context, Map<String, dynamic> task) {
+    final status = task['status'] as String? ?? '';
+    final isPending = status == 'rider_matched';
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final taskId = task['id']?.toString() ?? '';
+    final category = task['category']?.toString() ?? task['title']?.toString() ?? 'Active Gig';
+    final budget = task['budget_min'] != null
+        ? '₹${task['budget_min']}'
+        : (task['budget_max'] != null ? '₹${task['budget_max']}' : '₹--');
+
+    return GestureDetector(
+      onTap: () => context.push('/task/$taskId'),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.primary.withOpacity(0.5), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.primary.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 5, color: isPending ? Colors.orange : colorScheme.primary),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: isPending ? Colors.orange.withOpacity(0.15) : colorScheme.primaryContainer,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  isPending ? Icons.hourglass_top : Icons.directions_bike,
+                                  size: 16,
+                                  color: isPending ? Colors.orange : colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                category,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            budget,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      // Details row: Payment & Customer Status
+                      Row(
+                        children: [
+                          const Icon(Icons.shield_outlined, size: 14, color: Colors.green),
+                          const SizedBox(width: 4),
+                          Text('Payment Secured', style: theme.textTheme.bodySmall?.copyWith(color: Colors.green, fontWeight: FontWeight.w600)),
+                          const SizedBox(width: 12),
+                          Icon(Icons.chat_bubble_outline, size: 14, color: colorScheme.onSurfaceVariant),
+                          const SizedBox(width: 4),
+                          Text('Chat Active', style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      // Progress / Milestone Status
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: isPending ? Colors.orange.withOpacity(0.1) : colorScheme.surfaceVariant,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              isPending ? Icons.alarm : Icons.check_circle_outline,
+                              size: 14,
+                              color: isPending ? Colors.orange : colorScheme.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                isPending ? 'Pending — Start within 3 mins' : 'Task in Progress — Heading to Destination',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: isPending ? Colors.orange.shade800 : colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.chevron_right, size: 16, color: colorScheme.onSurfaceVariant),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

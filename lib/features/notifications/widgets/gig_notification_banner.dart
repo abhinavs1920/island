@@ -19,21 +19,14 @@ class GigNotificationBanner extends ConsumerStatefulWidget {
   ConsumerState<GigNotificationBanner> createState() => _GigNotificationBannerState();
 }
 
-class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
-    with SingleTickerProviderStateMixin {
+class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner> {
   static const int totalSeconds = 30;
   int _secondsRemaining = totalSeconds;
   Timer? _timer;
-  late AnimationController _progressController;
 
   @override
   void initState() {
     super.initState();
-    _progressController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: totalSeconds),
-    )..reverse(from: 1.0);
-
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       if (_secondsRemaining <= 1) {
@@ -50,7 +43,6 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
   @override
   void dispose() {
     _timer?.cancel();
-    _progressController.dispose();
     super.dispose();
   }
 
@@ -165,18 +157,13 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
           mainAxisSize: MainAxisSize.min,
           children: [
             // Top Countdown Progress Bar
-            AnimatedBuilder(
-              animation: _progressController,
-              builder: (context, child) {
-                return LinearProgressIndicator(
-                  value: _progressController.value,
-                  backgroundColor: colorScheme.surfaceVariant,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    _secondsRemaining <= 10 ? colorScheme.error : colorScheme.primary,
-                  ),
-                  minHeight: 4,
-                );
-              },
+            LinearProgressIndicator(
+              value: _secondsRemaining / totalSeconds,
+              backgroundColor: colorScheme.surfaceVariant,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                _secondsRemaining <= 10 ? colorScheme.error : colorScheme.primary,
+              ),
+              minHeight: 4,
             ),
             Padding(
               padding: const EdgeInsets.all(16),

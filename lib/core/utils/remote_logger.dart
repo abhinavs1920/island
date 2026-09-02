@@ -1,16 +1,19 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class RemoteLogger {
   static const String _endpoint = 'https://women-vegetation-recreation-josh.trycloudflare.com/';
-  static final Dio _dio = Dio();
+  static final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 2),
+      sendTimeout: const Duration(seconds: 2),
+      receiveTimeout: const Duration(seconds: 2),
+    ),
+  );
 
   static void init() {
     // Override default print
     debugPrint = (String? message, {int? wrapWidth}) {
-      _sendToRemote('INFO', message ?? 'null');
-      // Still print to local console
       if (message != null) {
         debugPrintSynchronously(message, wrapWidth: wrapWidth);
       }
@@ -19,6 +22,7 @@ class RemoteLogger {
     // Override FlutterError
     final originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
+      debugPrintSynchronously('[FlutterError] ${details.exceptionAsString()}');
       _sendToRemote('ERROR', '${details.exceptionAsString()}\n${details.stack}');
       if (originalOnError != null) {
         originalOnError(details);
@@ -27,6 +31,7 @@ class RemoteLogger {
 
     // Override PlatformDispatcher for async errors
     PlatformDispatcher.instance.onError = (error, stack) {
+      debugPrintSynchronously('[AsyncPlatformError] $error');
       _sendToRemote('FATAL', '$error\n$stack');
       return true;
     };
@@ -35,28 +40,27 @@ class RemoteLogger {
   }
 
   static void log(String message) {
-    _sendToRemote('INFO', message);
     debugPrintSynchronously('[RemoteLogger] $message');
+    _sendToRemote('INFO', message);
   }
 
   static void error(String message, [dynamic error, StackTrace? stack]) {
-    _sendToRemote('ERROR', '$message\n$error\n$stack');
     debugPrintSynchronously('[RemoteLogger ERROR] $message\n$error');
+    _sendToRemote('ERROR', '$message\n$error\n$stack');
   }
 
   static Future<void> _sendToRemote(String level, String message) async {
     try {
-      // Fire and forget
-      _dio.post(
+      await _dio.post(
         _endpoint,
         data: {
           'level': level,
           'message': message,
           'timestamp': DateTime.now().toUtc().toIso8601String(),
         },
-      ).catchError((_) {});
-    } catch (e) {
-      // Ignore
+      );
+    } catch (_) {
+      // Safe no-op without infinite recursion
     }
   }
 }

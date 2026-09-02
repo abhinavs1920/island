@@ -450,22 +450,24 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   }
 
   Future<void> _callRequester(BuildContext context, String? phone) async {
-    final phoneNumber = (phone != null && phone.isNotEmpty) ? phone : '+919876543210';
-    final uri = Uri.parse('tel:$phoneNumber');
+    final rawPhone = (phone != null && phone.isNotEmpty) ? phone : '+919876543210';
+    final cleanPhone = rawPhone.replaceAll(RegExp(r'[^\d+]'), '');
+    final uri = Uri.parse('tel:$cleanPhone');
     try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        if (context.mounted) {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+        } else if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Unable to open phone dialer')),
+            SnackBar(content: Text('Could not open dialer for $cleanPhone')),
           );
         }
       }
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not initiate call')),
+          const SnackBar(content: Text('Could not initiate phone call')),
         );
       }
     }

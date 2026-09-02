@@ -14,10 +14,11 @@ class MyDocumentsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).maybePop();
           },
         ),
         title: Text(
@@ -28,6 +29,13 @@ class MyDocumentsScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: colorScheme.outlineVariant,
+            height: 1.0,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
@@ -38,52 +46,98 @@ class MyDocumentsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: const Color(0xFFDBEAFE), // info-bg
-                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFFDBEAFE),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF93C5FD)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info, color: Color(0xFF1E40AF)), // info-blue
+                  const Icon(Icons.info_outline, color: Color(0xFF1E40AF), size: 22),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      'Keep your documents up to date to ensure uninterrupted access to tasks.',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Document Verification',
+                          style: textTheme.titleSmall?.copyWith(
+                            color: const Color(0xFF1E3A8A),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Keep your documents up to date to ensure uninterrupted access to gigs.',
+                          style: textTheme.bodySmall?.copyWith(
+                            color: const Color(0xFF1E40AF),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            // Document Card: Approved
+
+            // Document Card: Driving License (Approved)
             _buildDocumentCard(
               context,
               title: 'Driving License',
+              documentNumber: 'DL-KA0120220084921',
               status: 'Approved',
-              statusColor: Colors.green,
+              statusColor: const Color(0xFF15803D),
               statusIcon: Icons.check_circle,
-              statusBg: Colors.green.withOpacity(0.1),
+              statusBg: const Color(0xFFDCFCE7),
               accentColor: Colors.green,
-              expiry: 'Dec 12, 2025',
-              imageUrl:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuC1-vd4jzfDlRwNr9yAwIq0u9AKmKoE1BN7h5UW1WIsNR4SUTqd00i-DEXbjyYfkRWyztXLe3mtOwH9C4Kpvhf2zWK0mFL62Q4g-grpMoeoUkaE0rVWNnjLg5qg1CMm1AgLetyvuiXb-ZpDUwY49vp3Yv0LiB8okhCehQJVMR51M1ciS1FUQdC4KPlOHH3yC8muWHtpveeX8urLYnyxeEEFpP7w4gQhQdae_FgMa2kVZbQvNpaQ2GR8pY25kgGQVEPH6fRmsEAoz7M',
+              iconData: Icons.badge_outlined,
+              expiry: 'Dec 12, 2028',
             ),
-            const SizedBox(height: 16),
-            // Document Card: Pending Review
+            const SizedBox(height: 14),
+
+            // Document Card: Vehicle Registration (Pending Review)
             _buildDocumentCard(
               context,
-              title: 'Vehicle Registration',
-              status: 'Pending Review',
-              statusColor: const Color(0xFFD97706), // amber
-              statusIcon: Icons.pending_actions,
+              title: 'Vehicle Registration (RC)',
+              documentNumber: 'KA-01-EQ-4829',
+              status: 'Under Review',
+              statusColor: const Color(0xFFB45309),
+              statusIcon: Icons.schedule,
               statusBg: const Color(0xFFFEF3C7),
               accentColor: const Color(0xFFD97706),
+              iconData: Icons.directions_car_outlined,
               expiry: 'Oct 01, 2026',
-              imageUrl:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuDhPH6HbdW1bq0IWdP5Of26o7v6x2-fGWz3lAKG6AvJGSigqO8eeZNczBVUWV1wd2jqfAh5Fs1fczitl0opK_TKiZnTLrKNqSlYlmLoBdyjRmIwFGsebBxfP6EBir1kmxivV3E3cqdWwwOzuhxABiKK854PEqXJgDmBrMjs2O6rYI6Q-YrzykfdApL_u08EiM-8ElRIkoDsSARaKacxJSkR6slMfEK1AstVOydkoAS83Cotgov2uQ_psU0lsWdSavlZ8eexTJ5w7zU',
+            ),
+            const SizedBox(height: 14),
+
+            // Document Card: Identity Verification (Aadhaar / National ID)
+            _buildDocumentCard(
+              context,
+              title: 'Identity Proof (Aadhaar)',
+              documentNumber: 'XXXX-XXXX-4819',
+              status: 'Verified',
+              statusColor: const Color(0xFF15803D),
+              statusIcon: Icons.verified_user,
+              statusBg: const Color(0xFFDCFCE7),
+              accentColor: Colors.green,
+              iconData: Icons.credit_card_outlined,
+              expiry: 'Lifetime Valid',
+            ),
+            const SizedBox(height: 14),
+
+            // Document Card: Vehicle Insurance
+            _buildDocumentCard(
+              context,
+              title: 'Vehicle Insurance',
+              documentNumber: 'POL-99210-482',
+              status: 'Valid',
+              statusColor: const Color(0xFF15803D),
+              statusIcon: Icons.shield_outlined,
+              statusBg: const Color(0xFFDCFCE7),
+              accentColor: Colors.green,
+              iconData: Icons.security_outlined,
+              expiry: 'Mar 15, 2027',
             ),
           ],
         ),
@@ -94,13 +148,14 @@ class MyDocumentsScreen extends StatelessWidget {
   Widget _buildDocumentCard(
     BuildContext context, {
     required String title,
+    required String documentNumber,
     required String status,
     required Color statusColor,
     required IconData statusIcon,
     required Color statusBg,
     required Color accentColor,
+    required IconData iconData,
     required String expiry,
-    required String imageUrl,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -109,99 +164,114 @@ class MyDocumentsScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: colorScheme.outlineVariant),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Container(
-              width: 4,
-              color: accentColor,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Left Accent Stripe
+          Container(
+            width: 5,
+            height: 90,
+            color: accentColor,
+          ),
+          const SizedBox(width: 12),
+          // Document Type Icon Badge
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceVariant,
+              borderRadius: BorderRadius.circular(10),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: colorScheme.outlineVariant),
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            Colors.white.withOpacity(0.2),
-                            BlendMode.lighten,
-                          ),
+            child: Icon(iconData, color: colorScheme.primary, size: 26),
+          ),
+          const SizedBox(width: 14),
+          // Document Details
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    documentNumber,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: statusBg,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(statusIcon, color: statusColor, size: 12),
+                            const SizedBox(width: 4),
+                            Text(
+                              status,
+                              style: textTheme.labelSmall?.copyWith(
+                                color: statusColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: textTheme.labelLarge?.copyWith(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: statusBg,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(statusIcon, color: statusColor, size: 14),
-                                const SizedBox(width: 4),
-                                Text(
-                                  status,
-                                  style: textTheme.labelSmall?.copyWith(
-                                    color: statusColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Expires: $expiry',
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colorScheme.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        side: BorderSide(color: colorScheme.primaryContainer),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Exp: $expiry',
+                        style: textTheme.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      onPressed: () {},
-                      child: const Text('Update'),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          // Action Button
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: IconButton(
+              icon: Icon(Icons.arrow_forward_ios, size: 16, color: colorScheme.onSurfaceVariant),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('$title details are up to date.'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -184,24 +184,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   Widget _buildOnlineBody(AsyncValue<List<Gig>> gigsAsync) {
     final activeGigsAsync = ref.watch(activeGigsProvider);
     final filterCriteria = ref.watch(taskFilterProvider);
-    final incomingGig = ref.watch(latestIncomingGigProvider);
 
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 0. Incoming Gig Live Banner Alert
-          if (incomingGig != null) ...[
-            GigNotificationBanner(
-              gig: incomingGig,
-              onDismiss: () {
-                ref.read(latestIncomingGigProvider.notifier).state = null;
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
-
           // 1. Reduced Prominence Online Banner
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -38,8 +38,9 @@ class PushManager {
       ref.invalidate(gigsProvider);
 
       if (taskId != null && taskId.isNotEmpty) {
-        final title = message.notification?.title ?? data['title'] ?? 'New Gig Nearby';
-        final description = message.notification?.body ?? data['body'] ?? '';
+        final title = message.notification?.title ?? data['title'] ?? data['category'] ?? 'New Gig Nearby';
+        final category = data['category']?.toString() ?? 'Task';
+        final description = message.notification?.body ?? data['body'] ?? data['description'] ?? '';
         final price = double.tryParse(data['price']?.toString() ?? data['payout']?.toString() ?? '85') ?? 85.0;
         final distance = data['distance']?.toString() ?? '~nearby';
         final duration = data['duration']?.toString() ?? '30 mins';
@@ -47,6 +48,7 @@ class PushManager {
         final gig = Gig(
           id: taskId,
           title: title,
+          category: category,
           price: price,
           description: description,
           distance: distance,
@@ -100,10 +102,34 @@ class PushManager {
     RemoteLogger.log('FCM Tapped: ${message.messageId}');
     final data = message.data;
     final taskId = data['task_id']?.toString();
+    final type = data['type']?.toString();
+
     if (taskId != null && taskId.isNotEmpty) {
       final context = rootNavigatorKey.currentContext;
       if (context != null) {
-        context.push('/task/$taskId');
+        if (type == 'new_gig' || type == 'task_posted' || type == 'new_gig_alert') {
+          final title = message.notification?.title ?? data['title'] ?? data['category'] ?? 'New Gig Nearby';
+          final category = data['category']?.toString() ?? 'Task';
+          final description = message.notification?.body ?? data['body'] ?? '';
+          final price = double.tryParse(data['price']?.toString() ?? data['payout']?.toString() ?? '85') ?? 85.0;
+          final distance = data['distance']?.toString() ?? '~nearby';
+          final duration = data['duration']?.toString() ?? '30 mins';
+
+          final gig = Gig(
+            id: taskId,
+            title: title,
+            category: category,
+            price: price,
+            description: description,
+            distance: distance,
+            duration: duration,
+            icon: 'assignment',
+          );
+
+          showGigOverlay(gig);
+        } else {
+          context.push('/task/$taskId');
+        }
       }
     }
   }

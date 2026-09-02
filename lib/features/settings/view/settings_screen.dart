@@ -49,6 +49,7 @@ class SettingsScreen extends ConsumerWidget {
       body: status == SettingsStatus.loading
           ? const _SettingsLoadingView()
           : SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
               padding: const EdgeInsets.all(20.0), // gutter
               child: Column(
                 children: [

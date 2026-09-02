@@ -50,8 +50,6 @@ final taskFilterProvider = StateProvider<TaskFilterCriteria>((ref) {
   return const TaskFilterCriteria();
 });
 
-final latestIncomingGigProvider = StateProvider<Gig?>((ref) => null);
-
 final gigsProvider = AsyncNotifierProvider<GigsController, List<Gig>>(() {
   return GigsController();
 });
@@ -99,7 +97,6 @@ class GigsController extends AsyncNotifier<List<Gig>> {
 
     if (newGigs.isNotEmpty) {
       final firstNew = newGigs.first;
-      ref.read(latestIncomingGigProvider.notifier).state = firstNew;
       ref.read(pushManagerProvider).showGigOverlay(firstNew);
     }
 
@@ -157,9 +154,6 @@ class GigsController extends AsyncNotifier<List<Gig>> {
     // 1. Optimistic removal from UI list
     _rawTasks.removeWhere((g) => g.id == taskId);
     _seenTaskIds.add(taskId);
-    if (ref.read(latestIncomingGigProvider)?.id == taskId) {
-      ref.read(latestIncomingGigProvider.notifier).state = null;
-    }
     final filter = ref.read(taskFilterProvider);
     state = AsyncValue.data(_applyFilterAndSort(_rawTasks, filter));
 

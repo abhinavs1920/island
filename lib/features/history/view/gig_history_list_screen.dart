@@ -86,6 +86,7 @@ class _GigHistoryListScreenState extends ConsumerState<GigHistoryListScreen> {
                 }
 
                 return ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                   padding: const EdgeInsets.all(16),
                   itemCount: filteredGigs.length,
                   itemBuilder: (context, index) {

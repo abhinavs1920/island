@@ -30,6 +30,7 @@ class MyDocumentsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [

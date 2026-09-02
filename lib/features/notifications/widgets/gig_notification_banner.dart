@@ -56,7 +56,7 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
 
   Future<void> _handleAccept(BuildContext context) async {
     _timer?.cancel();
-    
+
     // Show Acceptance Confirmation Modal
     final confirmed = await showDialog<bool>(
       context: context,
@@ -132,10 +132,17 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
     }
   }
 
+  void _handleViewDetails(BuildContext context) {
+    _timer?.cancel();
+    widget.onDismiss();
+    context.push('/task/${widget.gig.id}');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isMilestone = widget.gig.isMilestone;
 
     return Material(
       color: Colors.transparent,
@@ -182,18 +189,22 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
+                          color: isMilestone ? colorScheme.tertiaryContainer : colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.bolt, size: 14, color: colorScheme.onPrimaryContainer),
+                            Icon(
+                              isMilestone ? Icons.route : Icons.bolt,
+                              size: 14,
+                              color: isMilestone ? colorScheme.onTertiaryContainer : colorScheme.onPrimaryContainer,
+                            ),
                             const SizedBox(width: 4),
                             Text(
-                              'NEW GIG ALERT',
+                              isMilestone ? 'MULTI-STEP GIG' : 'NEW GIG ALERT',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: colorScheme.onPrimaryContainer,
+                                color: isMilestone ? colorScheme.onTertiaryContainer : colorScheme.onPrimaryContainer,
                                 letterSpacing: 0.8,
                               ),
                             ),
@@ -292,7 +303,7 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // Actions Row
+                  // Actions Row: Dismiss & Branching CTA (Accept vs View Details)
                   Row(
                     children: [
                       Expanded(
@@ -308,16 +319,27 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner>
                       const SizedBox(width: 12),
                       Expanded(
                         flex: 2,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: colorScheme.onPrimary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          onPressed: () => _handleAccept(context),
-                          icon: const Icon(Icons.check_circle_outline, size: 18),
-                          label: const Text('Accept Gig'),
-                        ),
+                        child: isMilestone
+                            ? ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                ),
+                                onPressed: () => _handleViewDetails(context),
+                                icon: const Icon(Icons.arrow_forward, size: 18),
+                                label: const Text('View Details'),
+                              )
+                            : ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                ),
+                                onPressed: () => _handleAccept(context),
+                                icon: const Icon(Icons.check_circle_outline, size: 18),
+                                label: const Text('Accept Gig'),
+                              ),
                       ),
                     ],
                   ),

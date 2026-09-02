@@ -1,6 +1,7 @@
 class Gig {
   final String id;
   final String title;
+  final String category;
   final double price;
   final String description;
   final String distance;
@@ -11,6 +12,7 @@ class Gig {
   Gig({
     required this.id,
     required this.title,
+    this.category = 'Task',
     required this.price,
     required this.description,
     required this.distance,
@@ -19,9 +21,25 @@ class Gig {
     this.tags = const [],
   });
 
+  bool get isMilestone {
+    final lowerTags = tags.map((t) => t.toLowerCase()).toList();
+    final lowerCat = category.toLowerCase();
+    final lowerTitle = title.toLowerCase();
+    return lowerTags.any((t) => t.contains('milestone') || t.contains('errand')) ||
+        lowerCat.contains('milestone') ||
+        lowerCat.contains('errand') ||
+        lowerCat.contains('buy') ||
+        lowerTitle.contains('milestone') ||
+        lowerTitle.contains('errand');
+  }
+
   factory Gig.fromJson(Map<String, dynamic> json) {
     double price = 0;
-    if (json['budget_min'] != null) {
+    if (json['price'] != null) {
+      price = (json['price'] is num) ? (json['price'] as num).toDouble() : (double.tryParse(json['price'].toString()) ?? 0.0);
+    } else if (json['payout'] != null) {
+      price = (json['payout'] is num) ? (json['payout'] as num).toDouble() : (double.tryParse(json['payout'].toString()) ?? 0.0);
+    } else if (json['budget_min'] != null) {
       price = (json['budget_min'] as num).toDouble();
     } else if (json['budget_max'] != null) {
       price = (json['budget_max'] as num).toDouble();
@@ -34,13 +52,16 @@ class Gig {
     }
     if (desc.isEmpty) desc = json['description']?.toString() ?? '';
 
+    final cat = json['category']?.toString() ?? json['task_type']?.toString() ?? 'Task';
+
     return Gig(
       id: json['id']?.toString() ?? '',
-      title: json['category']?.toString() ?? json['title']?.toString() ?? json['task_type']?.toString() ?? 'Task',
+      title: cat,
+      category: cat,
       price: price,
       description: desc,
       distance: json['distance']?.toString() ?? '~nearby',
-      duration: json['duration']?.toString() ?? '',
+      duration: json['duration']?.toString() ?? '30 mins',
       icon: json['icon']?.toString() ?? 'assignment',
       tags: (json['tags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );

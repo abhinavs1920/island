@@ -71,6 +71,7 @@ class ProfileScreen extends ConsumerWidget {
     final textTheme = theme.textTheme;
 
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -293,18 +294,6 @@ class ProfileScreen extends ConsumerWidget {
                   title: const Text('Help & Support'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => context.push('/support/help-and-support'),
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: Icon(Icons.logout, color: colorScheme.error),
-                  title: Text(
-                    'Log out',
-                    style: TextStyle(
-                      color: colorScheme.error,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () => context.push('/misc/logout-confirmation-dialog'),
                 ),
               ],
             ),

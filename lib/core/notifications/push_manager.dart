@@ -67,7 +67,7 @@ class PushManager {
     _showBanner(message);
   }
 
-  void _showGigOverlay(Gig gig) {
+  void showGigOverlay(Gig gig) {
     _currentGigOverlay?.remove();
     _currentGigOverlay = null;
 

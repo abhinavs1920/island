@@ -4,6 +4,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/providers/location_provider.dart';
 import '../models/gig_model.dart';
 import '../widgets/task_filter_dialog.dart';
+import '../../../core/notifications/push_manager.dart';
 
 final isOnlineProvider = NotifierProvider<IsOnlineController, bool>(() {
   return IsOnlineController();
@@ -161,7 +162,15 @@ class GigsController extends AsyncNotifier<List<Gig>> {
         table: 'tasks',
         callback: (payload) async {
           try {
-            _rawTasks = await _fetchTasks();
+            final previousIds = _rawTasks.map((t) => t.id).toSet();
+            final fetched = await _fetchTasks();
+            final newGigs = fetched.where((g) => !previousIds.contains(g.id)).toList();
+
+            if (newGigs.isNotEmpty && previousIds.isNotEmpty) {
+              ref.read(pushManagerProvider).showGigOverlay(newGigs.first);
+            }
+
+            _rawTasks = fetched;
             final filter = ref.read(taskFilterProvider);
             state = AsyncValue.data(_applyFilterAndSort(_rawTasks, filter));
           } catch (_) {}

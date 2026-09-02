@@ -98,23 +98,19 @@ class SettingsScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         SettingsItemButton(
-                          icon: Icons.info,
+                          icon: Icons.info_outline,
                           text: 'App Version (v1.0.4)',
                           onTap: () {
                             ref.read(settingsProvider.notifier).saveSettings();
                           },
                         ),
                         SettingsItemButton(
-                          icon: Icons.support_agent,
-                          text: 'Support Contact',
-                          hasTrailing: true,
-                          onTap: () {},
-                        ),
-                        SettingsItemButton(
                           icon: Icons.logout,
                           text: 'Log out',
                           isError: true,
-                          onTap: () {},
+                          onTap: () {
+                            context.push('/misc/logout-confirmation-dialog');
+                          },
                         ),
                       ],
                     ),

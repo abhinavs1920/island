@@ -223,6 +223,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const HelpAndSupportScreen(),
       ),
       GoRoute(
+        path: '/support/help-center',
+        builder: (context, state) => const HelpAndSupportScreen(),
+      ),
+      GoRoute(
         path: '/taskchat/incoming-call',
         builder: (context, state) => const IncomingCallScreen(),
       ),
@@ -252,6 +256,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/profile/my-documents',
+        builder: (context, state) => const MyDocumentsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/documents',
         builder: (context, state) => const MyDocumentsScreen(),
       ),
       GoRoute(
@@ -356,6 +364,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/settings/settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
         builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(

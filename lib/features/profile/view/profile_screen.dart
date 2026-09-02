@@ -271,7 +271,7 @@ class ProfileScreen extends ConsumerWidget {
                   leading: Icon(Icons.description_outlined, color: colorScheme.secondary),
                   title: const Text('My Documents'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/profile/documents'),
+                  onTap: () => context.push('/profile/my-documents'),
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -292,7 +292,7 @@ class ProfileScreen extends ConsumerWidget {
                   leading: Icon(Icons.help_outline, color: colorScheme.secondary),
                   title: const Text('Help & Support'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/support/help-center'),
+                  onTap: () => context.push('/support/help-and-support'),
                 ),
                 const Divider(height: 1),
                 ListTile(

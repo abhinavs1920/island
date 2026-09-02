@@ -54,7 +54,7 @@ class PushManager {
           icon: 'assignment',
         );
 
-        _showGigOverlay(gig);
+        showGigOverlay(gig);
         return;
       }
     }

@@ -112,10 +112,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
               data['address']?.toString() ??
               'Indiranagar, Bangalore';
 
-          final budget = data['budget_min'] != null
-              ? '₹${(data['budget_min'] as num).toInt()}'
-              : (data['budget_max'] != null
-                  ? '₹${(data['budget_max'] as num).toInt()}'
+          final bMin = double.tryParse(data['budget_min']?.toString() ?? '');
+          final bMax = double.tryParse(data['budget_max']?.toString() ?? '');
+          final budget = bMin != null
+              ? '₹${bMin.toInt()}'
+              : (bMax != null
+                  ? '₹${bMax.toInt()}'
                   : (constraints['budget_range']?.toString() ??
                       data['budget']?.toString() ??
                       '₹150'));

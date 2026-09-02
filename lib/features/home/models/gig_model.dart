@@ -40,9 +40,9 @@ class Gig {
     } else if (json['payout'] != null) {
       price = (json['payout'] is num) ? (json['payout'] as num).toDouble() : (double.tryParse(json['payout'].toString()) ?? 0.0);
     } else if (json['budget_min'] != null) {
-      price = (json['budget_min'] as num).toDouble();
+      price = (json['budget_min'] is num) ? (json['budget_min'] as num).toDouble() : (double.tryParse(json['budget_min'].toString()) ?? 0.0);
     } else if (json['budget_max'] != null) {
-      price = (json['budget_max'] as num).toDouble();
+      price = (json['budget_max'] is num) ? (json['budget_max'] as num).toDouble() : (double.tryParse(json['budget_max'].toString()) ?? 0.0);
     }
 
     String desc = '';

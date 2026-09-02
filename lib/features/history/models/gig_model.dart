@@ -31,9 +31,14 @@ class GigModel {
     // Parse amount from budget_max or budget_min if available
     double parsedAmount = 0.0;
     if (json['budget_max'] != null) {
-      parsedAmount = (json['budget_max'] as num).toDouble();
+      parsedAmount = (json['budget_max'] is num) ? (json['budget_max'] as num).toDouble() : (double.tryParse(json['budget_max'].toString()) ?? 0.0);
     } else if (json['budget_min'] != null) {
-      parsedAmount = (json['budget_min'] as num).toDouble();
+      parsedAmount = (json['budget_min'] is num) ? (json['budget_min'] as num).toDouble() : (double.tryParse(json['budget_min'].toString()) ?? 0.0);
+    }
+
+    DateTime parsedDate = DateTime.now();
+    if (json['created_at'] != null) {
+      parsedDate = DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now();
     }
 
     return GigModel(
@@ -41,7 +46,7 @@ class GigModel {
       type: json['category']?.toString() ?? 'Task',
       status: parsedStatus,
       amount: parsedAmount,
-      date: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
+      date: parsedDate,
       pickupAddress: 'Pickup location (lat: ${json['lat']}, lng: ${json['lng']})',
       dropoffAddress: 'Dropoff location', // Not provided by backend in snippet
     );

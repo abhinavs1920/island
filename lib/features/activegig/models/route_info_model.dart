@@ -11,8 +11,8 @@ class RouteInfoModel {
 
   factory RouteInfoModel.fromJson(Map<String, dynamic> json) {
     return RouteInfoModel(
-      distanceKm: (json['distance_km'] as num).toDouble(),
-      etaMinutes: (json['eta_minutes'] as num).toDouble(),
+      distanceKm: double.tryParse(json['distance_km']?.toString() ?? '') ?? 0.0,
+      etaMinutes: double.tryParse(json['eta_minutes']?.toString() ?? '') ?? 0.0,
       polyline: json['polyline'] as String?,
     );
   }

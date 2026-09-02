@@ -33,9 +33,9 @@ class ProfileState {
       name: json['name'] as String? ?? 'Rider',
       phone: json['phone'] as String? ?? '',
       isAvailable: json['is_available'] as bool? ?? false,
-      earnings: (json['earnings'] as num?)?.toDouble() ?? 0.0,
-      completedGigs: (json['completed_gigs'] as num?)?.toInt() ?? 0,
-      failedTasks: (json['failed_tasks'] as num?)?.toInt() ?? 0,
+      earnings: double.tryParse(json['earnings']?.toString() ?? '') ?? 0.0,
+      completedGigs: int.tryParse(json['completed_gigs']?.toString() ?? '') ?? 0,
+      failedTasks: int.tryParse(json['failed_tasks']?.toString() ?? '') ?? 0,
       joinedDate: joined,
     );
   }

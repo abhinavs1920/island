@@ -16,14 +16,25 @@ class TaskDetailNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, Strin
       _channel?.unsubscribe();
     });
 
-    _subscribeRealtime(arg);
+    if (arg.isNotEmpty) {
+      _subscribeRealtime(arg);
+    }
     return _fetchTask(arg);
   }
 
   Future<Map<String, dynamic>> _fetchTask(String taskId) async {
+    if (taskId.isEmpty) {
+      throw Exception('No Task ID specified');
+    }
     final apiClient = ref.read(apiClientProvider).dio;
     final response = await apiClient.get('/tasks/$taskId');
-    return response.data;
+    if (response.data is Map<String, dynamic>) {
+      return response.data as Map<String, dynamic>;
+    } else if (response.data is Map) {
+      return Map<String, dynamic>.from(response.data as Map);
+    } else {
+      throw Exception('Invalid task data returned from server');
+    }
   }
 
   void _subscribeRealtime(String taskId) {
@@ -39,9 +50,6 @@ class TaskDetailNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, Strin
           value: taskId,
         ),
         callback: (payload) async {
-          // Whenever the task changes, invalidate the provider to trigger a re-fetch
-          // or update state directly if payload.newRecord contains all needed fields.
-          // Re-fetching is safer to ensure joined data is correct.
           try {
             final updatedTask = await _fetchTask(taskId);
             state = AsyncValue.data(updatedTask);

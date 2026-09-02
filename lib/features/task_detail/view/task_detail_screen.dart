@@ -45,13 +45,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     final milestonesAsync = ref.watch(milestoneProvider(widget.taskId));
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: const Color(0xFFF8FAFC), // Crisp slate background for high contrast
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.maybePop(context),
         ),
         title: Text(
@@ -63,8 +63,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         ),
         centerTitle: true,
         actions: [
-          TextButton(
-            onPressed: () {},
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -153,9 +153,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: colorScheme.surface,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: colorScheme.outlineVariant),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.04),
@@ -231,7 +231,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.primaryContainer.withOpacity(0.4),
+                                      color: colorScheme.primaryContainer.withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(Icons.payments_outlined, size: 18, color: colorScheme.primary),
@@ -294,7 +294,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   ),
                   const SizedBox(height: 14),
 
-                  // Pending Status 3-Minute Alert (if rider_matched)
+                  // Pending Status Alert (if rider_matched)
                   if (status == 'rider_matched') ...[
                     Container(
                       padding: const EdgeInsets.all(14),
@@ -335,13 +335,13 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     const SizedBox(height: 14),
                   ],
 
-                  // Description Section with Step-by-Step Instructions
+                  // Description & Instructions Card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: colorScheme.surface,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: colorScheme.outlineVariant),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.04),
@@ -400,9 +400,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: colorScheme.surface,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: colorScheme.outlineVariant),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.04),
@@ -423,7 +423,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             ),
           );
         },
-        loading: () => const _TaskDetailSkeleton(),
+        loading: () => const _TaskDetailLoadingView(),
         error: (e, st) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -462,7 +462,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: colorScheme.surface,
+                color: Colors.white,
                 border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
                 boxShadow: [
                   BoxShadow(
@@ -575,7 +575,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFE2E8F0),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outlineVariant),
+        border: Border.all(color: const Color(0xFFCBD5E1)),
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -783,79 +783,32 @@ class _MapGridPainter extends CustomPainter {
   bool shouldRepaint(covariant _MapGridPainter oldDelegate) => false;
 }
 
-class _TaskDetailSkeleton extends StatelessWidget {
-  const _TaskDetailSkeleton({Key? key}) : super(key: key);
+class _TaskDetailLoadingView extends StatelessWidget {
+  const _TaskDetailLoadingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
+    return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            height: 180,
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceVariant,
-              borderRadius: BorderRadius.circular(12),
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: CircularProgressIndicator(
+              color: colorScheme.primary,
+              strokeWidth: 3,
             ),
           ),
-          const SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorScheme.outlineVariant),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 140,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceVariant,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceVariant,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          const SizedBox(height: 16),
+          Text(
+            'Loading task details...',
+            style: TextStyle(
+              color: colorScheme.onSurfaceVariant,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

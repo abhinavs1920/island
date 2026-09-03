@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'core/notifications/push_manager.dart';
 import 'core/providers/location_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -100,7 +101,13 @@ void main() async {
     );
   };
 
-  await Firebase.initializeApp();
+  try {
+    if (!kIsWeb) {
+      await Firebase.initializeApp();
+    }
+  } catch (e) {
+    RemoteLogger.log('Firebase init: $e');
+  }
   
   await Supabase.initialize(
     url: const String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://gpepmnsfsxjlsuentdta.supabase.co'),

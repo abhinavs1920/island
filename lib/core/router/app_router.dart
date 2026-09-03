@@ -363,6 +363,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SessionExpiredScreen(),
       ),
       GoRoute(
+        path: '/session-expired',
+        builder: (context, state) => const SessionExpiredScreen(),
+      ),
+      GoRoute(
         path: '/settings/settings',
         builder: (context, state) => const SettingsScreen(),
       ),

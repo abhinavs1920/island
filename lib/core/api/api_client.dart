@@ -36,7 +36,7 @@ class ApiClient {
       },
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
-          // Attempt refresh
+          // Attempt refresh only if a session previously existed
           final refreshToken = await _storage.getRefreshToken();
           if (refreshToken != null) {
             try {
@@ -54,10 +54,8 @@ class ApiClient {
               return handler.resolve(cloneReq);
             } catch (_) {
               await _storage.clearTokens();
-              _router.go('/session-expired');
+              _router.go('/errors/session-expired');
             }
-          } else {
-            _router.go('/session-expired');
           }
         }
         return handler.next(e);

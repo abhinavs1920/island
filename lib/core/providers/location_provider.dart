@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../api/api_client.dart';
+import '../storage/secure_storage.dart';
 
 /// Holds the latest known GPS position.
 /// Started automatically on app launch — no manual trigger needed.
@@ -62,6 +63,8 @@ class LocationNotifier extends Notifier<Position?> {
   }
 
   Future<void> _pushToBackend(Position pos) async {
+    final token = await ref.read(storageServiceProvider).getToken();
+    if (token == null) return;
     try {
       final dio = ref.read(apiClientProvider).dio;
       await dio.put('/auth/rider/location', data: {

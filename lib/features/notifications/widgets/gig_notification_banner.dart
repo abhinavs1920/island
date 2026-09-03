@@ -300,7 +300,10 @@ class _GigNotificationBannerState extends ConsumerState<GigNotificationBanner> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           onPressed: widget.onDismiss,
-                          child: const Text('Dismiss'),
+                          child: const FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text('Dismiss'),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
